@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://p5k-ps5.github.io/img/compartir.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fuentes/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilo.css?v=6">
+<link rel="stylesheet" href="estilo.css?v=7">
 <script src="app.js?v=5" defer></script>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
@@ -208,9 +208,13 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         <div><dt>Coste</dt><dd>unos 26 € en Amazon (nov. 2026)</dd></div>
         <div><dt>Conectores</dt><dd>USB-C consola · USB-A mando</dd></div>
         <div><dt>Caja</dt><dd>68 × 32 × 18 mm, impresa en 3D</dd></div>
-        <div><dt>Montaje</dt><dd>12 cables soldados</dd></div>
+        <div><dt>Montaje</dt><dd>9 cables, soldados o Dupont</dd></div>
       </dl>
-      <p>Es el montaje con el que se ha desarrollado y probado todo. Hace falta soldar, pero las piezas están en cualquier tienda y la caja se imprime en una tarde.</p>
+      <p>Es el montaje con el que se ha desarrollado y probado todo, todavía con cables Dupont. Para probar bastan los Dupont; para cerrarlo en la caja plana hay que soldarlos. Las piezas están en cualquier tienda y la caja se imprime en una tarde.</p>
+      <figure class="plano">
+        <svg class="plano-dibujo" viewBox="0 0 600 300" aria-hidden="true" focusable="false"><rect class="pl-placa" x="8" y="20" width="160" height="260"/><rect class="pl-placa" x="432" y="20" width="160" height="260"/><text class="pl-nombre" x="20" y="270">ESP32-S3</text><text class="pl-nombre" x="580" y="270" text-anchor="end">MAX3421E</text><g class="pl-cable" data-i="0"><line x1="168" y1="48" x2="432" y2="48"/><rect class="pl-pin" x="164" y="44" width="8" height="8"/><rect class="pl-pin" x="428" y="44" width="8" height="8"/><text x="154" y="52" text-anchor="end">3V3</text><text x="446" y="52">VCC</text></g><g class="pl-cable" data-i="1"><line x1="168" y1="72" x2="432" y2="72"/><rect class="pl-pin" x="164" y="68" width="8" height="8"/><rect class="pl-pin" x="428" y="68" width="8" height="8"/><text x="154" y="76" text-anchor="end">GPIO8</text><text x="446" y="76">MAX_RST</text></g><g class="pl-cable" data-i="2"><line x1="168" y1="96" x2="432" y2="96"/><rect class="pl-pin" x="164" y="92" width="8" height="8"/><rect class="pl-pin" x="428" y="92" width="8" height="8"/><text x="154" y="100" text-anchor="end">GPIO9</text><text x="446" y="100">INT</text></g><g class="pl-cable" data-i="3"><line x1="168" y1="120" x2="432" y2="120"/><rect class="pl-pin" x="164" y="116" width="8" height="8"/><rect class="pl-pin" x="428" y="116" width="8" height="8"/><text x="154" y="124" text-anchor="end">GPIO10</text><text x="446" y="124">SS</text></g><g class="pl-cable" data-i="4"><line x1="168" y1="144" x2="432" y2="144"/><rect class="pl-pin" x="164" y="140" width="8" height="8"/><rect class="pl-pin" x="428" y="140" width="8" height="8"/><text x="154" y="148" text-anchor="end">GPIO11</text><text x="446" y="148">CLK</text></g><g class="pl-cable" data-i="5"><line x1="168" y1="168" x2="432" y2="168"/><rect class="pl-pin" x="164" y="164" width="8" height="8"/><rect class="pl-pin" x="428" y="164" width="8" height="8"/><text x="154" y="172" text-anchor="end">GPIO12</text><text x="446" y="172">MOSI</text></g><g class="pl-cable" data-i="6"><line x1="168" y1="192" x2="432" y2="192"/><rect class="pl-pin" x="164" y="188" width="8" height="8"/><rect class="pl-pin" x="428" y="188" width="8" height="8"/><text x="154" y="196" text-anchor="end">GPIO13</text><text x="446" y="196">MISO</text></g><g class="pl-cable" data-i="7"><line x1="168" y1="216" x2="432" y2="216"/><rect class="pl-pin" x="164" y="212" width="8" height="8"/><rect class="pl-pin" x="428" y="212" width="8" height="8"/><text x="154" y="220" text-anchor="end">5V</text><text x="446" y="220">VBUS</text></g><g class="pl-cable" data-i="8"><line x1="168" y1="240" x2="432" y2="240"/><rect class="pl-pin" x="164" y="236" width="8" height="8"/><rect class="pl-pin" x="428" y="236" width="8" height="8"/><text x="154" y="244" text-anchor="end">GND</text><text x="446" y="244">GND</text></g></svg>
+        <figcaption>Plano de cableado · 9 cables, los de la tabla de la guía</figcaption>
+      </figure>
     </article>
   </div>
 </section>
@@ -270,7 +274,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         <p>En el ESP32, puentea con estaño el pad <span class="dato">IN-OUT</span> junto a los USB-C: sin él, el pin 5V no da 5 V. Mira con el multímetro que el <span class="dato">VBUS</span> del MAX3421E no esté unido a su <span class="dato">VCC</span>; en algunas placas lo está y hay que cortar esa pista.</p>
       </li>
       <li>
-        <h3 class="t3">Suelda los cables</h3>
+        <h3 class="t3">Conecta los cables</h3>
         <table class="tabla tabla-cables">
           <caption>Del ESP32-S3 (fila sin TX/RX) al MAX3421E</caption>
           <thead><tr><th scope="col">ESP32-S3</th><th scope="col">MAX3421E</th></tr></thead>
@@ -286,7 +290,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
             <tr><td class="num">GND</td><td>GND</td></tr>
           </tbody>
         </table>
-        <p class="pequeno">Si te equivocas entre CLK y MOSI no pasa nada: el firmware prueba las dos combinaciones al arrancar.</p>
+        <p class="pequeno">Con cables Dupont vale para probarlo; para cerrarlo en la caja plana, suéldalos. Si te equivocas entre CLK y MOSI no pasa nada: el firmware prueba las dos combinaciones al arrancar.</p>
       </li>
       <li>
         <h3 class="t3">Graba, cierra y enchufa</h3>

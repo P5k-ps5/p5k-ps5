@@ -445,3 +445,19 @@ esp-web-install-button { display: block; }
 .grupo-ir { margin-top: auto; }
 .grupo ul { margin-bottom: 12px; }
 @media (max-width: 720px) { .grupo-ir { font-size: 10.5px; letter-spacing: .02em; padding: 0; gap: 8px; } }
+
+/* --- Plano de cableado del montaje con módulos --------------------------------------------------------- */
+.plano { margin: 24px 0 0; border: 1px solid var(--linea-fina); }
+.plano-dibujo { display: block; width: 100%; height: auto; }
+.plano-dibujo .pl-placa { fill: none; stroke: var(--linea-fuerte); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.plano-dibujo .pl-nombre { font: 400 11px var(--mono); letter-spacing: .06em; fill: var(--tenue); }
+.plano-dibujo line { stroke: var(--linea-fuerte); stroke-width: 1; vector-effect: non-scaling-stroke; transition: stroke .2s var(--salida); }
+.plano-dibujo .pl-pin { fill: #000; stroke: rgba(255, 255, 255, .72); stroke-width: 1; vector-effect: non-scaling-stroke; transition: fill .2s var(--salida), stroke .2s; }
+.plano-dibujo text { font: 300 12px var(--mono); fill: #fff; }
+.plano-dibujo .pl-cable:hover line { stroke: #fff; }
+.plano-dibujo .pl-cable:hover .pl-pin { fill: #fff; stroke: #fff; }
+.plano figcaption { padding: 8px 12px; border-top: 1px solid var(--linea-fina); font: 300 12px var(--mono); color: var(--tenue); }
+@media (max-width: 720px) {
+  .plano-dibujo text { font-size: 18px; }
+  .plano-dibujo .pl-nombre { font-size: 15px; }
+}
