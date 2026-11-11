@@ -186,7 +186,6 @@ h1 { font-size: clamp(56px, 9.2vw, 152px); font-weight: 800; line-height: .88; l
 /* --- Aviso ------------------------------------------------------------------------------------------ */
 .aviso { background: var(--senal); color: #000; padding-block: clamp(56px, 8vh, 96px); }
 .aviso-rejilla { display: grid; gap: 20px 64px; }
-@media (min-width: 900px) { .aviso-rejilla { grid-template-columns: 220px minmax(0, 1fr); } }
 .aviso-etiqueta { margin: 6px 0 0; font: 500 12px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .aviso h2 { font-size: clamp(28px, 3.4vw, 48px); line-height: 1.04; max-width: 24ch; }
 .aviso p { margin-top: 20px; font-size: 18px; max-width: 70ch; }

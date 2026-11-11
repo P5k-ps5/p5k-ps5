@@ -15,12 +15,12 @@
 <link rel="preload" href="fuentes/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fuentes/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="modelo/dualsense.bin" as="fetch" crossorigin>
-<link rel="stylesheet" href="estilo.css?v=27">
+<link rel="stylesheet" href="estilo.css?v=28">
 <script>document.documentElement.classList.replace("sin-js", "con-js")</script>
 <script type="importmap">{"imports": {"three": "./vendor/three.module.min.js"}}</script>
-<script src="app.js?v=27" defer></script>
-<script type="module" src="escena.js?v=27"></script>
-<script type="module" src="visor-caja.js?v=27"></script>
+<script src="app.js?v=28" defer></script>
+<script type="module" src="escena.js?v=28"></script>
+<script type="module" src="visor-caja.js?v=28"></script>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
 <body>
@@ -84,8 +84,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <div class="parada" data-parada="1" id="funciones">
       <h2>Dispara como tú quieras.</h2>
       <dl class="ficha-oscura">
-        <div><dt>Anti-recoil <span class="offline">Solo sin conexión</span></dt><dd>Baja el stick derecho mientras disparas con R2, con la fuerza que eliges. Puede cambiar durante la ráfaga.</dd></div>
-        <div><dt>Ayuda al apuntado <span class="offline">Solo sin conexión</span></dt><dd>Con L2, círculos o temblores diminutos para que la ayuda del propio juego no se suelte.</dd></div>
+        <div><dt>Anti-recoil</dt><dd>Baja el stick derecho mientras disparas con R2, con la fuerza que eliges. Puede cambiar durante la ráfaga.</dd></div>
+        <div><dt>Ayuda al apuntado</dt><dd>Con L2, círculos o temblores diminutos para que la ayuda del propio juego no se suelte.</dd></div>
         <div><dt>Recorrido</dt><dd>El tramo inicial que no cuenta y desde dónde cuenta como a fondo. O a fondo al rozar.</dd></div>
       </dl>
     </div>
@@ -102,7 +102,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       <dl class="ficha-oscura">
         <div><dt>Reasignar</dt><dd>Qué recibe la consola al pulsar cada botón. Con pulsación larga, una cosa al tocar y otra al mantener.</dd></div>
         <div><dt>Turbo</dt><dd>Mientras lo mantienes, se pulsa y se suelta solo, a la velocidad que eliges.</dd></div>
-        <div><dt>Macros</dt><dd>Una secuencia de botones con su disparador. Dropshot y jumpshot vienen hechas <span class="offline">Solo sin conexión</span></dd></div>
+        <div><dt>Macros</dt><dd>Una secuencia de botones con su disparador. Dropshot y jumpshot vienen hechas</dd></div>
       </dl>
     </div>
     <div class="parada" data-parada="4">
@@ -155,7 +155,6 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 <aside class="aviso" aria-labelledby="t-aviso">
   <div class="ancho aviso-rejilla">
-    <p class="aviso-etiqueta">Solo sin conexión</p>
     <div>
       <h2 id="t-aviso">Anti-recoil y ayuda al apuntado: solo en campaña, zombis o contra bots.</h2>
       <p>La app lo dice tal cual: «En partidas online es hacer trampas y el anti-trampas lo detecta». Usarlas online puede costarte la cuenta, y es responsabilidad tuya. Todo lo demás (sticks, gatillos, botones, perfiles) es personalizar tu propio mando.</p>
