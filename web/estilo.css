@@ -374,7 +374,7 @@ esp-web-install-button { display: block; }
 
 /* Móviles bajos (Safari con sus barras deja unos 660 px): el texto se compacta para dejar sitio al mando */
 @media (max-width: 900px) and (max-height: 760px) {
-  h1 { font-size: 48px; }
+  h1 { font-size: 44px; }
   .parada { padding-bottom: 52px; }
   .parada h2 { font-size: 28px; }
   .ficha-oscura { margin-top: 12px; }
@@ -385,5 +385,5 @@ esp-web-install-button { display: block; }
   .portada-pie .acciones { margin-top: 14px; }
   .portada-pie .sello { margin-top: 14px; }
   .cifra span { font-size: 72px; }
-  .parada .h2-pequeno { font-size: 24px; }
+  .parada .h2-pequeno { font-size: 22px; }
 }
