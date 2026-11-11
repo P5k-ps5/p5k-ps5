@@ -205,14 +205,18 @@ async function iniciar() {
     const nav = document.querySelector(".nav")?.offsetHeight || 60;
     let arriba = nav + 8, abajo = alto * 0.5;
     if (par) {
+      // Siempre respecto a la propia parada (offsetTop depende del navegador: en Safari se mide desde el
+      // contenedor de todas las paradas y el mando acababa varias pantallas más abajo)
+      const desde = (el) => el.getBoundingClientRect().top - par.getBoundingClientRect().top;
       if (i === 0) {
         const h1 = par.querySelector("h1"), pie = par.querySelector(".portada-pie");
-        if (h1) arriba = h1.offsetTop + h1.offsetHeight + 8;
-        if (pie) abajo = pie.offsetTop - 8;
+        if (h1) arriba = desde(h1) + h1.offsetHeight + 8;
+        if (pie) abajo = desde(pie) - 8;
       } else {
         const primero = par.firstElementChild;
-        if (primero) abajo = primero.offsetTop - 10;
+        if (primero) abajo = desde(primero) - 10;
       }
+      abajo = Math.min(abajo, alto - 40);
     }
     if (abajo - arriba < alto * 0.22) abajo = arriba + alto * 0.22;
     return (huecos[i] = [arriba, abajo]);
