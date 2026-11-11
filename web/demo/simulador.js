@@ -7,6 +7,25 @@
 (() => {
 "use strict";
 
+// Dentro de la web (iframe), scrollIntoView movería también la página de fuera: aquí solo se desplaza
+// el contenedor que se pueda desplazar dentro de la demo (la fila de pestañas, sobre todo).
+if (window.top !== window) {
+  Element.prototype.scrollIntoView = function () {
+    for (let p = this.parentElement; p; p = p.parentElement) {
+      if (p.scrollWidth > p.clientWidth + 1) {
+        const izq = this.offsetLeft - p.offsetLeft, der = izq + this.offsetWidth;
+        if (izq < p.scrollLeft) p.scrollLeft = izq - 8;
+        else if (der > p.scrollLeft + p.clientWidth) p.scrollLeft = der - p.clientWidth + 8;
+      }
+      if (p.scrollHeight > p.clientHeight + 1 && p !== document.documentElement && p !== document.body) {
+        const arr = this.offsetTop - p.offsetTop, aba = arr + this.offsetHeight;
+        if (arr < p.scrollTop) p.scrollTop = arr - 8;
+        else if (aba > p.scrollTop + p.clientHeight) p.scrollTop = aba - p.clientHeight + 8;
+      }
+    }
+  };
+}
+
 const CLAVE = "DEMO";
 const demoNo = que => "En la demo no se puede " + que + ": hace falta la placa.";
 

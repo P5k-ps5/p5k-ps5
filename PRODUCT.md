@@ -43,7 +43,8 @@ El puente está hecho a medida: perfiles, widgets y ajustes finos que cambian en
 
 ## Brand Commitments
 
-- Identidad: **la misma que NeuroClaude** y las demás apps del usuario (negro, lima `#C8F04D`, Inter Tight y Geist Mono). La referencia es `~/Developer/cabina`.
+- Identidad: **la misma que NeuroClaude** y las demás apps del usuario (negro, lima `#C8F04D`, Inter Tight y Geist Mono). La referencia es `~/Developer/cabina` Vale para la app (placa, escritorio, Mac).
+- **La web pública tiene un mundo visual propio** (decisión del usuario, 11 nov. 2026): no hereda la identidad de NeuroClaude; color, letra y composición se eligen para ella. El momento estrella es un **DualSense 3D en tiempo real** (WebGL). Aspiración declarada: una web de nivel Awwwards.
 - El icono sigue su sistema (baldosa negra y símbolo en lima) con un símbolo propio: el mando.
 - Se conserva de antes la rejilla de teclas grandes: es lo que se toca jugando.
 - La página se usa en el móvil, en el iPad y en el navegador de cualquier ordenador (también Windows); la ventana de la app de Mac tiene que estar a la misma altura.

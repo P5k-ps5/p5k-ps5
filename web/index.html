@@ -1,227 +1,221 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="sin-js">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>p5k-ps5 · Tu DualSense, ajustado a ti, en la PS5</title>
-<meta name="description" content="Una placa abierta que va entre tu DualSense y la PS5: sticks, gatillos, botones, turbo, macros y perfiles, mil veces por segundo, ajustados desde el móvil. Hardware y software libres (GPL-3.0).">
-<meta name="theme-color" content="#000000">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>p5k-ps5 · Tu DualSense. Tus reglas.</title>
+<meta name="description" content="Una placa abierta entre tu DualSense y la PS5: sticks, gatillos, botones, turbo, macros y perfiles, mil veces por segundo, ajustados desde el móvil. Hardware y software libres (GPL-3.0).">
+<meta name="theme-color" content="#0b0b0c">
 <meta property="og:type" content="website">
-<meta property="og:title" content="p5k-ps5 · Tu DualSense, ajustado a ti, en la PS5">
+<meta property="og:title" content="p5k-ps5 · Tu DualSense. Tus reglas.">
 <meta property="og:description" content="Placa abierta entre el mando y la consola. Perfiles, turbo, macros y más, desde el móvil. Fabrícate una.">
 <meta property="og:url" content="https://p5k-ps5.github.io/">
 <meta property="og:image" content="https://p5k-ps5.github.io/img/compartir.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preload" href="fuentes/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilo.css?v=7">
-<script src="app.js?v=5" defer></script>
+<link rel="preload" href="fuentes/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fuentes/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilo.css?v=15">
+<script>document.documentElement.classList.replace("sin-js", "con-js")</script>
+<script type="importmap">{"imports": {"three": "./vendor/three.module.min.js"}}</script>
+<script src="app.js?v=15" defer></script>
+<script type="module" src="escena.js?v=15"></script>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
 <body>
 <!--
-THESIS: el mando es la portada y el índice; se demuestra qué hace la placa tocando el propio DualSense, en vez de la portada de producto con render, tres tarjetas de ventajas y botón de compra.
-OWN-WORLD: el de NeuroClaude y la app del puente: negro puro, línea blanca fina, un solo acento lima #C8F04D para lo vivo, Inter Tight para leer y Geist Mono para datos y etiquetas; cajas de línea sin sombras ni radios; teclas con ON/OFF.
-STORY: el visitante entiende en una pantalla qué hace la placa con cada control, ve el recorrido mando → placa → P5Mate → PS5, elige camino (placa de JLCPCB o módulos) y sigue la guía para fabricarse una.
-FIRST VIEWPORT: a la izquierda el titular, la frase y la píldora blanca «Fabrícate uno»; a la derecha el DualSense a línea, grande, con sus controles marcados, y debajo la tecla de lo que hace el control elegido (R2 de inicio).
-FORM: mapa interactivo del mando, candidato 7 de mi lista; puesta en escena en una sola página; seed a0a35ef6.
+THESIS: la página de producto de hardware de siempre (Apple, Teenage Engineering), hecha sin rebajas: el DualSense en 3D es el protagonista y el scroll lo gira, lo ilumina por zonas y lo desmonta mientras se explica qué hace la placa con cada parte.
+OWN-WORLD: escenario negro de estudio para el mando y papel gris frío para leer; un solo naranja de señal (#FF5B1F) para lo que la placa toca; Schibsted Grotesk enorme y apretada para titulares, Martian Mono para fichas, etiquetas y datos, en filas con línea fina como una hoja técnica.
+STORY: quien llega por el QR entiende en la primera pantalla qué es, ve en el mando qué cambia cada parte, toca la app en la demo, elige camino (placa de JLCPCB o módulos), sigue la guía y graba el firmware desde la web.
+FIRST VIEWPORT: escenario negro a pantalla completa; a la izquierda «Tu DualSense. Tus reglas.» a 9vw con la frase, la píldora naranja «Fabrícate uno» y «Pruébala»; a la derecha el DualSense 3D blanco en tres cuartos, flotando. En el móvil, titular arriba y el mando debajo.
+FORM: canon elegido por el usuario (la web de producto tecnológico), con el listón de Apple y Teenage Engineering; tirada de dirección 68f02a6b (asignada «La caja del producto», descartada por el usuario a favor del canon).
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-<header class="cabecera">
-  <a class="marca" href="#" aria-label="p5k-ps5, inicio">
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M7.2 5h9.6c2.8 0 4.8 2 5.2 4.8l.9 5.8c.4 2.6-1.3 4.4-3.3 4.4-1.4 0-2.4-.8-3.2-2-1-1.6-2.4-2.6-4.4-2.6s-3.4 1-4.4 2.6c-.8 1.2-1.8 2-3.2 2-2 0-3.7-1.8-3.3-4.4l.9-5.8C2.4 7 4.4 5 7.2 5ZM6.7 7.8v2H4.7v1.9h2v2h1.9v-2h2V9.8h-2v-2H6.7Zm9.1 2.9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm2.6-3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>
+<header class="nav">
+  <a class="marca" href="#inicio" aria-label="p5k-ps5, inicio">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M7.2 5h9.6c2.8 0 4.8 2 5.2 4.8l.9 5.8c.4 2.6-1.3 4.4-3.3 4.4-1.4 0-2.4-.8-3.2-2-1-1.6-2.4-2.6-4.4-2.6s-3.4 1-4.4 2.6c-.8 1.2-1.8 2-3.2 2-2 0-3.7-1.8-3.3-4.4l.9-5.8C2.4 7 4.4 5 7.2 5ZM6.7 7.8v2H4.7v1.9h2v2h1.9v-2h2V9.8h-2v-2H6.7Zm9.1 2.9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm2.6-3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>
     <span>p5k-ps5</span>
   </a>
-  <nav class="menu" aria-label="Secciones">
+  <nav class="nav-menu" aria-label="Secciones">
     <a href="#funciones">Funciones</a>
     <a href="#demo">Demo</a>
-    <a href="#recorrido">Cómo funciona</a>
+    <a href="#como">Cómo funciona</a>
+    <a href="#hardware">Hardware</a>
     <a href="#fabricar">Fabricar</a>
-    <a href="#instalar">Instalar</a>
-    <a class="externo" href="https://github.com/p5k-ps5/p5k-ps5">GitHub</a>
+    <a href="https://github.com/p5k-ps5/p5k-ps5" class="nav-gh">GitHub</a>
   </nav>
+  <a class="boton boton-nav" href="#instalar">Instalar</a>
 </header>
 
 <main id="contenido">
 
-<section class="portada" id="funciones" aria-labelledby="titular">
-  <div class="portada-texto">
-    <h1 id="titular">Tu DualSense, ajustado a&nbsp;ti, en la PS5.</h1>
-    <p class="entrada">p5k-ps5 es una placa abierta que va entre tu mando y la consola. Aplica tu perfil (sticks, gatillos, botones, turbo y macros) mil veces por segundo, y se maneja desde el móvil, sin ordenador.</p>
-    <div class="acciones">
-      <a class="pildora" href="#fabricar">Fabrícate uno</a>
-      <a class="enlace-dato" href="https://github.com/p5k-ps5/p5k-ps5">Código y planos en GitHub</a>
-    </div>
-    <p class="nota-libre"><span class="estado estado-ok"><i aria-hidden="true"></i>Montaje con módulos probado con PS5</span><span>Hardware y software libres · GPL-3.0</span></p>
+<!-- El escenario: el mando 3D fijo mientras pasan las paradas -->
+<section class="escenario" id="inicio" aria-label="El mando, parte a parte">
+  <div class="escenario-fijo">
+    <canvas class="lienzo" aria-hidden="true"></canvas>
+    <img class="mando-fijo" src="img/mando-3d.png" width="1600" height="1066" alt="El DualSense en 3D, blanco y negro, visto en tres cuartos.">
+    <ol class="indice-paradas" aria-label="Paradas">
+      <li><a href="#inicio" data-ir-parada="0">Inicio</a></li>
+      <li><a href="#funciones" data-ir-parada="1">Gatillos</a></li>
+      <li><a href="#funciones" data-ir-parada="2">Sticks</a></li>
+      <li><a href="#funciones" data-ir-parada="3">Botones</a></li>
+      <li><a href="#funciones" data-ir-parada="4">Perfiles</a></li>
+      <li><a href="#funciones" data-ir-parada="5">Por dentro</a></li>
+    </ol>
   </div>
-
-  <div class="mapa" data-mapa>
-    <p class="mapa-ayuda" id="mapa-ayuda">Toca una parte del mando</p>
-    <div class="mando" role="group" aria-labelledby="mapa-ayuda">
-      <svg class="mando-dibujo" viewBox="0 0 640 400" aria-hidden="true" focusable="false">
-        <g class="gatillos">
-          <path data-z="l2" d="M150 44c0-8 6-14 14-14h58c8 0 14 6 14 14v6H150z"/>
-          <path data-z="r2" d="M404 44c0-8 6-14 14-14h58c8 0 14 6 14 14v6H404z"/>
-          <path data-z="r1" d="M138 66c4-8 12-12 22-12h80c8 0 12 4 12 10v6H138z"/>
-          <path data-z="r1" d="M388 64c0-6 4-10 12-10h80c10 0 18 4 22 12l-2 4H388z"/>
-        </g>
-        <path class="cuerpo" d="M168 84c42-14 92-18 152-18s110 4 152 18c48 14 76 46 94 96l34 120c12 45-10 72-44 72-28 0-44-16-58-38l-32-50c-10-14-22-20-38-20H212c-16 0-28 6-38 20l-32 50c-14 22-30 38-58 38-34 0-56-27-44-72l34-120c18-50 46-82 94-96z"/>
-        <path class="panel" data-z="panel" d="M232 80h176l-8 90c-2 10-8 14-18 14H258c-10 0-16-4-18-14z"/>
-        <path class="luz" data-z="panel" d="M226 86l10 92M414 86l-10 92"/>
-        <path class="cruceta" data-z="cruceta" d="M158 116h20v24h24v20h-24v24h-20v-24h-24v-20h24z"/>
-        <g class="botones"><circle data-z="botones" cx="472" cy="120" r="13"/><circle data-z="botones" cx="502" cy="150" r="13"/><circle data-z="botones" cx="472" cy="180" r="13"/><circle data-z="botones" cx="442" cy="150" r="13"/></g>
-        <g class="simbolos"><path data-z="botones" d="M472 113l6 11h-12z"/><circle data-z="botones" cx="502" cy="150" r="6"/><path data-z="botones" d="M467 175l10 10M477 175l-10 10"/><path data-z="botones" d="M437 145h10v10h-10z"/></g>
-        <g class="sticks"><circle data-z="izdo" cx="238" cy="226" r="30"/><circle data-z="izdo" cx="238" cy="226" r="19"/><circle data-z="dcho" cx="402" cy="226" r="30"/><circle data-z="dcho" cx="402" cy="226" r="19"/></g>
-        <g class="guias" data-guias></g>
-        <g class="pequenos"><rect x="196" y="96" width="8" height="18" rx="4"/><rect x="436" y="96" width="8" height="18" rx="4"/><circle data-z="ps" cx="320" cy="214" r="9"/><rect x="308" y="234" width="24" height="6" rx="3"/></g>
-      </svg>
-      <!-- Los puntos se colocan con las mismas coordenadas del dibujo (viewBox 640 x 400) -->
-      <button class="punto" type="button" data-zona="r2" style="--x:447;--y:30" aria-pressed="true">R2</button>
-      <button class="punto" type="button" data-zona="l2" style="--x:193;--y:30" aria-pressed="false">L2</button>
-      <button class="punto" type="button" data-zona="r1" style="--x:448;--y:61" aria-pressed="false">L1 y R1</button>
-      <button class="punto" type="button" data-zona="dcho" style="--x:402;--y:226" aria-pressed="false">Stick derecho</button>
-      <button class="punto" type="button" data-zona="izdo" style="--x:238;--y:226" aria-pressed="false">Stick izquierdo</button>
-      <button class="punto" type="button" data-zona="botones" style="--x:472;--y:150" aria-pressed="false">Botones</button>
-      <button class="punto" type="button" data-zona="cruceta" style="--x:168;--y:150" aria-pressed="false">Cruceta</button>
-      <button class="punto" type="button" data-zona="panel" style="--x:320;--y:128" aria-pressed="false">Panel táctil</button>
-      <button class="punto" type="button" data-zona="ps" style="--x:320;--y:214" aria-pressed="false">Combinaciones</button>
+  <div class="paradas">
+    <div class="parada parada-portada" data-parada="0">
+      <h1>Tu DualSense.<br>Tus reglas.</h1>
+      <div class="portada-pie">
+        <p class="entrada">Una placa abierta entre tu mando y la PS5. Aplica tu perfil mil veces por segundo y se maneja desde el móvil.</p>
+        <div class="acciones">
+          <a class="boton" href="#fabricar">Fabrícate uno</a>
+          <a class="enlace" href="#demo">Pruébala <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="sello"><i aria-hidden="true"></i>Montaje con módulos probado con PS5 · GPL-3.0</p>
+      </div>
+      <span class="bajar" aria-hidden="true">Desliza</span>
     </div>
-
-    <div class="tecla-zona" aria-live="polite" data-detalle>
-      <noscript><p class="tz-sin-js">Sin JavaScript no se puede tocar el mando: tienes todas las funciones en la lista de abajo.</p></noscript>
+    <div class="parada" data-parada="1" id="funciones">
+      <h2>Dispara como tú quieras.</h2>
+      <dl class="ficha-oscura">
+        <div><dt>Anti-recoil <span class="offline">Solo sin conexión</span></dt><dd>Baja el stick derecho mientras disparas con R2, con la fuerza que eliges. Puede cambiar durante la ráfaga.</dd></div>
+        <div><dt>Ayuda al apuntado <span class="offline">Solo sin conexión</span></dt><dd>Con L2, círculos o temblores diminutos para que la ayuda del propio juego no se suelte.</dd></div>
+        <div><dt>Recorrido</dt><dd>El tramo inicial que no cuenta y desde dónde cuenta como a fondo. O a fondo al rozar.</dd></div>
+      </dl>
+    </div>
+    <div class="parada" data-parada="2">
+      <h2>Sticks a tu medida.</h2>
+      <dl class="ficha-oscura">
+        <div><dt>Zona muerta</dt><dd>Lo poco que se mueve sin hacer nada. Súbela si la mira se mueve sola.</dd></div>
+        <div><dt>Curva y suavizado</dt><dd>La sensibilidad sube poco a poco cerca del tope; el suavizado quita tirones.</dd></div>
+        <div><dt>Alcance e intercambio</dt><dd>Hasta dónde llega a la consola, o el izquierdo haciendo de derecho.</dd></div>
+      </dl>
+    </div>
+    <div class="parada" data-parada="3">
+      <h2>Cada botón hace lo que digas.</h2>
+      <dl class="ficha-oscura">
+        <div><dt>Reasignar</dt><dd>Qué recibe la consola al pulsar cada botón. Con pulsación larga, una cosa al tocar y otra al mantener.</dd></div>
+        <div><dt>Turbo</dt><dd>Mientras lo mantienes, se pulsa y se suelta solo, a la velocidad que eliges.</dd></div>
+        <div><dt>Macros</dt><dd>Una secuencia de botones con su disparador. Dropshot y jumpshot vienen hechas <span class="offline">Solo sin conexión</span></dd></div>
+      </dl>
+    </div>
+    <div class="parada" data-parada="4">
+      <h2>Un perfil por juego. Un color por perfil.</h2>
+      <dl class="ficha-oscura">
+        <div><dt>Perfiles</dt><dd>Cada uno con todos sus ajustes. Se cambia en un toque desde el móvil.</dd></div>
+        <div><dt>Luz del mando</dt><dd>Cada perfil pone su color en la barra de luz del DualSense.</dd></div>
+        <div><dt>Combinaciones</dt><dd>Enciende o apaga una función sin soltar el mando; la luz destella verde o roja.</dd></div>
+      </dl>
+    </div>
+    <div class="parada" data-parada="5">
+      <p class="cifra"><span>1000</span> informes por segundo</p>
+      <h2 class="h2-pequeno">Por dentro, una placa.</h2>
+      <p class="entrada">El mando no cambia: la placa lee cada informe del DualSense, le aplica tu perfil y lo manda a la consola. Todo pasa en un milisegundo, sin internet y sin ordenador.</p>
+      <a class="enlace" href="#como">Cómo funciona <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
 
-<!-- Sin JavaScript (o para buscadores): todas las funciones en texto -->
-<section class="todas" id="lista-funciones" aria-labelledby="t-todas" data-todas>
-  <h2 id="t-todas" class="t2">Todo lo que ajusta</h2>
-  <div class="todas-rejilla" data-lista></div>
+<section class="seccion oscura demo" id="demo" aria-labelledby="t-demo">
+  <div class="ancho demo-rejilla">
+    <div class="demo-texto">
+      <h2 id="t-demo">Tócala antes de fabricarla.</h2>
+      <p class="entrada">Es la app que la placa sirve a tu móvil, la misma. Aquí va con un mando simulado que juega solo: cambia un ajuste y mira cómo responde.</p>
+      <ul class="saltos" data-saltos aria-label="Ir a una pantalla de la demo">
+        <li><button type="button" data-ir="En vivo" aria-pressed="true"><span class="salto-n">En vivo</span><span class="salto-d">Las teclas que se tocan jugando y el mando en directo.</span></button></li>
+        <li><button type="button" data-ir="Sticks" aria-pressed="false"><span class="salto-n">Sticks</span><span class="salto-d">Zona muerta, curva y suavizado, con su gráfica.</span></button></li>
+        <li><button type="button" data-ir="Anti-recoil" aria-pressed="false"><span class="salto-n">Anti-recoil</span><span class="salto-d">La fuerza durante la ráfaga, paso a paso.</span></button></li>
+        <li><button type="button" data-ir="Perfiles" aria-pressed="false"><span class="salto-n">Perfiles</span><span class="salto-d">Uno por juego, con su color en la luz del mando.</span></button></li>
+      </ul>
+      <a class="enlace demo-completa" href="demo/">Abrir a pantalla completa <span aria-hidden="true">↗</span></a>
+    </div>
+    <figure class="telefono">
+      <div class="telefono-pantalla">
+        <iframe src="demo/#k=demo" title="Demo de la app de p5k-ps5 con un mando simulado" loading="lazy" data-demo></iframe>
+        <a class="demo-captura" href="demo/" aria-label="Abrir la demo de la app">
+          <img src="img/demo-envivo.png" width="390" height="844" alt="La pantalla En vivo de la app: teclas grandes para encender funciones y el mando en directo." loading="lazy">
+          <span class="boton">Abrir la demo</span>
+        </a>
+      </div>
+      <figcaption>Demo con un mando simulado · los cambios no se guardan</figcaption>
+    </figure>
+  </div>
 </section>
 
-<section class="demo" id="demo" aria-labelledby="t-demo">
-  <div class="demo-texto">
-    <h2 id="t-demo" class="t2">Tócala antes de fabricarla</h2>
-    <p class="intro">Esta es la app que la placa sirve a tu móvil, la misma, sin recortes. Aquí va con un mando simulado: cambia un ajuste y mira cómo responde.</p>
-    <ul class="saltos" data-saltos aria-label="Ir a una pantalla de la demo">
-      <li><button type="button" data-ir="En vivo" aria-pressed="true"><span class="salto-n">En vivo</span><span class="salto-d">Las teclas grandes que se tocan jugando y el mando en directo.</span></button></li>
-      <li><button type="button" data-ir="Sticks" aria-pressed="false"><span class="salto-n">Sticks</span><span class="salto-d">Zona muerta, curva y suavizado, con la gráfica de cada uno.</span></button></li>
-      <li><button type="button" data-ir="Anti-recoil" aria-pressed="false"><span class="salto-n">Anti-recoil</span><span class="salto-d">La fuerza durante la ráfaga, paso a paso.</span></button></li>
-      <li><button type="button" data-ir="Perfiles" aria-pressed="false"><span class="salto-n">Perfiles</span><span class="salto-d">Uno por juego, con su color en la luz del mando.</span></button></li>
-    </ul>
-    <a class="enlace-dato" href="demo/">Abrir la demo a pantalla completa ↗</a>
-  </div>
-  <figure class="telefono">
-    <div class="telefono-pantalla">
-      <iframe src="demo/#k=demo" title="Demo de la app de p5k-ps5 con un mando simulado" loading="lazy" data-demo></iframe>
-      <a class="demo-captura" href="demo/" aria-label="Abrir la demo de la app">
-        <img src="img/demo-envivo.png" width="390" height="844" alt="La pantalla En vivo de la app: teclas grandes para encender funciones y el mando en directo." loading="lazy">
-        <span class="demo-abrir">Abrir la demo</span>
-      </a>
-    </div>
-    <figcaption><span class="estado estado-ok"><i aria-hidden="true"></i>Demo</span> mando simulado · los cambios no se guardan</figcaption>
-  </figure>
-</section>
 <aside class="aviso" aria-labelledby="t-aviso">
-  <span class="sin-conexion">Solo sin conexión</span>
-  <h2 id="t-aviso" class="aviso-t">Anti-recoil y ayuda al apuntado</h2>
-  <p>La app lo dice tal cual: «Solo para modos sin conexión (campaña, zombis, partidas contra bots). En partidas online es hacer trampas y el anti-trampas lo detecta.» Usarlas en partidas online puede costarte la cuenta, y es responsabilidad tuya. Todo lo demás (sticks, gatillos, botones, perfiles) es personalización de tu propio mando.</p>
+  <div class="ancho aviso-rejilla">
+    <p class="aviso-etiqueta">Solo sin conexión</p>
+    <div>
+      <h2 id="t-aviso">Anti-recoil y ayuda al apuntado: solo en campaña, zombis o contra bots.</h2>
+      <p>La app lo dice tal cual: «En partidas online es hacer trampas y el anti-trampas lo detecta». Usarlas online puede costarte la cuenta, y es responsabilidad tuya. Todo lo demás (sticks, gatillos, botones, perfiles) es personalizar tu propio mando.</p>
+    </div>
+  </div>
 </aside>
 
-<section class="recorrido" id="recorrido" aria-labelledby="t-recorrido">
-  <h2 id="t-recorrido" class="t2">El recorrido de cada pulsación</h2>
-  <p class="intro">El mando no habla directamente con la consola. Cada informe del DualSense entra en la placa, se transforma con tu perfil y sale hacia la PS5 por el P5Mate.</p>
-
-  <ol class="cadena" aria-label="De tu mando a la consola">
-    <li class="eslabon">
-      <span class="eslabon-n">DualSense</span>
-      <span class="eslabon-d">Tu mando de siempre, por cable USB-C.</span>
-    </li>
-    <li class="eslabon vivo">
-      <span class="eslabon-n">p5k-ps5</span>
-      <span class="eslabon-d">El MAX3421E lee el mando como lo haría la consola. El ESP32-S3 aplica tu perfil y lo envía como un mando de PS4, mil veces por segundo.</span>
-      <span class="eslabon-wifi" aria-label="Además, por WiFi">WiFi → la app en tu móvil</span>
-    </li>
-    <li class="eslabon">
-      <span class="eslabon-n">P5Mate</span>
-      <span class="eslabon-d">Adaptador comercial con licencia. Se encarga de la autenticación que la PS5 exige a cada mando.</span>
-    </li>
-    <li class="eslabon">
-      <span class="eslabon-n">PS5</span>
-      <span class="eslabon-d">Recibe un mando normal con tus ajustes ya aplicados.</span>
-    </li>
-  </ol>
-
-  <div class="dos">
-    <div class="bloque">
-      <h3 class="t3">¿Por qué hace falta el P5Mate?</h3>
-      <p>La PS5 solo acepta mandos que superan un desafío criptográfico que únicamente sabe contestar el chip de un mando oficial. Lo probamos sin adaptador: la placa reenvía ese desafío al DualSense real y la consola lo acepta. Pero cada informe del DualSense va firmado, y en cuanto la placa cambia un solo byte (aunque sea el centro del stick), la PS5 deja de hacerle caso. Por eso los ajustes viajan como mando de PS4 a través del P5Mate.</p>
-    </div>
-    <div class="bloque">
-      <h3 class="t3">Y en el móvil, la misma app</h3>
-      <p>La placa sirve por WiFi la misma app que se usa con el ordenador. La primera vez abre su propia red, <span class="dato">p5k-ps5 XXXX</span>, y el móvil muestra la app al conectarse. Le dices cuál es tu WiFi y desde entonces está en <span class="dato">http://puente.local</span>. Sin internet: todo pasa en tu casa.</p>
+<section class="seccion como" id="como" aria-labelledby="t-como">
+  <div class="ancho">
+    <h2 id="t-como">El mando no habla con la consola. Habla con la placa.</h2>
+    <ol class="cadena" aria-label="De tu mando a la consola">
+      <li class="eslabon"><span class="eslabon-n">DualSense</span><span class="eslabon-d">Tu mando de siempre, por cable USB-C.</span></li>
+      <li class="eslabon eslabon-placa"><span class="eslabon-n">p5k-ps5</span><span class="eslabon-d">El MAX3421E lee el mando como lo haría la consola. El ESP32-S3 aplica tu perfil y lo envía como un mando de PS4.</span><span class="eslabon-dato">1000 informes por segundo</span></li>
+      <li class="eslabon"><span class="eslabon-n">P5Mate</span><span class="eslabon-d">Adaptador comercial con licencia: contesta la autenticación que la PS5 exige a cada mando.</span></li>
+      <li class="eslabon"><span class="eslabon-n">PS5</span><span class="eslabon-d">Recibe un mando normal con tus ajustes ya aplicados.</span></li>
+    </ol>
+    <div class="dos">
+      <div>
+        <h3>¿Por qué hace falta el P5Mate?</h3>
+        <p>La PS5 solo acepta mandos que superan un desafío criptográfico que únicamente sabe contestar el chip de un mando oficial. Lo probamos sin adaptador: la placa reenvía ese desafío al DualSense real y la consola lo acepta. Pero cada informe del DualSense va firmado, y en cuanto la placa cambia un solo byte, la PS5 deja de hacerle caso. Por eso los ajustes viajan como mando de PS4 a través del P5Mate.</p>
+      </div>
+      <div>
+        <h3>La app vive en la placa</h3>
+        <p>La placa la sirve por WiFi. La primera vez abre su propia red, <span class="dato">p5k-ps5 XXXX</span>, y el móvil muestra la app al conectarse. Le dices cuál es tu WiFi y desde entonces está en <span class="dato">http://puente.local</span>. Sin internet: todo pasa en tu casa.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="hardware" id="hardware" aria-labelledby="t-hardware">
-  <h2 id="t-hardware" class="t2">Dos maneras de tener uno</h2>
-  <p class="intro">El firmware es el mismo en las dos: los pines son idénticos.</p>
-
-  <div class="caminos">
-    <article class="camino">
-      <header class="camino-cab">
-        <h3 class="t3">La placa p5k-ps5</h3>
-        <span class="estado estado-pendiente"><i aria-hidden="true"></i>Diseñada, sin fabricar todavía</span>
-      </header>
-      <figure class="render">
-        <img src="img/placa-arriba.png" width="1200" height="660" alt="Render de la placa p5k-ps5 vista desde arriba: el módulo ESP32-S3 en el centro con la antena saliendo por el borde superior, un USB-C en cada extremo y los conectores de pantalla abajo." loading="lazy">
-        <figcaption class="es-render">Render 3D del diseño en KiCad</figcaption>
-      </figure>
-      <dl class="ficha">
-        <div><dt>Tamaño</dt><dd>62 × 30 mm</dd></div>
-        <div><dt>Cerebro</dt><dd>ESP32-S3-WROOM-1 N16R8</dd></div>
-        <div><dt>Lector del mando</dt><dd>MAX3421E</dd></div>
-        <div><dt>Conectores</dt><dd>USB-C consola · USB-C mando</dd></div>
-        <div><dt>Ampliable</dt><dd>OLED I2C · pantalla SPI táctil</dd></div>
-        <div><dt>Montaje</dt><dd>JLCPCB, sin soldar nada</dd></div>
-      </dl>
-      <p>Todo en una placa que llega montada: la grabas y la enchufas. Da corriente al mando con arranque suave, trae botones, LED y puntos de prueba, y lleva grabado por detrás el QR de esta web.</p>
-      <figure class="render render-pequeno">
-        <img src="img/placa-abajo.png" width="1200" height="660" alt="Render de la cara de abajo de la placa, con el código QR de p5k-ps5.github.io y la licencia GPL-3.0 grabados." loading="lazy">
-        <figcaption>Render 3D · la cara de abajo, con el QR.</figcaption>
-      </figure>
-    </article>
-
-    <article class="camino">
-      <header class="camino-cab">
-        <h3 class="t3">Con dos módulos</h3>
-        <span class="estado estado-ok"><i aria-hidden="true"></i>Probado con PS5</span>
-      </header>
-      <figure class="render">
-        <img src="img/caja.png" width="1200" height="660" alt="Vista 3D de la caja plana abierta: el ESP32-S3 encima, el MAX3421E debajo y los cables entre los dos." loading="lazy">
-        <figcaption class="es-render">Render 3D de la caja plana, con las dos placas</figcaption>
-      </figure>
-      <dl class="ficha">
-        <div><dt>Piezas</dt><dd>YD-ESP32-S3 N16R8 + MAX3421E mini</dd></div>
-        <div><dt>Coste</dt><dd>unos 26 € en Amazon (nov. 2026)</dd></div>
-        <div><dt>Conectores</dt><dd>USB-C consola · USB-A mando</dd></div>
-        <div><dt>Caja</dt><dd>68 × 32 × 18 mm, impresa en 3D</dd></div>
-        <div><dt>Montaje</dt><dd>9 cables, soldados o Dupont</dd></div>
-      </dl>
-      <p>Es el montaje con el que se ha desarrollado y probado todo, todavía con cables Dupont. Para probar bastan los Dupont; para cerrarlo en la caja plana hay que soldarlos. Las piezas están en cualquier tienda y la caja se imprime en una tarde.</p>
-      <figure class="plano">
-        <svg class="plano-dibujo" viewBox="0 0 600 300" aria-hidden="true" focusable="false"><rect class="pl-placa" x="8" y="20" width="160" height="260"/><rect class="pl-placa" x="432" y="20" width="160" height="260"/><text class="pl-nombre" x="20" y="270">ESP32-S3</text><text class="pl-nombre" x="580" y="270" text-anchor="end">MAX3421E</text><g class="pl-cable" data-i="0"><line x1="168" y1="48" x2="432" y2="48"/><rect class="pl-pin" x="164" y="44" width="8" height="8"/><rect class="pl-pin" x="428" y="44" width="8" height="8"/><text x="154" y="52" text-anchor="end">3V3</text><text x="446" y="52">VCC</text></g><g class="pl-cable" data-i="1"><line x1="168" y1="72" x2="432" y2="72"/><rect class="pl-pin" x="164" y="68" width="8" height="8"/><rect class="pl-pin" x="428" y="68" width="8" height="8"/><text x="154" y="76" text-anchor="end">GPIO8</text><text x="446" y="76">MAX_RST</text></g><g class="pl-cable" data-i="2"><line x1="168" y1="96" x2="432" y2="96"/><rect class="pl-pin" x="164" y="92" width="8" height="8"/><rect class="pl-pin" x="428" y="92" width="8" height="8"/><text x="154" y="100" text-anchor="end">GPIO9</text><text x="446" y="100">INT</text></g><g class="pl-cable" data-i="3"><line x1="168" y1="120" x2="432" y2="120"/><rect class="pl-pin" x="164" y="116" width="8" height="8"/><rect class="pl-pin" x="428" y="116" width="8" height="8"/><text x="154" y="124" text-anchor="end">GPIO10</text><text x="446" y="124">SS</text></g><g class="pl-cable" data-i="4"><line x1="168" y1="144" x2="432" y2="144"/><rect class="pl-pin" x="164" y="140" width="8" height="8"/><rect class="pl-pin" x="428" y="140" width="8" height="8"/><text x="154" y="148" text-anchor="end">GPIO11</text><text x="446" y="148">CLK</text></g><g class="pl-cable" data-i="5"><line x1="168" y1="168" x2="432" y2="168"/><rect class="pl-pin" x="164" y="164" width="8" height="8"/><rect class="pl-pin" x="428" y="164" width="8" height="8"/><text x="154" y="172" text-anchor="end">GPIO12</text><text x="446" y="172">MOSI</text></g><g class="pl-cable" data-i="6"><line x1="168" y1="192" x2="432" y2="192"/><rect class="pl-pin" x="164" y="188" width="8" height="8"/><rect class="pl-pin" x="428" y="188" width="8" height="8"/><text x="154" y="196" text-anchor="end">GPIO13</text><text x="446" y="196">MISO</text></g><g class="pl-cable" data-i="7"><line x1="168" y1="216" x2="432" y2="216"/><rect class="pl-pin" x="164" y="212" width="8" height="8"/><rect class="pl-pin" x="428" y="212" width="8" height="8"/><text x="154" y="220" text-anchor="end">5V</text><text x="446" y="220">VBUS</text></g><g class="pl-cable" data-i="8"><line x1="168" y1="240" x2="432" y2="240"/><rect class="pl-pin" x="164" y="236" width="8" height="8"/><rect class="pl-pin" x="428" y="236" width="8" height="8"/><text x="154" y="244" text-anchor="end">GND</text><text x="446" y="244">GND</text></g></svg>
-        <figcaption>Plano de cableado · 9 cables, los de la tabla de la guía</figcaption>
-      </figure>
-    </article>
+<section class="seccion hardware" id="hardware" aria-labelledby="t-hardware">
+  <div class="ancho">
+    <h2 id="t-hardware">Dos maneras de tener uno. El mismo firmware.</h2>
+    <div class="caminos">
+      <article class="camino">
+        <figure class="camino-img"><img src="img/placa-arriba.png" width="1200" height="660" alt="Render de la placa p5k-ps5 vista desde arriba: el módulo ESP32-S3 en el centro con la antena por el borde de arriba, un USB-C en cada extremo." loading="lazy"><figcaption>Render 3D del diseño en KiCad</figcaption></figure>
+        <div class="camino-cab"><h3>La placa p5k-ps5</h3><span class="estado pendiente"><i aria-hidden="true"></i>Diseñada, sin fabricar</span></div>
+        <p>Todo en una placa de 62 × 30 mm que llega montada de JLCPCB: la grabas y la enchufas. Da corriente al mando, trae botones, LED y puntos de prueba, y lleva grabado por detrás el QR de esta web.</p>
+        <dl class="ficha">
+          <div><dt>Tamaño</dt><dd>62 × 30 mm</dd></div>
+          <div><dt>Cerebro</dt><dd>ESP32-S3-WROOM-1 N16R8</dd></div>
+          <div><dt>Lector del mando</dt><dd>MAX3421E</dd></div>
+          <div><dt>Conectores</dt><dd>USB-C consola · USB-C mando</dd></div>
+          <div><dt>Ampliable</dt><dd>OLED I2C · pantalla SPI táctil</dd></div>
+          <div><dt>Montaje</dt><dd>JLCPCB, sin soldar nada</dd></div>
+        </dl>
+      </article>
+      <article class="camino">
+        <figure class="camino-img"><img src="img/caja.png" width="1200" height="660" alt="Vista 3D de la caja plana abierta: el ESP32-S3 encima, el MAX3421E debajo y los cables entre los dos." loading="lazy"><figcaption>Render 3D de la caja plana, con las dos placas</figcaption></figure>
+        <div class="camino-cab"><h3>Con dos módulos</h3><span class="estado ok"><i aria-hidden="true"></i>Probado con PS5</span></div>
+        <p>El montaje con el que se ha desarrollado y probado todo, todavía con cables Dupont. Las piezas están en cualquier tienda; para cerrarlo en la caja plana, suelda los cables.</p>
+        <dl class="ficha">
+          <div><dt>Piezas</dt><dd>YD-ESP32-S3 N16R8 + MAX3421E mini</dd></div>
+          <div><dt>Coste</dt><dd>unos 26 € (nov. 2026)</dd></div>
+          <div><dt>Conectores</dt><dd>USB-C consola · USB-A mando</dd></div>
+          <div><dt>Caja</dt><dd>68 × 32 × 18 mm, impresa en 3D</dd></div>
+          <div><dt>Montaje</dt><dd>9 cables, soldados o Dupont</dd></div>
+        </dl>
+        <figure class="plano">
+          <svg class="plano-dibujo" viewBox="0 0 600 300" aria-hidden="true" focusable="false"><rect class="pl-placa" x="8" y="20" width="160" height="260"/><rect class="pl-placa" x="432" y="20" width="160" height="260"/><text class="pl-nombre" x="20" y="270">ESP32-S3</text><text class="pl-nombre" x="580" y="270" text-anchor="end">MAX3421E</text><g class="pl-cable" data-i="0"><line x1="168" y1="48" x2="432" y2="48"/><rect class="pl-pin" x="164" y="44" width="8" height="8"/><rect class="pl-pin" x="428" y="44" width="8" height="8"/><text x="154" y="52" text-anchor="end">3V3</text><text x="446" y="52">VCC</text></g><g class="pl-cable" data-i="1"><line x1="168" y1="72" x2="432" y2="72"/><rect class="pl-pin" x="164" y="68" width="8" height="8"/><rect class="pl-pin" x="428" y="68" width="8" height="8"/><text x="154" y="76" text-anchor="end">GPIO8</text><text x="446" y="76">MAX_RST</text></g><g class="pl-cable" data-i="2"><line x1="168" y1="96" x2="432" y2="96"/><rect class="pl-pin" x="164" y="92" width="8" height="8"/><rect class="pl-pin" x="428" y="92" width="8" height="8"/><text x="154" y="100" text-anchor="end">GPIO9</text><text x="446" y="100">INT</text></g><g class="pl-cable" data-i="3"><line x1="168" y1="120" x2="432" y2="120"/><rect class="pl-pin" x="164" y="116" width="8" height="8"/><rect class="pl-pin" x="428" y="116" width="8" height="8"/><text x="154" y="124" text-anchor="end">GPIO10</text><text x="446" y="124">SS</text></g><g class="pl-cable" data-i="4"><line x1="168" y1="144" x2="432" y2="144"/><rect class="pl-pin" x="164" y="140" width="8" height="8"/><rect class="pl-pin" x="428" y="140" width="8" height="8"/><text x="154" y="148" text-anchor="end">GPIO11</text><text x="446" y="148">CLK</text></g><g class="pl-cable" data-i="5"><line x1="168" y1="168" x2="432" y2="168"/><rect class="pl-pin" x="164" y="164" width="8" height="8"/><rect class="pl-pin" x="428" y="164" width="8" height="8"/><text x="154" y="172" text-anchor="end">GPIO12</text><text x="446" y="172">MOSI</text></g><g class="pl-cable" data-i="6"><line x1="168" y1="192" x2="432" y2="192"/><rect class="pl-pin" x="164" y="188" width="8" height="8"/><rect class="pl-pin" x="428" y="188" width="8" height="8"/><text x="154" y="196" text-anchor="end">GPIO13</text><text x="446" y="196">MISO</text></g><g class="pl-cable" data-i="7"><line x1="168" y1="216" x2="432" y2="216"/><rect class="pl-pin" x="164" y="212" width="8" height="8"/><rect class="pl-pin" x="428" y="212" width="8" height="8"/><text x="154" y="220" text-anchor="end">5V</text><text x="446" y="220">VBUS</text></g><g class="pl-cable" data-i="8"><line x1="168" y1="240" x2="432" y2="240"/><rect class="pl-pin" x="164" y="236" width="8" height="8"/><rect class="pl-pin" x="428" y="236" width="8" height="8"/><text x="154" y="244" text-anchor="end">GND</text><text x="446" y="244">GND</text></g></svg>
+          <figcaption>Plano de cableado · 9 cables</figcaption>
+        </figure>
+      </article>
+    </div>
   </div>
 </section>
 
-<section class="fabricar" id="fabricar" aria-labelledby="t-fabricar">
-  <h2 id="t-fabricar" class="t2">Fabrícate uno</h2>
-
+<section class="seccion fabricar" id="fabricar" aria-labelledby="t-fabricar">
+  <div class="ancho">
+    <h2 id="t-fabricar">Fabrícate uno.</h2>
   <div class="pestanas" role="tablist" aria-label="Camino">
     <button class="pestana" role="tab" id="p-placa" aria-controls="g-placa" aria-selected="true" type="button">La placa (JLCPCB)</button>
     <button class="pestana" role="tab" id="p-modulos" aria-controls="g-modulos" aria-selected="false" type="button" tabindex="-1">Con módulos</button>
@@ -298,106 +292,113 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       </li>
     </ol>
   </div>
+  </div>
 </section>
 
-<section class="instalar" id="instalar" aria-labelledby="t-instalar">
-  <div class="instalar-texto">
-    <h2 id="t-instalar" class="t2">Instálalo desde aquí</h2>
-    <p class="intro">El firmware se graba desde el navegador, por USB. No hay que instalar nada ni compilar.</p>
-    <ol class="mini-pasos">
-      <li>Conecta la placa al ordenador: el USB-C <span class="dato">CONSOLA</span> de la placa p5k-ps5, o el <span class="dato">COM</span> del ESP32 en el montaje con módulos.</li>
-      <li>Pulsa <b>Instalar en la placa</b> y elige su puerto en la lista.</li>
-      <li>Al terminar, enchúfala al P5Mate y conéctate desde el móvil a la red <span class="dato">p5k-ps5 XXXX</span>.</li>
-    </ol>
-  </div>
-  <div class="instalador">
-    <div class="instalador-cab">
-      <span class="tz-control">Firmware</span>
-      <span class="estado estado-pendiente"><i aria-hidden="true"></i>Por probar</span>
+<section class="seccion oscura instalar" id="instalar" aria-labelledby="t-instalar">
+  <div class="ancho instalar-rejilla">
+    <div>
+      <h2 id="t-instalar">Instálalo desde el navegador.</h2>
+      <p class="entrada">Sin instalar nada ni compilar: conecta la placa por USB y pulsa.</p>
+      <ol class="mini-pasos">
+        <li>Conecta la placa al ordenador: el USB-C <span class="dato">CONSOLA</span> de la placa p5k-ps5, o el <span class="dato">COM</span> del ESP32 en el montaje con módulos.</li>
+        <li>Pulsa <b>Instalar en la placa</b> y elige su puerto en la lista.</li>
+        <li>Enchúfala al P5Mate y conéctate desde el móvil a la red <span class="dato">p5k-ps5 XXXX</span>.</li>
+      </ol>
     </div>
-    <dl class="ficha ficha-firmware">
-      <div><dt>Versión</dt><dd>2026.11.11</dd></div>
-      <div><dt>Compilado</dt><dd>11 nov. 2026 · ESP-IDF 5.5</dd></div>
-      <div><dt>Chip</dt><dd>ESP32-S3 · 16 MB</dd></div>
-      <div><dt>Tamaño</dt><dd>1,9 MB</dd></div>
-    </dl>
-    <div class="instalador-accion">
+    <div class="instalador">
+      <div class="instalador-cab"><span>Firmware 2026.11.11</span><span class="estado pendiente"><i aria-hidden="true"></i>Por probar</span></div>
+      <dl class="ficha ficha-clara">
+        <div><dt>Chip</dt><dd>ESP32-S3 · 16 MB</dd></div>
+        <div><dt>Tamaño</dt><dd>1,9 MB</dd></div>
+        <div><dt>Compilado</dt><dd>ESP-IDF 5.5</dd></div>
+        <div><dt>Licencia</dt><dd>GPL-3.0</dd></div>
+      </dl>
       <esp-web-install-button manifest="firmware/manifest.json">
-        <button slot="activate" class="pildora" type="button">Instalar en la placa</button>
-        <p slot="unsupported" class="instalador-no"><b>Este navegador no puede hablar con la placa por USB.</b> Ábrelo en un ordenador con Chrome o Edge (Safari y Firefox no lo permiten, ni los móviles).</p>
+        <button slot="activate" class="boton boton-grande" type="button">Instalar en la placa</button>
+        <p slot="unsupported" class="instalador-no"><b>Este navegador no puede hablar con la placa por USB.</b> Ábrelo en un ordenador con Chrome o Edge (Safari, Firefox y los móviles no lo permiten).</p>
         <p slot="not-allowed" class="instalador-no"><b>Hace falta abrir la página con https.</b> Entra por https://p5k-ps5.github.io.</p>
       </esp-web-install-button>
-      <p class="instalador-nota">Compilado de este repositorio, con el mismo código que se ha jugado con la PS5; aún no se ha grabado así en una placa. Graba el arranque, la tabla de particiones y la app: tu WiFi y tus perfiles se quedan.</p>
+      <p class="instalador-nota">Compilado de este repositorio, con el mismo código que se ha jugado con la PS5; aún no se ha grabado así en una placa. Tu WiFi y tus perfiles se quedan.</p>
+      <details class="instalador-ayuda">
+        <summary>No aparece la placa en la lista</summary>
+        <p>Si ya llevaba firmware, mantén pulsado <span class="dato">BOOT</span>, pulsa una vez <span class="dato">RST</span> y suelta <span class="dato">BOOT</span>. Prueba otro cable: muchos USB-C solo cargan. En Windows, con el montaje de módulos, puede hacer falta el controlador CH343.</p>
+      </details>
     </div>
-    <details class="instalador-ayuda">
-      <summary>No aparece la placa en la lista</summary>
-      <p>Si ya llevaba firmware, ponla en modo grabación: mantén pulsado <span class="dato">BOOT</span>, pulsa una vez <span class="dato">RST</span> y suelta <span class="dato">BOOT</span>. Prueba otro cable: muchos USB-C solo cargan. En Windows con el montaje de módulos, puede hacer falta el controlador CH343 del fabricante.</p>
-    </details>
   </div>
 </section>
-<section class="estado-proyecto" id="estado" aria-labelledby="t-estado">
-  <h2 id="t-estado" class="t2">Lo que funciona y lo que no</h2>
-  <p class="intro">Así está cada parte hoy. «Probado» quiere decir jugado con la PS5; «Hecho», terminado y revisado, pero sin probar a fondo.</p>
-  <ul class="tablero">
-    <li class="pieza-estado on"><span class="pe-estado">Probado</span><h3 class="pe-n">Montaje con módulos</h3><p>Jugado con la PS5 a través del P5Mate: perfiles, anti-recoil y todo lo demás.</p></li>
-    <li class="pieza-estado hecho"><span class="pe-estado">Hecho</span><h3 class="pe-n">App por WiFi</h3><p>La placa abre su red, el móvil la muestra al conectarse y luego vive en <span class="dato">puente.local</span>.</p></li>
-    <li class="pieza-estado hecho"><span class="pe-estado">Hecho</span><h3 class="pe-n">Actualizar por WiFi</h3><p>Con vuelta atrás: si el firmware nuevo falla en los primeros 30 s, la placa vuelve sola al anterior.</p></li>
-    <li class="pieza-estado espera"><span class="pe-estado">Por probar</span><h3 class="pe-n">La placa p5k-ps5</h3><p>Diseñada y revisada con KiCad, sin fabricar todavía. Si la pides, cuéntalo en GitHub.</p></li>
-    <li class="pieza-estado espera"><span class="pe-estado">Por probar</span><h3 class="pe-n">Instalar desde la web</h3><p>El firmware de hoy, compilado desde este repositorio. Falta grabarlo así en una placa de verdad.</p></li>
-    <li class="pieza-estado no"><span class="pe-estado">No</span><h3 class="pe-n">Audio por el jack del mando</h3><p>El MAX3421E no da abasto: usa auriculares en la PS5 o un adaptador de USB-C a jack.</p></li>
-  </ul>
-</section>
-<section class="repo" id="codigo" aria-labelledby="t-repo">
-  <h2 id="t-repo" class="t2">Todo el código, abierto</h2>
-  <p class="intro">Un solo repositorio con licencia GPL-3.0: el firmware, el motor, las apps, la placa y la caja. Cópialo, cámbialo y comparte lo que mejores.</p>
-  <div class="repo-dos">
-    <ul class="arbol" aria-label="Carpetas del repositorio">
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/main"><span class="arbol-n">main/</span><span class="arbol-d">Firmware del ESP32-S3 en C con ESP-IDF: el mando hacia la consola, el lector del DualSense, la WiFi y la app.</span></a></li>
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/components/motor"><span class="arbol-n">components/motor/</span><span class="arbol-d">El motor en Rust que aplica tu perfil. Es el mismo código en la placa y en el escritorio.</span></a></li>
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/escritorio"><span class="arbol-n">escritorio/</span><span class="arbol-d">App de macOS y Windows (Tauri): graba la placa y puede hacer de cerebro por cable.</span></a></li>
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/app"><span class="arbol-n">app/</span><span class="arbol-d">App nativa de Mac en SwiftUI y la página que se ve en el móvil.</span></a></li>
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/placa"><span class="arbol-n">placa/</span><span class="arbol-d">La placa en KiCad, generada por scripts desde un solo archivo, con los Gerber, la BOM y la CPL.</span></a></li>
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/caja"><span class="arbol-n">caja/</span><span class="arbol-d">La caja imprimible, paramétrica, con su visor 3D.</span></a></li>
-      <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/web"><span class="arbol-n">web/</span><span class="arbol-d">Esta página.</span></a></li>
+
+<section class="seccion estado-seccion" id="estado" aria-labelledby="t-estado">
+  <div class="ancho">
+    <h2 id="t-estado">Lo que funciona. Y lo que no.</h2>
+    <p class="intro">«Probado» quiere decir jugado con la PS5; «Hecho», terminado y revisado, pero sin probar a fondo.</p>
+    <ul class="tablero">
+      <li class="pieza on"><span class="pieza-e">Probado</span><h3>Montaje con módulos</h3><p>Jugado con la PS5 a través del P5Mate: perfiles, anti-recoil y todo lo demás.</p></li>
+      <li class="pieza hecho"><span class="pieza-e">Hecho</span><h3>App por WiFi</h3><p>La placa abre su red, el móvil la muestra al conectarse y luego vive en <span class="dato">puente.local</span>.</p></li>
+      <li class="pieza hecho"><span class="pieza-e">Hecho</span><h3>Actualizar por WiFi</h3><p>Con vuelta atrás: si el firmware nuevo falla en los primeros 30 s, la placa vuelve sola al anterior.</p></li>
+      <li class="pieza espera"><span class="pieza-e">Por probar</span><h3>La placa p5k-ps5</h3><p>Diseñada y revisada con KiCad, sin fabricar todavía. Si la pides, cuéntalo en GitHub.</p></li>
+      <li class="pieza espera"><span class="pieza-e">Por probar</span><h3>Instalar desde la web</h3><p>El firmware de hoy, compilado desde este repositorio. Falta grabarlo así en una placa de verdad.</p></li>
+      <li class="pieza no"><span class="pieza-e">No</span><h3>Audio por el jack del mando</h3><p>El MAX3421E no da abasto: usa auriculares en la PS5 o un adaptador de USB-C a jack.</p></li>
     </ul>
-    <div class="compilar">
-      <h3 class="t3">Compilarlo tú</h3>
-      <p>Con ESP-IDF 5.5 y la cadena de Rust para Xtensa (<span class="dato">espup</span>):</p>
-      <pre class="codigo" aria-label="Órdenes para compilar y grabar"><code>git clone https://github.com/p5k-ps5/p5k-ps5.git
+  </div>
+</section>
+
+<section class="seccion codigo" id="codigo" aria-labelledby="t-codigo">
+  <div class="ancho">
+    <h2 id="t-codigo">Todo abierto. Todo tuyo.</h2>
+    <p class="intro">Un solo repositorio con licencia GPL-3.0: el firmware, el motor, las apps, la placa y la caja. Cópialo, cámbialo y comparte lo que mejores.</p>
+    <div class="codigo-rejilla">
+      <ul class="arbol" aria-label="Carpetas del repositorio">
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/main"><span class="arbol-n">main/</span><span class="arbol-d">Firmware del ESP32-S3 en C con ESP-IDF: el mando hacia la consola, el lector del DualSense, la WiFi y la app.</span></a></li>
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/components/motor"><span class="arbol-n">components/motor/</span><span class="arbol-d">El motor en Rust que aplica tu perfil. El mismo código en la placa y en el escritorio.</span></a></li>
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/escritorio"><span class="arbol-n">escritorio/</span><span class="arbol-d">App de macOS y Windows (Tauri): graba la placa y puede hacer de cerebro por cable.</span></a></li>
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/app"><span class="arbol-n">app/</span><span class="arbol-d">App nativa de Mac en SwiftUI y la página que se ve en el móvil.</span></a></li>
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/placa"><span class="arbol-n">placa/</span><span class="arbol-d">La placa en KiCad, generada por scripts, con los Gerber, la BOM y la CPL.</span></a></li>
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/caja"><span class="arbol-n">caja/</span><span class="arbol-d">La caja imprimible, paramétrica, con su visor 3D.</span></a></li>
+        <li><a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/web"><span class="arbol-n">web/</span><span class="arbol-d">Esta página, con el mando 3D y la demo.</span></a></li>
+      </ul>
+      <div class="compilar">
+        <h3>Compilarlo tú</h3>
+        <p>Con ESP-IDF 5.5 y la cadena de Rust para Xtensa (<span class="dato">espup</span>):</p>
+        <pre class="bloque-codigo" aria-label="Órdenes para compilar y grabar"><code>git clone https://github.com/p5k-ps5/p5k-ps5.git
 cd p5k-ps5
 idf.py build
 idf.py -p PUERTO flash</code></pre>
-      <p class="pequeno">¿Algo no va o lo has mejorado? Abre una <a href="https://github.com/p5k-ps5/p5k-ps5/issues">incidencia</a> o manda tus cambios.</p>
+        <p class="pequeno">¿Algo no va o lo has mejorado? Abre una <a href="https://github.com/p5k-ps5/p5k-ps5/issues">incidencia</a> o manda tus cambios.</p>
+      </div>
     </div>
   </div>
 </section>
-<section class="preguntas" id="preguntas" aria-labelledby="t-preguntas">
-  <h2 id="t-preguntas" class="t2">Preguntas</h2>
-  <div class="faq">
-    <details><summary>¿Necesito el P5Mate sí o sí?</summary><p>Sí. La PS5 exige una autenticación que solo sabe contestar un mando oficial, y rechaza los informes modificados aunque la autenticación pase por la placa. El P5Mate trae su propio chip para eso.</p></details>
-    <details><summary>¿Me pueden banear?</summary><p>Personalizar tu mando (sticks, gatillos, botones, perfiles) no hace trampas a nadie. El anti-recoil y la ayuda al apuntado sí, en partidas online: úsalos solo en campaña, zombis o contra bots. El anti-trampas de los juegos los detecta.</p></details>
-    <details><summary>¿Funciona con la PS4?</summary><p>La placa se presenta como un mando de PS4, pero tampoco contesta la autenticación de la PS4: también hace falta un adaptador con licencia.</p></details>
-    <details><summary>¿Se oye el audio por el jack del mando?</summary><p>No. El MAX3421E no da abasto con el audio del DualSense. Usa auriculares en la PS5 o un adaptador de USB-C a jack.</p></details>
-    <details><summary>¿Qué necesito para instalar el firmware?</summary><p>Un ordenador con Chrome o Edge y un cable USB-C de datos. También puedes usar la <a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/escritorio">app de escritorio</a> o compilarlo con ESP-IDF. Después, las actualizaciones se pueden subir por WiFi desde la propia app.</p></details>
-    <details><summary>¿Necesita internet?</summary><p>No. La app vive en la placa y se usa por la WiFi de tu casa o por la red propia de la placa. Los ajustes se guardan en la placa.</p></details>
-    <details><summary>¿Y si la WiFi falla o cambio de router?</summary><p>Mantén pulsado BOOT 10 segundos: la placa vuelve a abrir su propia red, abierta, para configurarla de nuevo.</p></details>
-    <details><summary>¿La placa propia ya funciona?</summary><p>Está diseñada y revisada con las herramientas de KiCad, pero todavía no se ha fabricado ni probado. El montaje con módulos sí está probado con la PS5. Si la pides, es la primera versión: cuéntanos qué tal en GitHub.</p></details>
+
+<section class="seccion preguntas" id="preguntas" aria-labelledby="t-preguntas">
+  <div class="ancho preguntas-rejilla">
+    <div>
+      <h2 id="t-preguntas">Lo que todo el mundo pregunta.</h2>
+    </div>
+    <div class="faq">
+      <details><summary>¿Necesito el P5Mate sí o sí?</summary><p>Sí. La PS5 exige una autenticación que solo sabe contestar un mando oficial, y rechaza los informes modificados aunque la autenticación pase por la placa. El P5Mate trae su propio chip para eso.</p></details>
+      <details><summary>¿Me pueden banear?</summary><p>Personalizar tu mando (sticks, gatillos, botones, perfiles) no hace trampas a nadie. El anti-recoil y la ayuda al apuntado sí, en partidas online: úsalos solo en campaña, zombis o contra bots. El anti-trampas de los juegos los detecta.</p></details>
+      <details><summary>¿Funciona con la PS4?</summary><p>La placa se presenta como un mando de PS4, pero tampoco contesta la autenticación de la PS4: también hace falta un adaptador con licencia.</p></details>
+      <details><summary>¿Se oye el audio por el jack del mando?</summary><p>No. El MAX3421E no da abasto con el audio del DualSense. Usa auriculares en la PS5 o un adaptador de USB-C a jack.</p></details>
+      <details><summary>¿Qué necesito para instalar el firmware?</summary><p>Un ordenador con Chrome o Edge y un cable USB-C de datos. También puedes usar la <a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/escritorio">app de escritorio</a> o compilarlo con ESP-IDF. Después, las actualizaciones se suben por WiFi desde la propia app.</p></details>
+      <details><summary>¿Necesita internet?</summary><p>No. La app vive en la placa y se usa por la WiFi de tu casa o por la red propia de la placa. Los ajustes se guardan en la placa.</p></details>
+      <details><summary>¿Y si la WiFi falla o cambio de router?</summary><p>Mantén pulsado BOOT 10 segundos: la placa vuelve a abrir su propia red, abierta, para configurarla de nuevo.</p></details>
+      <details><summary>¿La placa propia ya funciona?</summary><p>Está diseñada y revisada con las herramientas de KiCad, pero todavía no se ha fabricado ni probado. El montaje con módulos sí está probado con la PS5. Si la pides, es la primera versión: cuéntanos qué tal en GitHub.</p></details>
+    </div>
   </div>
 </section>
-
 </main>
 
 <footer class="pie">
-  <div class="pie-fila">
-    <a class="marca" href="#" aria-label="p5k-ps5, volver arriba">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M7.2 5h9.6c2.8 0 4.8 2 5.2 4.8l.9 5.8c.4 2.6-1.3 4.4-3.3 4.4-1.4 0-2.4-.8-3.2-2-1-1.6-2.4-2.6-4.4-2.6s-3.4 1-4.4 2.6c-.8 1.2-1.8 2-3.2 2-2 0-3.7-1.8-3.3-4.4l.9-5.8C2.4 7 4.4 5 7.2 5ZM6.7 7.8v2H4.7v1.9h2v2h1.9v-2h2V9.8h-2v-2H6.7Zm9.1 2.9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm2.6-3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>
-      <span>p5k-ps5</span>
-    </a>
-    <a class="enlace-dato" href="https://github.com/p5k-ps5/p5k-ps5">github.com/p5k-ps5/p5k-ps5</a>
-    <span class="dato tenue">GPL-3.0</span>
+  <div class="ancho">
+    <p class="pie-grande">p5k-ps5</p>
+    <div class="pie-fila">
+      <a class="enlace" href="https://github.com/p5k-ps5/p5k-ps5">github.com/p5k-ps5/p5k-ps5 <span aria-hidden="true">↗</span></a>
+      <span class="dato">GPL-3.0</span>
+    </div>
+    <p class="creditos">Hecho con <a href="https://github.com/espressif/esp-idf">ESP-IDF</a>, <a href="https://github.com/hathach/tinyusb">TinyUSB</a>, <a href="https://www.rust-lang.org">Rust</a>, <a href="https://tauri.app">Tauri</a>, <a href="https://www.kicad.org">KiCad</a>, <a href="https://github.com/freerouting/freerouting">Freerouting</a>, <a href="https://threejs.org">three.js</a> y <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a>. Letras Schibsted Grotesk y Martian Mono (OFL).</p>
+    <p class="legal">Proyecto personal, libre y sin ánimo de lucro. Sin relación con Sony Interactive Entertainment. PlayStation, PS5 y DualSense son marcas de sus dueños; el mando de esta página es un modelo propio hecho con código.</p>
   </div>
-  <p class="creditos">Hecho con <a href="https://github.com/espressif/esp-idf">ESP-IDF</a>, <a href="https://github.com/hathach/tinyusb">TinyUSB</a>, <a href="https://www.rust-lang.org">Rust</a>, <a href="https://tauri.app">Tauri</a>, <a href="https://www.kicad.org">KiCad</a>, <a href="https://github.com/freerouting/freerouting">Freerouting</a> y <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a>. Letras Inter Tight y Geist Mono (OFL).</p>
-  <p class="legal">Proyecto personal, libre y sin ánimo de lucro. Sin relación con Sony Interactive Entertainment. PlayStation, PS5 y DualSense son marcas de sus dueños.</p>
 </footer>
 </body>
 </html>

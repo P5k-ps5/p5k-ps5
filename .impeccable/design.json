@@ -1,27 +1,27 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-11T16:09:03.369502+00:00",
+  "generatedAt": "2026-11-11T17:20:35.948917+00:00",
   "title": "Design System: p5k-ps5",
   "extensions": {
     "colorMeta": {
-      "negro": {
+      "app-negro": {
         "role": "neutral",
-        "displayName": "Negro",
+        "displayName": "App · Negro",
         "canonical": "#000000"
       },
-      "tinta": {
+      "app-tinta": {
         "role": "neutral",
-        "displayName": "Tinta",
+        "displayName": "App · Tinta (menús nativos)",
         "canonical": "#0a0a0a"
       },
-      "blanco": {
+      "app-blanco": {
         "role": "neutral",
-        "displayName": "Blanco",
+        "displayName": "App · Blanco",
         "canonical": "#ffffff"
       },
-      "vivo": {
+      "app-vivo": {
         "role": "primary",
-        "displayName": "Vivo (lima de NeuroClaude)",
+        "displayName": "App · Vivo (lima de NeuroClaude)",
         "canonical": "#c8f04d",
         "tonalRamp": [
           "oklch(15% 0.17 122)",
@@ -34,9 +34,14 @@
           "oklch(95% 0.17 122)"
         ]
       },
-      "fallo": {
+      "app-vivo-suave": {
+        "role": "primary",
+        "displayName": "App · Vivo suave (lima al 8 %)",
+        "canonical": "rgba(200,240,77,.08)"
+      },
+      "app-fallo": {
         "role": "tertiary",
-        "displayName": "Fallo",
+        "displayName": "App · Fallo",
         "canonical": "#ff5d5d",
         "tonalRamp": [
           "oklch(15% 0.17 24)",
@@ -49,291 +54,536 @@
           "oklch(95% 0.17 24)"
         ]
       },
-      "vivo-suave": {
+      "app-texto-suave": {
+        "role": "neutral",
+        "displayName": "App · Texto suave (.68)"
+      },
+      "app-texto-tenue": {
+        "role": "neutral",
+        "displayName": "App · Texto tenue (.46)"
+      },
+      "app-linea-fina": {
+        "role": "neutral",
+        "displayName": "App · Línea fina"
+      },
+      "app-linea": {
+        "role": "neutral",
+        "displayName": "App · Línea"
+      },
+      "app-linea-fuerte": {
+        "role": "neutral",
+        "displayName": "App · Línea fuerte"
+      },
+      "web-senal": {
         "role": "primary",
-        "displayName": "Vivo suave (lima al 8 %)",
-        "canonical": "rgba(200,240,77,.08)"
+        "displayName": "Web · Naranja de señal",
+        "canonical": "#ff5b1f",
+        "tonalRamp": [
+          "oklch(15% 0.2 40)",
+          "oklch(25% 0.2 40)",
+          "oklch(38% 0.2 40)",
+          "oklch(50% 0.2 40)",
+          "oklch(62% 0.2 40)",
+          "oklch(74% 0.2 40)",
+          "oklch(86% 0.2 40)",
+          "oklch(95% 0.2 40)"
+        ]
       },
-      "texto-suave": {
-        "role": "neutral",
-        "displayName": "Texto suave"
+      "web-senal-hover": {
+        "role": "primary",
+        "displayName": "Web · Señal en hover",
+        "canonical": "#ff7a45"
       },
-      "texto-tenue": {
+      "web-sobre-senal": {
         "role": "neutral",
-        "displayName": "Texto tenue"
+        "displayName": "Web · Negro sobre señal",
+        "canonical": "#000000"
       },
-      "linea-fina": {
+      "web-estudio": {
         "role": "neutral",
-        "displayName": "Línea fina"
+        "displayName": "Web · Estudio (escenario negro)",
+        "canonical": "#0b0b0c",
+        "tonalRamp": [
+          "oklch(15% 0.004 285)",
+          "oklch(25% 0.004 285)",
+          "oklch(38% 0.004 285)",
+          "oklch(50% 0.004 285)",
+          "oklch(62% 0.004 285)",
+          "oklch(74% 0.004 285)",
+          "oklch(86% 0.004 285)",
+          "oklch(95% 0.004 285)"
+        ]
       },
-      "linea": {
+      "web-papel": {
         "role": "neutral",
-        "displayName": "Línea"
+        "displayName": "Web · Papel gris frío",
+        "canonical": "#ecedee",
+        "tonalRamp": [
+          "oklch(15% 0.004 250)",
+          "oklch(25% 0.004 250)",
+          "oklch(38% 0.004 250)",
+          "oklch(50% 0.004 250)",
+          "oklch(62% 0.004 250)",
+          "oklch(74% 0.004 250)",
+          "oklch(86% 0.004 250)",
+          "oklch(95% 0.004 250)"
+        ]
       },
-      "linea-fuerte": {
+      "web-papel-2": {
         "role": "neutral",
-        "displayName": "Línea fuerte"
+        "displayName": "Web · Papel 2 (pista de pestañas)",
+        "canonical": "#e2e3e5"
+      },
+      "web-tinta": {
+        "role": "neutral",
+        "displayName": "Web · Tinta",
+        "canonical": "#0b0b0c"
+      },
+      "web-gris": {
+        "role": "neutral",
+        "displayName": "Web · Gris de texto secundario",
+        "canonical": "#5f6268"
+      },
+      "web-claro": {
+        "role": "neutral",
+        "displayName": "Web · Claro (tarjetas y texto sobre estudio)",
+        "canonical": "#f4f4f5"
+      },
+      "web-claro-suave": {
+        "role": "neutral",
+        "displayName": "Web · Claro suave (.66)"
+      },
+      "web-claro-tenue": {
+        "role": "neutral",
+        "displayName": "Web · Claro tenue (.5)"
+      },
+      "web-linea": {
+        "role": "neutral",
+        "displayName": "Web · Línea sobre papel"
+      },
+      "web-linea-fuerte": {
+        "role": "neutral",
+        "displayName": "Web · Línea fuerte sobre papel"
+      },
+      "web-linea-oscura": {
+        "role": "neutral",
+        "displayName": "Web · Línea sobre estudio"
       }
     },
-    "themes": [],
     "typographyMeta": {
-      "titular": "Inter Tight 500",
-      "body": "Inter Tight 400, 14 px",
-      "etiqueta": "Geist Mono 400, 11 px, mayúsculas",
-      "dato": "Geist Mono 300, 12 px",
-      "intro": "Inter Tight 400, 15 px",
-      "secundario": "Inter Tight 400, 13 px",
-      "campo-tactil": "Geist Mono 300, 16 px",
-      "web-titular": "Solo web: h1 de la portada, Inter Tight 500, 40 a 72 px",
-      "web-seccion": "Solo web: un título por sección, 30 a 52 px",
-      "web-subtitulo": "Solo web: subtítulos a 18 px, también los pasos de la guía; los títulos de caja (caminos, eslabones, aviso) van a 22 px (web-titulo-caja); también los nombres de los saltos de la demo y de las piezas del tablero",
-      "web-entrada": "Solo web: frase de la portada, 17 a 19 px",
-      "web-body": "Solo web: texto corriente, 16 px, máx. 68ch",
-      "web-numero-paso": "Solo web: contador de pasos, mono 300, 34 px (24 en móvil); los mini pasos del instalador, a 20 px",
-      "web-titulo-caja": "Solo web: títulos de caja (caminos de hardware, nodos del recorrido, aviso), Inter Tight 500, 22 px, -0.02em",
-      "web-numero-paso-movil": "Solo web: contador de pasos en móvil, mono 300, 24 px"
+      "app-titular": {
+        "displayName": "App · Titular",
+        "purpose": "Nombre de la sección de la app."
+      },
+      "app-body": {
+        "displayName": "App · Texto",
+        "purpose": "Texto corriente de la app."
+      },
+      "app-intro": {
+        "displayName": "App · Intro",
+        "purpose": "Introducciones de sección."
+      },
+      "app-secundario": {
+        "displayName": "App · Secundario",
+        "purpose": "Texto secundario."
+      },
+      "app-campo-tactil": {
+        "displayName": "App · Campo táctil",
+        "purpose": "Campos en táctil, 16 px para que iOS no haga zoom."
+      },
+      "app-etiqueta": {
+        "displayName": "App · Etiqueta",
+        "purpose": "Cabeceras de caja y grupos del índice, en mayúsculas."
+      },
+      "app-dato": {
+        "displayName": "App · Dato",
+        "purpose": "Estados, direcciones, valores y botones."
+      },
+      "web-display": {
+        "displayName": "Web · Display",
+        "purpose": "Solo el h1 de la portada."
+      },
+      "web-titular": {
+        "displayName": "Web · Titular",
+        "purpose": "Un h2 por sección; 40–84 px en las paradas, 28–48 px en el aviso."
+      },
+      "web-titulo-ficha": {
+        "displayName": "Web · Título de ficha",
+        "purpose": "Caminos y eslabones; 26 px en pasos, 22 px en piezas e instalador."
+      },
+      "web-titulo": {
+        "displayName": "Web · Título",
+        "purpose": "h3 corriente, términos de ficha, saltos y preguntas."
+      },
+      "web-entrada": {
+        "displayName": "Web · Entrada",
+        "purpose": "Frase principal de portada, demo e instalar."
+      },
+      "web-intro": {
+        "displayName": "Web · Intro",
+        "purpose": "Intro de sección, en gris."
+      },
+      "web-body": {
+        "displayName": "Web · Texto",
+        "purpose": "Texto corriente, máx. 64ch."
+      },
+      "web-pequeno": {
+        "displayName": "Web · Pequeño",
+        "purpose": "Texto dentro de tarjetas y filas."
+      },
+      "web-boton": {
+        "displayName": "Web · Botón",
+        "purpose": "Píldoras y enlaces con flecha."
+      },
+      "web-etiqueta": {
+        "displayName": "Web · Etiqueta",
+        "purpose": "Menú, sello, contadores, pies de figura."
+      },
+      "web-etiqueta-ficha": {
+        "displayName": "Web · Etiqueta de ficha",
+        "purpose": "dt de fichas, cabeceras de tabla, estados de pieza."
+      },
+      "web-codigo": {
+        "displayName": "Web · Código",
+        "purpose": "Bloque de código."
+      },
+      "web-numero-paso": {
+        "displayName": "Web · Número de paso",
+        "purpose": "Contador de los pasos de la guía; 30 px en móvil."
+      },
+      "web-marca-gigante": {
+        "displayName": "Web · Marca gigante",
+        "purpose": "«p5k-ps5» a sangre en el pie."
+      }
     },
-    "shadows": [],
+    "shadows": [
+      {
+        "name": "app-latido",
+        "value": "0 0 0 0 rgba(200,240,77,.45) → 0 0 0 10px rgba(200,240,77,0)",
+        "purpose": "App: anillo animado del punto vivo; movimiento, no profundidad."
+      },
+      {
+        "name": "web-telefono",
+        "value": "inset 0 0 0 1px rgba(255,255,255,.12), 0 40px 90px -30px rgba(0,0,0,.8)",
+        "purpose": "Web: el teléfono de la demo, único objeto con sombra en la interfaz."
+      },
+      {
+        "name": "web-nav-cristal",
+        "value": "background: rgba(11,11,12,.7); backdrop-filter: saturate(160%) blur(18px)",
+        "purpose": "Web: nav fija de cristal de estudio."
+      },
+      {
+        "name": "web-luz-estudio",
+        "value": "radial-gradient(120% 80% at 70% 40%, #1a1a1d 0%, #0b0b0c 60%)",
+        "purpose": "Web: luz del escenario (en móvil, 140% 60% at 50% 28%)."
+      },
+      {
+        "name": "web-sombra-contacto",
+        "value": "óvalo radial rgba(0,0,0,.75) → 0 bajo el mando 3D",
+        "purpose": "Web: sombra de contacto que sigue al mando sin girar."
+      }
+    ],
     "motion": [
       {
         "name": "salida",
         "value": "cubic-bezier(.16,1,.3,1)",
-        "purpose": "Casi todas las transiciones."
+        "purpose": "App y web: casi todas las transiciones (en la web, --salida)."
       },
       {
-        "name": "latido",
+        "name": "app-latido",
         "value": "1.6s",
-        "purpose": "Punto de lo que está vivo."
+        "purpose": "App: punto de lo que está vivo."
       },
       {
-        "name": "parpadeo",
+        "name": "app-parpadeo",
         "value": "1.2s steps(1)",
-        "purpose": "Punto de lo que pide atención."
+        "purpose": "App: punto de lo que pide atención."
+      },
+      {
+        "name": "app-asoma",
+        "value": "translateY(4px)",
+        "purpose": "App: entrada al cambiar de sección."
+      },
+      {
+        "name": "web-boton",
+        "value": "scale(.97) al pulsar, .3s salida; hover de fondo .2s",
+        "purpose": "Web: píldora naranja."
+      },
+      {
+        "name": "web-enlace",
+        "value": "translateX(4px) .3s salida",
+        "purpose": "Web: la flecha del enlace avanza en hover."
+      },
+      {
+        "name": "web-parada",
+        "value": "opacity .12 → 1 (.6s) y translateY(18px) → 0 (.8s)",
+        "purpose": "Web: la parada activa del escenario."
+      },
+      {
+        "name": "web-pose",
+        "value": "quieta el 30 % del tramo, transición smoothstep en el 55 % siguiente; persecución 1 - 0.0015^dt",
+        "purpose": "Web: pose del mando 3D entre paradas."
+      },
+      {
+        "name": "web-flota",
+        "value": "sin(t·0.9)·0.04 en Y; balanceo sin(t·0.6)·0.03; puntero hasta 0.18 rad (solo ratón)",
+        "purpose": "Web: vida del mando en reposo."
+      },
+      {
+        "name": "web-zonas",
+        "value": "emisión naranja hasta .9 con pulso 0.75 ± 0.25 (sin 3t)",
+        "purpose": "Web: zonas que la placa toca en la parada activa."
+      },
+      {
+        "name": "web-luz-perfil",
+        "value": "#2f6bff por defecto; en Perfiles, colores de perfil cada 1.4s",
+        "purpose": "Web: barra de luz del mando (dato, no acento)."
+      },
+      {
+        "name": "web-despiece",
+        "value": "separación en Z por pieza; la placa escala de 0 a 1 entre el 25 y el 75 % del desmonte",
+        "purpose": "Web: parada «Por dentro»."
+      },
+      {
+        "name": "web-lienzo",
+        "value": "opacity 0 → 1, 1.2s salida",
+        "purpose": "Web: aparición del 3D."
+      },
+      {
+        "name": "web-desliza",
+        "value": "scaleY 0 → 1 y fundido, 2.2s infinito",
+        "purpose": "Web: raya de «Desliza» en la portada."
+      },
+      {
+        "name": "web-asoma",
+        "value": "translateY(8px) + fundido, .5s salida",
+        "purpose": "Web: guía de cada pestaña."
+      },
+      {
+        "name": "web-mas",
+        "value": "rotate(45deg) .3–.35s salida",
+        "purpose": "Web: «+» del FAQ y de la ayuda del instalador."
       },
       {
         "name": "reduccion",
-        "value": "prefers-reduced-motion: reduce -> sin movimiento",
-        "purpose": "Obligatorio."
-      },
-      {
-        "name": "viaja",
-        "value": "3.6s linear infinite",
-        "purpose": "Web: el punto lima que recorre el cable de la cadena; se oculta con movimiento reducido."
-      },
-      {
-        "name": "asoma",
-        "value": ".45s cubic-bezier(.16,1,.3,1), escalonado 50ms",
-        "purpose": "Entrada de las funciones de la tecla y de la guía de cada pestaña."
-      },
-      {
-        "name": "salto",
-        "value": "late 1.6s",
-        "purpose": "Web: el cuadrado del salto elegido de la demo late como el marcador del mapa."
-      },
-      {
-        "name": "flecha-demo",
-        "value": "translateY(2px) .3s cubic-bezier(.16,1,.3,1)",
-        "purpose": "Web: la flecha de «Ajústalo en la demo» baja y pasa a lima en hover."
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "App y web: sin animaciones ni transiciones; en el 3D la pose salta, sin flotación, balanceo ni pulso, y el índice no hace scroll suave."
       }
     ],
     "breakpoints": [
       {
-        "name": "teclas",
+        "name": "app-teclas",
         "value": "600px"
       },
       {
-        "name": "columnas",
+        "name": "app-columnas",
         "value": "760px"
       },
       {
-        "name": "indice",
+        "name": "app-indice",
         "value": "960px"
       },
       {
-        "name": "web-movil",
+        "name": "web-estrecho",
         "value": "720px"
       },
       {
-        "name": "web-llamadas-y-telefono",
+        "name": "web-telefono-captura",
         "value": "760px"
       },
       {
-        "name": "web-cadena-demo-instalar-tablero",
+        "name": "web-movil-escenario-nav",
         "value": "900px"
       },
       {
-        "name": "web-portada-caminos-repo",
+        "name": "web-demo-instalar",
+        "value": "960px"
+      },
+      {
+        "name": "web-caminos-tablero-codigo",
         "value": "980px"
       }
     ]
   },
   "components": [
     {
-      "name": "Píldora (acción llena)",
+      "name": "Web · Botón píldora",
       "kind": "button",
-      "refersTo": "web-pildora",
-      "description": "Una por sección como mucho: «Fabrícate uno» en la portada e «Instalar en la placa» en el instalador. Blanca, nunca lima.",
-      "html": "<a class=\"ds-pildora\" href=\"#\">Fabrícate uno</a>",
-      "css": ".ds-pildora{display:inline-flex;align-items:center;min-height:48px;padding:0 26px;border-radius:999px;background:#fff;color:#000;text-decoration:none;font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;font-size:16px;line-height:1;letter-spacing:-.01em;transition:transform .25s cubic-bezier(.16,1,.3,1),background-color .2s}.ds-pildora:hover{background:rgba(255,255,255,.86)}.ds-pildora:active{transform:scale(.98)}.ds-pildora:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+      "refersTo": "web-boton",
+      "description": "Acción de la web: píldora naranja con texto negro.",
+      "html": "<a class=\"ds-boton\" href=\"#\">Fabrícate uno</a>",
+      "css": ".ds-boton{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 26px;border:0;border-radius:999px;background:#ff5b1f;color:#000;text-decoration:none;font:600 16px/1 'Schibsted Grotesk',system-ui,sans-serif;letter-spacing:-.01em;cursor:pointer;transition:transform .3s cubic-bezier(.16,1,.3,1),background-color .2s}.ds-boton:hover{background:#ff7a45}.ds-boton:active{transform:scale(.97)}.ds-boton:focus-visible{outline:2px solid #ff5b1f;outline-offset:3px}"
     },
     {
-      "name": "Píldora de línea",
+      "name": "Web · Enlace con flecha",
       "kind": "button",
-      "refersTo": "web-pildora-linea",
-      "description": "Solo «Abrir la demo», sobre la captura del teléfono en móvil.",
-      "html": "<a class=\"ds-pildora-linea\" href=\"#\">Abrir la demo</a>",
-      "css": ".ds-pildora-linea{display:inline-flex;align-items:center;min-height:48px;padding:0 26px;border-radius:999px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.36);text-decoration:none;font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;font-size:16px;line-height:1;white-space:nowrap}.ds-pildora-linea:hover{border-color:#fff}.ds-pildora-linea:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+      "refersTo": "",
+      "description": "Acción secundaria: texto 600 con flecha que avanza.",
+      "html": "<a class=\"ds-enlace\" href=\"#\">Pruébala <span>→</span></a>",
+      "css": ".ds-enlace{display:inline-flex;align-items:center;gap:8px;font:600 17px/1.4 'Schibsted Grotesk',system-ui,sans-serif;color:#0b0b0c;text-decoration:none}.ds-enlace span{transition:transform .3s cubic-bezier(.16,1,.3,1)}.ds-enlace:hover span{transform:translateX(4px)}.ds-enlace:focus-visible{outline:2px solid #ff5b1f;outline-offset:3px}"
     },
     {
-      "name": "Botón de caja",
-      "kind": "button",
-      "refersTo": "button",
-      "description": "Botón corriente de la app: mono sobre blanco al 8 %, línea normal.",
-      "html": "<button class=\"ds-btn\">Guardar</button>",
-      "css": ".ds-btn{height:34px;padding:6px 12px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:0;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-size:12px;cursor:pointer;transition:border-color .2s}.ds-btn:hover{border-color:rgba(255,255,255,.36)}.ds-btn:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+      "name": "Web · Navegación",
+      "kind": "nav",
+      "refersTo": "web-nav",
+      "description": "Barra fija de cristal de estudio con logo naranja, menú mono y píldora Instalar.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-marca\" href=\"#\"><i></i>p5k-ps5</a><nav><a href=\"#\">Funciones</a><a href=\"#\">Demo</a><a href=\"#\">GitHub ↗</a></nav><a class=\"ds-nav-b\" href=\"#\">Instalar</a></header>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:24px;height:60px;padding:0 24px;background:rgba(11,11,12,.92);color:#f4f4f5;border-bottom:1px solid rgba(244,244,245,.14)}.ds-marca{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;font:700 18px/1 'Schibsted Grotesk',system-ui,sans-serif;letter-spacing:-.03em}.ds-marca i{width:20px;height:14px;border-radius:6px;background:#ff5b1f}.ds-nav nav{display:flex;gap:4px;margin-left:auto}.ds-nav nav a{padding:10px 12px;text-decoration:none;font:400 11px/1 'Martian Mono',ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;color:rgba(244,244,245,.66);transition:color .2s}.ds-nav nav a:hover{color:#f4f4f5}.ds-nav-b{display:inline-flex;align-items:center;min-height:36px;padding:0 18px;border-radius:999px;background:#ff5b1f;color:#000;text-decoration:none;font:600 14px/1 'Schibsted Grotesk',system-ui,sans-serif}.ds-nav-b:hover{background:#ff7a45}.ds-nav a:focus-visible{outline:2px solid #ff5b1f;outline-offset:3px}"
     },
     {
-      "name": "Marcador del mapa",
-      "kind": "custom",
-      "refersTo": "web-marcador",
-      "description": "Cuadrado de 9 px de línea en zona de 44 px; el elegido se rellena de lima y late.",
-      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-punto\" aria-pressed=\"false\">L2</button><button class=\"ds-punto\" aria-pressed=\"true\">R2</button></div>",
-      "css": ".ds-punto{position:relative;width:44px;height:44px;padding:0;background:none;border:0;cursor:pointer;color:transparent;font-size:0}.ds-punto::before{content:'';position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border:1px solid rgba(255,255,255,.72);transition:transform .3s cubic-bezier(.16,1,.3,1),background-color .25s}.ds-punto:hover::before{transform:scale(1.25)}.ds-punto[aria-pressed=true]::before{background:#c8f04d;border-color:#c8f04d;animation:ds-late 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-punto:focus-visible{outline:none}.ds-punto:focus-visible::before{outline:1px solid #c8f04d;outline-offset:4px}@keyframes ds-late{0%{box-shadow:0 0 0 0 rgba(200,240,77,.45)}70%,100%{box-shadow:0 0 0 10px rgba(200,240,77,0)}}"
-    },
-    {
-      "name": "Tecla de funciones",
+      "name": "Web · Ficha oscura y «Solo sin conexión»",
       "kind": "card",
-      "refersTo": "web-tecla-funciones",
-      "description": "Caja con el control elegido en lima y sus funciones en columnas.",
-      "html": "<div class=\"ds-tz\"><div class=\"ds-tz-cab\"><span class=\"ds-tz-c\">R2</span><p>Gatillo derecho</p></div><ul><li><h3>Zona muerta</h3><p>Desde dónde empieza a contar.</p></li><li><h3>Anti-recoil</h3><p>Compensa el retroceso.</p><span class=\"ds-sc\">Solo sin conexión</span></li></ul></div>",
-      "css": ".ds-tz{border:1px solid rgba(255,255,255,.16);background:#000;color:#fff;font-family:'Inter Tight',system-ui,sans-serif;}.ds-tz-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.1)}.ds-tz-cab p{margin:0;font-size:15px}.ds-tz-c{font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#c8f04d}.ds-tz ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.ds-tz li{padding:14px 16px 16px}.ds-tz li+li{border-left:1px solid rgba(255,255,255,.1)}.ds-tz h3{display:flex;align-items:center;gap:8px;margin:0;font-size:16px;font-weight:500}.ds-tz h3::before{content:'';width:6px;height:6px;border:1px solid rgba(255,255,255,.36)}.ds-tz li p{margin:6px 0 0;font-size:14px;color:rgba(255,255,255,.68)}.ds-sc{display:inline-block;margin-top:10px;padding:3px 7px;border:1px solid rgba(255,255,255,.36);font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff}"
+      "refersTo": "web-solo-sin-conexion",
+      "description": "Filas de línea oscura en cada parada; la etiqueta píldora naranja marca lo que solo vale sin conexión.",
+      "html": "<dl class=\"ds-fo\"><div><dt>Anti-recoil <span class=\"ds-off\">Solo sin conexión</span></dt><dd>Baja el stick derecho mientras disparas con R2.</dd></div><div><dt>Zona muerta</dt><dd>Desde dónde empieza a contar el stick.</dd></div></dl>",
+      "css": ".ds-fo{margin:0;max-width:460px;padding:8px 20px;background:#0b0b0c;color:#f4f4f5;font-family:'Schibsted Grotesk',system-ui,sans-serif;border-top:1px solid rgba(244,244,245,.14)}.ds-fo div{padding:16px 0 17px;border-bottom:1px solid rgba(244,244,245,.14)}.ds-fo dt{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-weight:600;font-size:18px;letter-spacing:-.015em}.ds-fo dd{margin:6px 0 0;font-size:15px;line-height:1.5;color:rgba(244,244,245,.66)}.ds-off{display:inline-block;padding:4px 8px 3px;border:1px solid #ff5b1f;border-radius:999px;font:400 9.5px/1.2 'Martian Mono',ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;color:#ff5b1f;white-space:nowrap}"
     },
     {
-      "name": "Tecla de la app",
-      "kind": "custom",
-      "refersTo": "tecla",
-      "description": "Símbolo arriba a la izquierda, ON/OFF arriba a la derecha, nombre abajo; encendida en lima.",
-      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-tecla\"><span>⟳</span><b>OFF</b><em>Turbo</em></button><button class=\"ds-tecla ds-on\"><span>⟳</span><b>ON</b><em>Turbo</em></button></div>",
-      "css": ".ds-tecla{position:relative;width:128px;height:128px;padding:12px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:0;cursor:pointer;text-align:left;font-family:'Inter Tight',system-ui,sans-serif;}.ds-tecla span{position:absolute;left:12px;top:12px;font-size:18px}.ds-tecla b{position:absolute;right:12px;top:12px;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-weight:400;font-size:11px}.ds-tecla em{position:absolute;left:12px;bottom:12px;font-style:normal;font-size:14px}.ds-tecla:hover{border-color:rgba(255,255,255,.36)}.ds-tecla.ds-on{border-color:#c8f04d;background:rgba(200,240,77,.08)}.ds-tecla.ds-on span,.ds-tecla.ds-on b{color:#c8f04d}.ds-tecla:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+      "name": "Web · Índice de paradas",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Barras de 2 px con etiqueta mono; la parada activa con barra naranja.",
+      "html": "<ol class=\"ds-ip\"><li><a href=\"#\">Inicio</a></li><li><a class=\"on\" href=\"#\">Gatillos</a></li><li><a href=\"#\">Sticks</a></li><li><a href=\"#\">Por dentro</a></li></ol>",
+      "css": ".ds-ip{display:flex;gap:18px;list-style:none;margin:0;padding:20px;background:#0b0b0c}.ds-ip a{display:block;padding:6px 0;text-decoration:none;font:400 10px/1 'Martian Mono',ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:rgba(244,244,245,.5);transition:color .3s}.ds-ip a::before{content:'';display:block;height:2px;margin-bottom:8px;background:rgba(244,244,245,.14)}.ds-ip a:hover,.ds-ip a.on{color:#f4f4f5}.ds-ip a.on::before{background:#ff5b1f}.ds-ip a:focus-visible{outline:2px solid #ff5b1f;outline-offset:3px}"
     },
     {
-      "name": "Eslabón de la cadena",
-      "kind": "card",
-      "refersTo": "web-eslabon",
-      "description": "Nodo del recorrido; solo el de la placa está vivo.",
-      "html": "<ol class=\"ds-cadena\"><li class=\"ds-esl\"><b>DualSense</b><span>Por cable USB-C.</span></li><li class=\"ds-esl ds-vivo\"><b>p5k-ps5</b><span>Aplica tu perfil.</span></li><li class=\"ds-esl\"><b>PS5</b><span>Recibe un mando normal.</span></li></ol>",
-      "css": ".ds-cadena{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative;font-family:'Inter Tight',system-ui,sans-serif;}.ds-cadena::before{content:'';position:absolute;left:0;right:0;top:33px;height:1px;background:rgba(255,255,255,.36)}.ds-cadena::after{content:'';position:absolute;top:30px;left:0;width:7px;height:7px;border-radius:50%;background:#c8f04d;animation:ds-viaja 3.6s linear infinite}@keyframes ds-viaja{to{left:calc(100% - 7px)}}.ds-esl{position:relative;z-index:1;padding:20px 22px 22px;border:1px solid rgba(255,255,255,.16);background:#000;color:#fff}.ds-esl b{display:block;font-weight:500;font-size:22px;letter-spacing:-.02em}.ds-esl span{display:block;margin-top:10px;font-size:14px;color:rgba(255,255,255,.68)}.ds-esl.ds-vivo{border-color:#c8f04d;background:linear-gradient(rgba(200,240,77,.08),rgba(200,240,77,.08)),#000}.ds-esl.ds-vivo b{color:#c8f04d}@media (prefers-reduced-motion:reduce){.ds-cadena::after{display:none}}"
-    },
-    {
-      "name": "Pestañas",
+      "name": "Web · Pestañas píldora",
       "kind": "nav",
       "refersTo": "web-pestana",
-      "description": "Fila de etiquetas mono; la elegida en lima con subrayado de 2 px.",
-      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\">La placa (JLCPCB)</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Con módulos</button></div>",
-      "css": ".ds-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.16)}.ds-tab{min-height:48px;padding:0 18px;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.68);cursor:pointer;transition:color .2s cubic-bezier(.16,1,.3,1),border-color .2s}.ds-tab:hover{color:#fff}.ds-tab[aria-selected=true]{color:#c8f04d;border-bottom-color:#c8f04d}.ds-tab:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+      "description": "Pista de papel 2; la elegida en tinta con texto claro.",
+      "html": "<div class=\"ds-pst\" role=\"tablist\"><button role=\"tab\" aria-selected=\"true\">La placa (JLCPCB)</button><button role=\"tab\" aria-selected=\"false\">Con módulos</button></div>",
+      "css": ".ds-pst{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:#e2e3e5}.ds-pst button{min-height:44px;padding:0 22px;border:0;border-radius:999px;background:transparent;cursor:pointer;font:600 15px/1 'Schibsted Grotesk',system-ui,sans-serif;letter-spacing:-.01em;color:#5f6268;transition:background-color .3s cubic-bezier(.16,1,.3,1),color .2s}.ds-pst button:hover{color:#0b0b0c}.ds-pst button[aria-selected=true]{background:#0b0b0c;color:#f4f4f5}.ds-pst button:focus-visible{outline:2px solid #ff5b1f;outline-offset:3px}"
     },
     {
-      "name": "Estado",
+      "name": "Web · Cadena de eslabones",
+      "kind": "card",
+      "refersTo": "web-eslabon",
+      "description": "Cuatro tarjetas unidas; solo el eslabón de la placa es de estudio, con nombre naranja y su dato.",
+      "html": "<ol class=\"ds-cad\"><li><span class=\"n\">DualSense</span><span class=\"d\">Por cable USB-C.</span></li><li class=\"placa\"><span class=\"n\">p5k-ps5</span><span class=\"d\">Aplica tu perfil.</span><span class=\"dato\">1000 informes por segundo</span></li><li><span class=\"n\">PS5</span><span class=\"d\">Recibe un mando normal.</span></li></ol>",
+      "css": ".ds-cad{list-style:none;margin:0;padding:24px;background:#ecedee;display:grid;grid-template-columns:1fr 1.3fr 1fr;counter-reset:e;font-family:'Schibsted Grotesk',system-ui,sans-serif}.ds-cad li{padding:28px 28px 32px;background:#f4f4f5;color:#0b0b0c}.ds-cad li+li{border-left:1px solid rgba(11,11,12,.14)}.ds-cad li:first-child{border-radius:22px 0 0 22px}.ds-cad li:last-child{border-radius:0 22px 22px 0}.ds-cad li::before{counter-increment:e;content:counter(e,decimal-leading-zero);display:block;margin-bottom:40px;font:400 11px/1 'Martian Mono',ui-monospace,Menlo,monospace;letter-spacing:.06em;color:#5f6268}.ds-cad .n{display:block;font-weight:700;font-size:28px;letter-spacing:-.035em;line-height:1}.ds-cad .d{display:block;margin-top:12px;font-size:15px;line-height:1.5;color:#5f6268}.ds-cad .placa{background:#0b0b0c;color:#f4f4f5}.ds-cad .placa .n{color:#ff5b1f}.ds-cad .placa .d,.ds-cad .placa::before{color:rgba(244,244,245,.66)}.ds-cad .dato{display:inline-block;margin-top:18px;padding:6px 10px;border-radius:999px;background:#ff5b1f;color:#000;font:500 11px/1 'Martian Mono',ui-monospace,Menlo,monospace}"
+    },
+    {
+      "name": "Web · Tablero de estado",
+      "kind": "card",
+      "refersTo": "web-pieza",
+      "description": "Piezas de 22 px: Probado (estudio y naranja), Hecho (punto lleno), Por probar (punto de línea), No (sin relleno). Siempre con la palabra.",
+      "html": "<ul class=\"ds-tb\"><li class=\"on\"><span class=\"e\">Probado</span><h3>Montaje con módulos</h3></li><li class=\"hecho\"><span class=\"e\">Hecho</span><h3>App por WiFi</h3></li><li class=\"espera\"><span class=\"e\">Por probar</span><h3>La placa</h3></li><li class=\"no\"><span class=\"e\">No</span><h3>Audio por el jack</h3></li></ul>",
+      "css": ".ds-tb{list-style:none;margin:0;padding:20px;background:#ecedee;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;font-family:'Schibsted Grotesk',system-ui,sans-serif;color:#0b0b0c}.ds-tb li{display:flex;flex-direction:column;padding:24px 24px 26px;border-radius:22px;background:#f4f4f5}.ds-tb .e{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font:400 10.5px/1.4 'Martian Mono',ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;color:#5f6268}.ds-tb .e::before{content:'';width:7px;height:7px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor}.ds-tb h3{margin:36px 0 0;font-size:22px;font-weight:700;letter-spacing:-.03em}.ds-tb .on{background:#0b0b0c;color:#f4f4f5}.ds-tb .on .e{color:#ff5b1f}.ds-tb .on .e::before{background:#ff5b1f;box-shadow:none}.ds-tb .hecho .e,.ds-tb .espera .e{color:#0b0b0c}.ds-tb .hecho .e::before{background:#0b0b0c;box-shadow:none}.ds-tb .no{background:transparent;box-shadow:inset 0 0 0 1px rgba(11,11,12,.32)}.ds-tb .no h3{color:#5f6268}"
+    },
+    {
+      "name": "Web · FAQ",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Filas de 72 px; el círculo del «+» gira 45° y se rellena de naranja al abrir.",
+      "html": "<div class=\"ds-faq\"><details open><summary>¿Necesita internet?</summary><p>No. La app vive en la placa.</p></details><details><summary>¿Funciona con la PS4?</summary><p>Sí.</p></details></div>",
+      "css": ".ds-faq{border-top:1px solid rgba(11,11,12,.32);background:#ecedee;font-family:'Schibsted Grotesk',system-ui,sans-serif;color:#0b0b0c}.ds-faq details{border-bottom:1px solid rgba(11,11,12,.14)}.ds-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:24px;min-height:72px;padding:18px 0;font-size:20px;font-weight:600;letter-spacing:-.02em}.ds-faq summary::-webkit-details-marker{display:none}.ds-faq summary::after{content:'+';flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#f4f4f5;font:300 18px/1 'Martian Mono',ui-monospace,Menlo,monospace;transition:transform .35s cubic-bezier(.16,1,.3,1),background-color .2s}.ds-faq details[open] summary::after{transform:rotate(45deg);background:#ff5b1f}.ds-faq summary:focus-visible{outline:2px solid #ff5b1f;outline-offset:3px}.ds-faq p{margin:0;padding:0 56px 24px 0;color:#5f6268}"
+    },
+    {
+      "name": "App · Botón de caja",
+      "kind": "button",
+      "refersTo": "app-boton",
+      "description": "Botón corriente de la app: mono sobre blanco al 8 %, línea normal, radio 0.",
+      "html": "<button class=\"ds-abtn\">Guardar</button>",
+      "css": ".ds-abtn{height:34px;padding:6px 12px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:0;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-size:12px;cursor:pointer;transition:border-color .2s}.ds-abtn:hover{border-color:rgba(255,255,255,.36)}.ds-abtn:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+    },
+    {
+      "name": "App · Tecla",
+      "kind": "custom",
+      "refersTo": "app-tecla",
+      "description": "Símbolo arriba a la izquierda, ON/OFF arriba a la derecha, nombre abajo; encendida en lima.",
+      "html": "<div style=\"display:flex;gap:8px;background:#000;padding:8px\"><button class=\"ds-tecla\"><span>⟳</span><b>OFF</b><em>Turbo</em></button><button class=\"ds-tecla ds-on\"><span>⟳</span><b>ON</b><em>Turbo</em></button></div>",
+      "css": ".ds-tecla{position:relative;width:128px;height:128px;padding:12px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:0;cursor:pointer;text-align:left;font-family:'Inter Tight',system-ui,sans-serif}.ds-tecla span{position:absolute;left:12px;top:12px;font-size:18px}.ds-tecla b{position:absolute;right:12px;top:12px;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-weight:400;font-size:11px}.ds-tecla em{position:absolute;left:12px;bottom:12px;font-style:normal;font-size:14px}.ds-tecla:hover{border-color:rgba(255,255,255,.36)}.ds-tecla.ds-on{border-color:#c8f04d;background:rgba(200,240,77,.08)}.ds-tecla.ds-on span,.ds-tecla.ds-on b{color:#c8f04d}.ds-tecla:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+    },
+    {
+      "name": "App · Estado",
       "kind": "chip",
       "refersTo": "",
       "description": "Punto de 6 px con su palabra, sin caja: lima late (vivo), blanco parpadea (pendiente).",
-      "html": "<div style=\"display:flex;gap:20px\"><span class=\"ds-estado ds-ok\"><i></i>Probado con PS5</span><span class=\"ds-estado ds-pend\"><i></i>Sin fabricar todavía</span></div>",
-      "css": ".ds-estado{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-weight:300;font-size:12px;color:#fff}.ds-estado i{width:6px;height:6px;border-radius:50%}.ds-ok i{background:#c8f04d;animation:ds-latep 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-pend i{background:#fff;animation:ds-parp 1.2s steps(1) infinite}@keyframes ds-latep{0%{box-shadow:0 0 0 0 rgba(200,240,77,.5)}70%,100%{box-shadow:0 0 0 6px rgba(200,240,77,0)}}@keyframes ds-parp{50%{opacity:.2}}"
-    },
-    {
-      "name": "Pregunta (FAQ)",
-      "kind": "custom",
-      "refersTo": "",
-      "description": "details en filas de línea fina; el + gira 45° y pasa a lima al abrir.",
-      "html": "<div class=\"ds-faq\"><details open><summary>¿Necesita internet?</summary><p>No. La app vive en la placa.</p></details><details><summary>¿Funciona con la PS4?</summary><p>También hace falta un adaptador.</p></details></div>",
-      "css": ".ds-faq{border-top:1px solid rgba(255,255,255,.16);font-family:'Inter Tight',system-ui,sans-serif;}.ds-faq details{border-bottom:1px solid rgba(255,255,255,.1)}.ds-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:60px;padding:14px 0;font-size:18px;color:#fff}.ds-faq summary::-webkit-details-marker{display:none}.ds-faq summary::after{content:'+';font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-weight:300;font-size:20px;color:rgba(255,255,255,.46);transition:transform .3s cubic-bezier(.16,1,.3,1),color .2s}.ds-faq summary:hover::after{color:#fff}.ds-faq details[open] summary::after{transform:rotate(45deg);color:#c8f04d}.ds-faq summary:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}.ds-faq p{margin:0;padding:0 0 20px;color:rgba(255,255,255,.68)}"
-    },
-    {
-      "name": "Teléfono de la demo",
-      "kind": "custom",
-      "refersTo": "web-telefono",
-      "description": "La app de verdad en un iframe dentro de un marco redondo de línea fuerte (52/42 px; 40/30 en móvil, donde pasa a captura).",
-      "html": "<figure class=\"ds-tel\"><div class=\"ds-tel-p\"><div class=\"ds-tel-s\"></div></div><figcaption><i></i>Demo · mando simulado</figcaption></figure>",
-      "css": ".ds-tel{margin:0;width:195px}.ds-tel-p{height:390px;padding:10px;border:1px solid rgba(255,255,255,.36);border-radius:52px;box-sizing:border-box}.ds-tel-s{height:100%;border-radius:42px;background:#000;outline:1px solid rgba(255,255,255,.1)}.ds-tel figcaption{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;font:300 12px/1.3 'Geist Mono',monospace;color:rgba(255,255,255,.46)}.ds-tel i{width:6px;height:6px;border-radius:50%;background:#c8f04d}"
-    },
-    {
-      "name": "Saltos de la demo",
-      "kind": "custom",
-      "refersTo": "web-salto",
-      "description": "Botones que llevan la demo a una pantalla; el elegido rellena su cuadrado de lima, late y pone el nombre en lima.",
-      "html": "<ul class=\"ds-saltos\"><li><button aria-pressed=\"true\"><span class=\"n\">Perfiles</span><span class=\"d\">Elige y edita.</span></button></li><li><button aria-pressed=\"false\"><span class=\"n\">Gatillos</span><span class=\"d\">Recorrido y zona muerta.</span></button></li></ul>",
-      "css": ".ds-saltos{list-style:none;margin:0;padding:0;border-top:1px solid rgba(255,255,255,.16);max-width:420px}.ds-saltos button{display:grid;grid-template-columns:9px 1fr;gap:2px 14px;width:100%;padding:14px 0;text-align:left;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.1);color:#fff;cursor:pointer;font-family:'Inter Tight',system-ui,sans-serif}.ds-saltos button::before{content:'';grid-row:1/span 2;width:9px;height:9px;margin-top:7px;border:1px solid rgba(255,255,255,.72);box-sizing:border-box}.ds-saltos button[aria-pressed=true]::before{background:#c8f04d;border-color:#c8f04d;animation:ds-late 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-saltos .n{font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-.015em;transition:color .2s}.ds-saltos .d{font-size:14px;color:rgba(255,255,255,.68)}.ds-saltos button:hover .n,.ds-saltos button[aria-pressed=true] .n{color:#c8f04d}.ds-saltos button:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}@keyframes ds-late{0%{box-shadow:0 0 0 0 rgba(200,240,77,.45)}70%,100%{box-shadow:0 0 0 10px rgba(200,240,77,0)}}"
-    },
-    {
-      "name": "Caja del instalador",
-      "kind": "card",
-      "refersTo": "web-instalador",
-      "description": "La única caja con borde lima y fondo lima al 8 %: etiqueta lima, estado, ficha, píldora blanca, nota y ayuda desplegable.",
-      "html": "<div class=\"ds-inst\"><div class=\"ds-inst-cab\"><span class=\"l\">Firmware</span><span class=\"e\"><i></i>Por probar</span></div><div class=\"ds-inst-acc\"><button class=\"ds-inst-p\">Instalar en la placa</button><p>Graba el arranque, las particiones y la app.</p></div><details><summary>Si no aparece la placa</summary></details></div>",
-      "css": ".ds-inst{border:1px solid #c8f04d;background:rgba(200,240,77,.08);color:#fff;max-width:420px;font-family:'Inter Tight',system-ui,sans-serif}.ds-inst-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.1)}.ds-inst .l{font:400 11px/1.4 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#c8f04d}.ds-inst .e{display:inline-flex;align-items:center;gap:8px;font:300 12px/1.3 'Geist Mono',monospace}.ds-inst .e i{width:6px;height:6px;border-radius:50%;background:#fff;animation:ds-parpadea 1.2s steps(1) infinite}.ds-inst-acc{padding:22px 16px 18px}.ds-inst-acc p{margin:14px 0 0;font-size:14px;color:rgba(255,255,255,.46)}.ds-inst-p{min-height:48px;padding:0 26px;border:0;border-radius:999px;background:#fff;color:#000;font:500 16px/1 'Inter Tight',sans-serif;cursor:pointer}.ds-inst-p:hover{background:rgba(255,255,255,.86)}.ds-inst-p:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}.ds-inst details{border-top:1px solid rgba(255,255,255,.1)}.ds-inst summary{list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 16px;font:400 12px/1 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.68);cursor:pointer}.ds-inst summary::after{content:'+';color:rgba(255,255,255,.46);transition:transform .3s cubic-bezier(.16,1,.3,1)}.ds-inst details[open] summary::after{transform:rotate(45deg);color:#c8f04d}@keyframes ds-parpadea{50%{opacity:.2}}"
-    },
-    {
-      "name": "Tablero de estado",
-      "kind": "card",
-      "refersTo": "web-pieza-estado",
-      "description": "Piezas como teclas: Probado (lima que late), Hecho (punto blanco), Por probar (punto blanco que parpadea), No (línea discontinua). Siempre con la palabra.",
-      "html": "<ul class=\"ds-tab\"><li class=\"on\"><span class=\"e\">Probado</span><h3>Montaje con módulos</h3></li><li class=\"hecho\"><span class=\"e\">Hecho</span><h3>App por WiFi</h3></li><li class=\"espera\"><span class=\"e\">Por probar</span><h3>La placa</h3></li><li class=\"no\"><span class=\"e\">No</span><h3>Audio por el jack</h3></li></ul>",
-      "css": ".ds-tab{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;font-family:'Inter Tight',system-ui,sans-serif;color:#fff}.ds-tab li{display:flex;flex-direction:column;min-height:110px;padding:14px 16px 16px;border:1px solid rgba(255,255,255,.16)}.ds-tab .e{align-self:flex-end;display:inline-flex;align-items:center;gap:7px;font:400 11px/1.4 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.46)}.ds-tab .e::before{content:'';width:6px;height:6px;border-radius:50%;border:1px solid currentColor;box-sizing:border-box}.ds-tab h3{margin:0;padding-top:18px;font-weight:500;font-size:18px;letter-spacing:-.015em}.ds-tab .on{border-color:#c8f04d;background:rgba(200,240,77,.08)}.ds-tab .on .e{color:#c8f04d}.ds-tab .on .e::before{background:#c8f04d;animation:ds-late-p 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-tab .hecho .e,.ds-tab .espera .e{color:#fff}.ds-tab .hecho .e::before{background:#fff}.ds-tab .espera .e::before{background:#fff;animation:ds-parp 1.2s steps(1) infinite}.ds-tab .no{border-style:dashed}.ds-tab .no h3{color:rgba(255,255,255,.68)}@keyframes ds-late-p{0%{box-shadow:0 0 0 0 rgba(200,240,77,.5)}70%,100%{box-shadow:0 0 0 6px rgba(200,240,77,0)}}@keyframes ds-parp{50%{opacity:.2}}"
+      "html": "<div style=\"display:flex;gap:20px;background:#000;padding:12px\"><span class=\"ds-est ds-ok\"><i></i>Conectado</span><span class=\"ds-est ds-pend\"><i></i>Esperando mando</span></div>",
+      "css": ".ds-est{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-weight:300;font-size:12px;color:#fff}.ds-est i{width:6px;height:6px;border-radius:50%}.ds-ok i{background:#c8f04d;animation:ds-late 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-pend i{background:#fff;animation:ds-parp 1.2s steps(1) infinite}@keyframes ds-late{0%{box-shadow:0 0 0 0 rgba(200,240,77,.5)}70%,100%{box-shadow:0 0 0 6px rgba(200,240,77,0)}}@keyframes ds-parp{50%{opacity:.2}}@media (prefers-reduced-motion:reduce){.ds-est i{animation:none}}"
     }
   ],
   "narrative": {
-    "northStar": "El mismo sistema operativo que NeuroClaude",
-    "overview": "Fondo negro, texto blanco con opacidades y un único acento, el lima. Las superficies son cajas de línea fina sin relleno, sin sombras ni degradados. Inter Tight lleva lo que se lee y Geist Mono lleva etiquetas, datos y estados. La identidad tiene dos superficies: la app del puente y la web pública, que amplía este sistema con una escala de titulares mayor, una página larga de lectura y componentes propios (el mapa del mando, la demo en su teléfono, la cadena del recorrido, los caminos de hardware, los pasos, el instalador y el tablero de estado).",
+    "northStar": "Dos mundos, un mando: el instrumento y su escaparate",
+    "overview": "p5k-ps5 tiene **dos superficies con sistema propio, que no se mezclan**. Todo token, regla y componente de este documento lleva su ámbito: lo que empieza por `app-` o va bajo **App** es de la app del puente; lo que empieza por `web-` o va bajo **Web pública** es solo de `web/` (p5k-ps5.github.io). Ninguna regla de una vale para la otra salvo que se diga.\n\n**App (placa, escritorio y Mac: `app/Pagina.swift`, `app/Vistas.swift`, el panel servido por la placa y por Tauri).** Pertenece a la familia NeuroClaude, junto a Lens, Rankeo, EcomCreative y Claude Stats; la referencia es `~/Developer/cabina` (`web/base.css`, `web/estilo.css`, `web/movil.css`, `app/icono.swift`). Fondo negro, texto blanco con opacidades y un único acento, el lima. Las superficies son cajas de línea fina sin relleno, sin sombras ni degradados. Inter Tight lleva lo que se lee y Geist Mono lleva etiquetas, datos y estados. La sensación es de sistema operativo vivo: puntos que laten, transiciones suaves y nada agresivo. Se toca a mano, a mitad de partida y con poca luz: lo denso es la letra, no los objetivos (44 px en táctil, teclas casi cuadradas); lo que se toca jugando (teclas, perfil, Pausar) sigue arriba.\n\n**Web pública (`web/`).** Mundo propio, decisión del usuario: la página de producto de hardware de siempre (el listón de Apple y Teenage Engineering), hecha sin rebajas. El DualSense en 3D es el protagonista sobre un **escenario negro de estudio**, y el scroll lo gira, lo ilumina por zonas y lo desmonta mientras se explica qué hace la placa con cada parte. Para leer, **papel gris frío**; un solo **naranja de señal** para lo que la placa toca. Schibsted Grotesk enorme y apretada titula; Martian Mono lleva fichas, etiquetas y datos, en filas de línea fina como una hoja técnica. Las tarjetas son blandas (22 a 28 px de radio) y las acciones, píldoras naranjas con texto negro.",
     "keyCharacteristics": [
-      "Negro puro; profundidad con línea, no con tono ni sombra.",
-      "Un solo acento: lima para lo vivo y lo encendido; rojo solo para lo que falla o alarma.",
-      "Sin radios, salvo las píldoras, los puntos y los objetos físicos redondos (el dibujo del DualSense y el marco del teléfono de la demo).",
-      "Mono para todo lo que sea dato o etiqueta; mayúsculas con CSS o textCase, sin cambiar los textos.",
-      "Una sola identidad: no hay tema claro, ni en la app ni en la web.",
-      "En la web, el propio DualSense dibujado a línea es la portada y el índice."
+      "Dos sistemas con ámbito explícito: `app-*` y `web-*`; no se cruzan tokens.",
+      "App: negro puro, línea fina, radio 0, un solo acento lima; rojo solo para lo que falla.",
+      "Web: alterna escenario negro de estudio y papel gris frío; un solo naranja de señal.",
+      "Web: el DualSense 3D es la portada y el índice; las zonas que la placa toca se encienden en naranja.",
+      "Mono para todo lo que sea dato o etiqueta en las dos superficies (Geist Mono en la app, Martian Mono en la web); mayúsculas con CSS o `textCase`, sin cambiar los textos.",
+      "El lima solo aparece en la web dentro del teléfono de la demo, porque ahí lo que se ve es la app."
     ],
     "rules": [
       {
-        "name": "La regla del lima único",
-        "body": "Ningún otro tono actúa ni decora. La acción principal es blanca, como en NeuroClaude: el lima no es «botón», es «esto está vivo». En la web hay una píldora blanca llena por sección y nunca más («Fabrícate uno» en la portada, «Instalar en la placa» en el instalador); su hover baja el blanco al 86 % y nunca pasa a lima, ni dentro de la caja lima del instalador. «Abrir la demo» es una píldora de línea.",
+        "name": "La regla del lima único (app)",
+        "body": "Ningún otro tono actúa ni decora. La acción principal es blanca, como en NeuroClaude: el lima no es «botón», es «esto está vivo». Las dos excepciones son datos, no diseño: el color que el usuario elige para cada perfil (solo el punto del perfil y la luz del mando) y el fondo blanco del QR, que hace falta para escanearlo.",
         "section": "colors"
       },
       {
-        "name": "La regla del estado con palabras",
+        "name": "La regla del estado con palabras (app)",
         "body": "El color confirma y la palabra informa: el punto lleva texto y la tecla lleva ON/OFF.",
         "section": "colors"
       },
       {
-        "name": "El latido no es sombra",
-        "body": "El anillo que se expande y se desvanece alrededor de un punto vivo es movimiento, no profundidad: se permite y es parte del mundo. Lo que no se permite es una sombra en reposo.",
+        "name": "La regla de la señal única (web)",
+        "body": "Un solo tono de color en toda la página: el naranja. No hay lima, ni rojo, ni azul en la interfaz de la web. Las excepciones son producto, no diseño: la barra de luz del mando 3D (azul de fábrica, y los colores de los perfiles en su parada), el verde de la placa al desmontarla y lo que se ve dentro del teléfono de la demo, que es la app con su lima.",
+        "section": "colors"
+      },
+      {
+        "name": "La regla de lo que la placa toca (web)",
+        "body": "El naranja marca lo que la placa cambia o lo que el usuario tiene que hacer; nunca decora. Si un elemento no es una acción, un estado vivo ni una parte que la placa toca, no es naranja.",
+        "section": "colors"
+      },
+      {
+        "name": "La regla del naranja como relleno (web)",
+        "body": "Sobre estudio, el naranja puede ser texto (6,3:1). Sobre papel o claro es relleno con texto negro, no texto de lectura: el naranja sobre papel se queda en 2,6:1.",
+        "section": "colors"
+      },
+      {
+        "name": "La regla del titular apretado (web)",
+        "body": "Cuanto más grande, más apretado y más pesado: 800 y -0.055em en la portada, 700 y -0.045em en las secciones, 600 y -0.02em en los h3. Nunca un titular grande en peso normal.",
+        "section": "typography"
+      },
+      {
+        "name": "El latido no es sombra (app)",
+        "body": "El anillo que se expande y se desvanece alrededor de un punto vivo (`box-shadow` animado a transparente) es movimiento, no profundidad: se permite. Lo que no se permite es una sombra en reposo.",
         "section": "elevation"
       },
       {
-        "name": "El teléfono es un objeto",
-        "body": "El marco de la demo lleva radio (52/42 px; 40/30 en móvil) por la misma razón que el dibujo del DualSense: es un objeto físico redondo. Lo de dentro sigue con radio 0 y no es licencia para redondear cajas.",
+        "name": "La regla del estudio (web)",
+        "body": "Sombras y degradados solo donde hay un objeto en el estudio (el mando, el teléfono) o la luz del propio estudio. Las tarjetas sobre papel son planas.",
+        "section": "elevation"
+      },
+      {
+        "name": "La regla de la cadena unida (web)",
+        "body": "En fila (desde 900 px) los eslabones se tocan y solo redondean las esquinas exteriores (22 px), separados por línea fina; en columna, cada eslabón es una tarjeta redondeada entera.",
         "section": "shapes"
       }
     ],
     "dos": [
-      "Mirar ~/Developer/cabina antes de inventar un componente.",
-      "Mantener 44 px en táctil aunque la letra sea pequeña.",
-      "Acompañar todo color de estado con su palabra.",
-      "Usar Tema en Swift y las variables CSS en la web, nunca colores sueltos.",
-      "Respetar prefers-reduced-motion.",
-      "En la web, usar la escala web solo en la web, y poner las llamadas del mapa fuera de la silueta del mando.",
-      "En la portada móvil, poner titular, entrada y nota antes del mando, y la píldora pegada al mando, antes de la tecla.",
-      "Marcar como «Render 3D» todo lo que no sea una foto."
+      "**Do** poner el ámbito a todo token y componente nuevo: `app-*` o `web-*`.",
+      "**Do** (app) mirar `~/Developer/cabina` antes de inventar un componente.",
+      "**Do** (app) mantener 44 px en táctil aunque la letra sea pequeña.",
+      "**Do** (las dos) acompañar todo color de estado con su palabra.",
+      "**Do** (app) usar `Tema` en Swift y las variables CSS del panel, nunca colores sueltos; (web) usar las variables del `:root` de `web/estilo.css`.",
+      "**Do** (las dos) respetar `prefers-reduced-motion`.",
+      "**Do** (web) poner texto negro sobre el naranja.",
+      "**Do** (web) alternar estudio y papel por secciones, y reservar el estudio para lo que se enseña (el mando, la demo, el instalador, el código).",
+      "**Do** (web) marcar como «Render 3D» todo lo que no sea una foto.",
+      "**Do** (web) mantener la imagen fija del mando para cuando no hay WebGL."
     ],
     "donts": [
-      "No añadir otro acento ni volver al ámbar, al verde o al azul.",
-      "No poner sombras en reposo, degradados de superficie ni radios en las cajas (el anillo del latido sí vale).",
-      "No usar el lima en un botón de acción ni en su hover: esa es la píldora blanca (86 % en hover).",
-      "No poner más de una píldora blanca llena por sección; lo secundario es píldora de línea, texto o dato.",
-      "No extender el radio del teléfono a las cajas: solo vale para el marco y la pantalla del teléfono.",
-      "No llevar a la app la escala de titulares de la web.",
-      "No poner en rojo la etiqueta «Solo sin conexión»: el rojo es para lo que falla.",
-      "No cargar fuentes de internet: la placa puede no tenerlo.",
-      "No aumentar el recorte de fuentes sin mirar lo que pesa dentro del firmware."
+      "**Don't** (web) usar el lima, el rojo de fallo, Inter Tight ni Geist Mono fuera del teléfono de la demo.",
+      "**Don't** (app) llevar a la app el naranja, Schibsted Grotesk, Martian Mono, las tarjetas redondeadas ni la escala de titulares de la web.",
+      "**Don't** (app) añadir otro acento ni volver al ámbar, al verde o al azul; ni poner sombras en reposo, degradados de superficie o radios en las cajas (el anillo del latido sí vale).",
+      "**Don't** (app) usar el lima en un botón de acción ni en su hover: la acción principal es la píldora blanca.",
+      "**Don't** (web) usar el naranja como texto de lectura sobre papel o claro (2,6:1); sobre papel es relleno.",
+      "**Don't** (web) poner texto blanco sobre el naranja.",
+      "**Don't** (web) usar el naranja para decorar: solo acción, estado vivo o parte que la placa toca.",
+      "**Don't** (web) poner sombra a las tarjetas sobre papel; la sombra es del teléfono y del mando.",
+      "**Don't** (las dos) cargar fuentes de internet.",
+      "**Don't** (app) aumentar el recorte de fuentes sin mirar lo que pesa dentro del firmware."
     ]
   }
 }
