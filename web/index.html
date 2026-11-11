@@ -15,12 +15,12 @@
 <link rel="preload" href="fuentes/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fuentes/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="modelo/dualsense.bin" as="fetch" crossorigin>
-<link rel="stylesheet" href="estilo.css?v=29">
+<link rel="stylesheet" href="estilo.css?v=30">
 <script>document.documentElement.classList.replace("sin-js", "con-js")</script>
 <script type="importmap">{"imports": {"three": "./vendor/three.module.min.js"}}</script>
-<script src="app.js?v=29" defer></script>
-<script type="module" src="escena.js?v=29"></script>
-<script type="module" src="visor-caja.js?v=29"></script>
+<script src="app.js?v=30" defer></script>
+<script type="module" src="escena.js?v=30"></script>
+<script type="module" src="visor-caja.js?v=30"></script>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
 <body>
@@ -404,11 +404,11 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 <section class="seccion estado-seccion" id="estado" aria-labelledby="t-estado">
   <div class="ancho">
     <h2 id="t-estado">Lo que funciona. Y lo que no.</h2>
-    <p class="intro">«Probado» quiere decir jugado con la PS5; «Hecho», terminado y revisado, pero sin probar a fondo.</p>
+    <p class="intro">«Probado» quiere decir usado de verdad con la PS5; «Por probar», hecho y revisado, pero sin probar todavía.</p>
     <ul class="tablero">
       <li class="pieza on"><span class="pieza-e">Probado</span><h3>Montaje con módulos</h3><p>Jugado con la PS5 a través del P5Mate: perfiles, anti-recoil y todo lo demás.</p></li>
-      <li class="pieza hecho"><span class="pieza-e">Hecho</span><h3>App por WiFi</h3><p>La placa abre su red, el móvil la muestra al conectarse y luego vive en <span class="dato">puente.local</span>.</p></li>
-      <li class="pieza hecho"><span class="pieza-e">Hecho</span><h3>Actualizar por WiFi</h3><p>Con vuelta atrás: si el firmware nuevo falla en los primeros 30 s, la placa vuelve sola al anterior.</p></li>
+      <li class="pieza on"><span class="pieza-e">Probado</span><h3>App por WiFi</h3><p>La app de uso diario: la placa abre su red, el móvil la muestra al conectarse y luego vive en <span class="dato">puente.local</span>.</p></li>
+      <li class="pieza on"><span class="pieza-e">Probado</span><h3>Actualizar por WiFi</h3><p>Con vuelta atrás: si el firmware nuevo falla en los primeros 30 s, la placa vuelve sola al anterior.</p></li>
       <li class="pieza espera"><span class="pieza-e">Por probar</span><h3>La placa p5k-ps5</h3><p>Diseñada y revisada con KiCad, sin fabricar todavía. Si la pides, cuéntalo en GitHub.</p></li>
       <li class="pieza espera"><span class="pieza-e">Por probar</span><h3>Instalar desde la web</h3><p>El firmware de hoy, compilado desde este repositorio. Falta grabarlo así en una placa de verdad.</p></li>
       <li class="pieza no"><span class="pieza-e">No</span><h3>Audio por el jack del mando</h3><p>El MAX3421E no da abasto: usa auriculares en la PS5 o un adaptador de USB-C a jack.</p></li>
