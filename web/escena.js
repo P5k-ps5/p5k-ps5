@@ -1,12 +1,13 @@
 // El escenario: el DualSense 3D fijo en pantalla mientras pasan las paradas. El modelo es «Playstation 5
 // Dualsense» de AHarmlessPotato (Sketchfab, CC BY 4.0), con las texturas reducidas para la web (modelo/).
-// Cada parada tiene una pose (giro, posición, tamaño), las zonas que se iluminan en naranja (un foco sobre la
-// superficie, porque el modelo viene en tres piezas grandes) y cuánto se vuelve translúcido para enseñar la
-// placa por dentro. Entre paradas la pose se interpola con el scroll; el render solo corre si se ve.
+// Cada parada tiene una pose (giro, posición, tamaño) y las zonas que se iluminan en naranja (un foco sobre la
+// superficie, porque el modelo viene en tres piezas grandes). En las dos últimas, el mando se aparta y aparece
+// el hardware, que va FUERA del mando y unido a él por cable: la placa p5k-ps5 o el montaje con módulos.
+// Entre paradas la pose se interpola con el scroll; el render solo corre si se ve.
 import * as THREE from "three";
 import { RoomEnvironment } from "./vendor/RoomEnvironment.js";
 import { GLTFLoader } from "./vendor/GLTFLoader.js";
-import { crearPlaca } from "./placa3d.js";
+import { cargarPlacaP5k, crearModulos } from "./hardware3d.js";
 
 const raiz = document.documentElement;
 const escenario = document.querySelector(".escenario");
@@ -26,14 +27,15 @@ const ZONAS = {
   panel: [0, 1.5, 1.3],
 };
 
-// Poses: rot en radianes (x, y, z), pos en unidades de escena, esc = tamaño relativo, rayos = translucidez
+// Poses: rot en radianes (x, y, z), pos en unidades de escena, esc = tamaño relativo; conjunto = mando + hardware
 const POSES = [
-  { rot: [-0.3, -0.36, 0.05], pos: [2.85, -0.05, 0], esc: 0.72, zonas: [], rayos: 0, movil: { y: 0.01, esc: 0.95 } },
-  { rot: [0.78, -0.26, 0.03], pos: [2.45, -0.45, 0], esc: 0.84, zonas: ["l2", "r2"], rayos: 0 },
-  { rot: [-0.08, 0.02, 0], pos: [2.4, 0.05, 0], esc: 0.84, zonas: ["izdo", "dcho"], rayos: 0 },
-  { rot: [-0.2, -0.38, 0.02], pos: [2.4, 0, 0], esc: 0.86, zonas: ["cruceta", "botones"], rayos: 0 },
-  { rot: [-0.08, 0.0, 0], pos: [2.5, 0.1, 0], esc: 0.88, zonas: ["panel"], rayos: 0, luces: true },
-  { rot: [-0.3, -0.5, 0.06], pos: [2.35, 0.1, 0], esc: 0.8, zonas: [], rayos: 1, movil: { esc: 0.8, y: 0.24 } },
+  { rot: [-0.3, -0.36, 0.05], pos: [2.85, -0.05, 0], esc: 0.72, zonas: [], movil: { y: 0.01, esc: 0.95 } },
+  { rot: [0.78, -0.26, 0.03], pos: [2.45, -0.45, 0], esc: 0.84, zonas: ["l2", "r2"] },
+  { rot: [-0.08, 0.02, 0], pos: [2.4, 0.05, 0], esc: 0.84, zonas: ["izdo", "dcho"] },
+  { rot: [-0.2, -0.38, 0.02], pos: [2.4, 0, 0], esc: 0.86, zonas: ["cruceta", "botones"] },
+  { rot: [-0.08, 0.0, 0], pos: [2.5, 0.1, 0], esc: 0.88, zonas: ["panel"], luces: true },
+  { rot: [-0.32, -0.3, 0.02], pos: [2.55, 0.0, 0], esc: 0.95, zonas: [], conjunto: 1, hw: "placa", movil: { esc: 0.82 } },
+  { rot: [-0.32, -0.3, 0.02], pos: [2.55, 0.0, 0], esc: 0.95, zonas: [], conjunto: 1, hw: "modulos", movil: { esc: 0.78 } },
 ];
 
 POSES.forEach((p, i) => { p.indice = i; });
@@ -140,11 +142,28 @@ async function iniciar() {
   camara.position.set(0, 0, 13);
 
   const { mando, materiales, luz } = await cargarMando();
-  const placa = crearPlaca();
-  placa.scale.setScalar(0.001);
   const pivote = new THREE.Group();
-  pivote.add(mando, placa);
+  pivote.add(mando);
   escena.add(pivote);
+
+  // El hardware, fuera del mando: debajo de él en el conjunto, a escala (62 mm de placa ≈ 3,4 unidades)
+  // Escala y sitio de cada hardware bajo el mando, y altura del mando en el conjunto
+  const HW = { placa: { esc: 0.052, y: -1.25, mando: 1.45 }, modulos: { esc: 0.04, y: -1.55, mando: 1.75 } };
+  const [placaP5k, modulos] = await Promise.all([cargarPlacaP5k(), Promise.resolve(crearModulos())]);
+  const hw = { placa: placaP5k, modulos };
+  for (const h of Object.values(hw)) {
+    h.grupo.rotation.x = -0.25;
+    h.grupo.scale.setScalar(0.0001);
+    h.grupo.visible = false;
+    pivote.add(h.grupo);
+    h.v = 0;
+  }
+  // Los cables: del USB-C del mando (arriba, en el centro) al puerto MANDO, y del CONSOLA hacia el P5Mate
+  const matCable = new THREE.MeshStandardMaterial({ color: 0x1c1d21, roughness: 0.6 });
+  const cableMando = new THREE.Mesh(new THREE.BufferGeometry(), matCable);
+  const cableConsola = new THREE.Mesh(new THREE.BufferGeometry(), matCable);
+  escena.add(cableMando, cableConsola);
+  const puertoMando = new THREE.Vector3(0, 2.02, -0.2); // en el mando de 6,4 de ancho
 
   let ancho = 0, alto = 0, movil = false;
   function medir() {
@@ -209,7 +228,7 @@ async function iniciar() {
 
   const suave = (t) => t * t * (3 - 2 * t);
   const mezcla = (a, b, t) => a + (b - a) * t;
-  const actual = { rot: [...POSES[0].rot], pos: [...POSES[0].pos], esc: 1, rayos: 0, fuerza: 0 };
+  const actual = { rot: [...POSES[0].rot], pos: [...POSES[0].pos], esc: 1, conjunto: 0, fuerza: 0 };
   let activa = -1, puntero = [0, 0], punteroSuave = [0, 0];
   let visible = true, pendiente = false, t0 = performance.now();
   const centros = [new THREE.Vector3(), new THREE.Vector3()];
@@ -224,7 +243,8 @@ async function iniciar() {
       rot: a.rot.map((v, k) => mezcla(v, b.rot[k], t)),
       pos: a.pos.map((v, k) => mezcla(v, b.pos[k], t)),
       esc: mezcla(a.esc, b.esc, t),
-      rayos: mezcla(a.rayos, b.rayos, t),
+      conjunto: mezcla(a.conjunto || 0, b.conjunto || 0, t),
+      hw: t < 0.5 ? a.hw : b.hw,
       parada: Math.round(f),
     };
   }
@@ -249,7 +269,7 @@ async function iniciar() {
       actual.pos[n] = mezcla(actual.pos[n], obj.pos[n], k);
     }
     actual.esc = mezcla(actual.esc, obj.esc, k);
-    actual.rayos = mezcla(actual.rayos, obj.rayos, k);
+    actual.conjunto = mezcla(actual.conjunto, obj.conjunto, k);
 
     // Respira un poco en la portada y sigue al puntero
     const vivo = !quieto.matches;
@@ -279,17 +299,38 @@ async function iniciar() {
       FOCOS.uFocos.value[i].set(centros[i].x, centros[i].y, centros[i].z, z[2] * actual.esc);
     }
 
-    // Por dentro: la carcasa se vuelve translúcida y aparece la placa
-    const r = suave(Math.min(1, Math.max(0, actual.rayos)));
-    for (const m of materiales) {
-      const translucido = r > 0.01;
-      if (m.transparent !== translucido) {
-        // Con el recorte puesto, todo lo que baja del 50 % de opacidad desaparecería
-        m.transparent = translucido; m.depthWrite = !translucido; m.alphaTest = translucido ? 0 : 0.5; m.needsUpdate = true;
-      }
-      m.opacity = 1 - r * 0.72;
+    // Fuera del mando: el mando sube y se encoge, y debajo aparece el hardware de la parada, unido por cable
+    const c = suave(Math.min(1, Math.max(0, actual.conjunto)));
+    const kh = 1 - Math.pow(0.004, dt);
+    let alturaMando = 0;
+    for (const [nombre, h] of Object.entries(hw)) {
+      h.v = mezcla(h.v, obj.hw === nombre ? c : 0, kh);
+      h.grupo.visible = h.v > 0.01;
+      h.grupo.scale.setScalar(Math.max(0.0001, HW[nombre].esc * suave(Math.min(1, h.v))));
+      h.grupo.position.set(0.15, HW[nombre].y - (1 - h.v) * 0.6, 0.3);
+      alturaMando += HW[nombre].mando * h.v;
     }
-    placa.scale.setScalar(Math.max(0.001, Math.min(1, (r - 0.2) / 0.6)));
+    mando.position.set(0, alturaMando, 0);
+    mando.scale.setScalar(1 - 0.5 * c);
+    const activo = (hw.modulos.v > hw.placa.v ? hw.modulos : hw.placa);
+    if (activo.v > 0.05) {
+      pivote.updateMatrixWorld(true);
+      const p0 = mando.localToWorld(puertoMando.clone());
+      const n0 = mando.localToWorld(puertoMando.clone().add(new THREE.Vector3(0, 0.5, 0))).sub(p0);
+      const p1 = activo.grupo.localToWorld(activo.puertos.mando.clone());
+      const n1 = activo.grupo.localToWorld(activo.puertos.mando.clone().add(activo.puertos.haciaMando.clone().multiplyScalar(14))).sub(p1);
+      const lado = new THREE.Vector3(1, 0, 0).applyQuaternion(pivote.quaternion).multiplyScalar(1.15 * actual.esc);
+      const curva = new THREE.CatmullRomCurve3([p0, p0.clone().add(n0), p0.clone().add(n0).add(lado.clone().multiplyScalar(1.6)), p1.clone().add(n1).add(lado.clone().multiplyScalar(0.5)), p1.clone().add(n1), p1], false, "centripetal");
+      cableMando.geometry.dispose();
+      cableMando.geometry = new THREE.TubeGeometry(curva, 80, 0.055 * actual.esc, 10);
+      const q0 = activo.grupo.localToWorld(activo.puertos.consola.clone());
+      const m0 = activo.grupo.localToWorld(activo.puertos.consola.clone().add(activo.puertos.haciaConsola.clone().multiplyScalar(14))).sub(q0);
+      const fuera = q0.clone().add(m0.clone().multiplyScalar(2)).add(new THREE.Vector3(-0.6, -4, 0.4));
+      const curva2 = new THREE.CatmullRomCurve3([q0, q0.clone().add(m0), q0.clone().add(m0.clone().multiplyScalar(1.8)).add(new THREE.Vector3(0, -0.6, 0.1)), fuera], false, "centripetal");
+      cableConsola.geometry.dispose();
+      cableConsola.geometry = new THREE.TubeGeometry(curva2, 48, 0.055 * actual.esc, 10);
+    }
+    cableMando.visible = cableConsola.visible = activo.v > 0.05;
 
     // La barra de luz pasa por los colores de los perfiles en su parada
     if (luz) {
@@ -298,7 +339,7 @@ async function iniciar() {
     }
 
     render.render(escena, camara);
-    if (visible && (vivo || Math.abs(actual.rayos - obj.rayos) > 0.001)) pedir();
+    if (visible && (vivo || Math.abs(actual.conjunto - obj.conjunto) > 0.001)) pedir();
   }
   function pedir() { if (!pendiente) { pendiente = true; requestAnimationFrame(cuadro); } }
 
