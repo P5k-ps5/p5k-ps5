@@ -16,6 +16,7 @@ colors:
   web-senal: "#ff5b1f"
   web-senal-hover: "#ff7a45"
   web-estudio: "#0b0b0c"
+  web-estudio-luz: "#1a1a1d"
   web-papel: "#ecedee"
   web-papel-2: "#e2e3e5"
   web-tinta: "#0b0b0c"
@@ -141,6 +142,54 @@ typography:
     fontWeight: 800
     lineHeight: 0.8
     letterSpacing: "-0.065em"
+  web-parada-titulo:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "clamp(40px, 5.4vw, 84px)"
+    fontWeight: 700
+    lineHeight: 0.96
+    letterSpacing: "-0.045em"
+  web-parada-titulo-movil:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "34px"
+    fontWeight: 700
+    lineHeight: 0.96
+    letterSpacing: "-0.045em"
+  web-parada-titulo-pequeno-movil-bajo:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "22px"
+    fontWeight: 700
+    lineHeight: 1.05
+    letterSpacing: "-0.04em"
+  web-aviso-titulo:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "clamp(28px, 3.4vw, 48px)"
+    fontWeight: 700
+    lineHeight: 1.04
+    letterSpacing: "-0.045em"
+  web-paso-titulo:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "26px"
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "-0.03em"
+  web-tarjeta-titulo:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "22px"
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "-0.03em"
+  web-pregunta:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "20px"
+    fontWeight: 600
+    lineHeight: 1.3
+    letterSpacing: "-0.02em"
+  web-cifra-movil:
+    fontFamily: '"Schibsted Grotesk", -apple-system, "Segoe UI", system-ui, sans-serif'
+    fontSize: "96px"
+    fontWeight: 800
+    lineHeight: 0.82
+    letterSpacing: "-0.06em"
 rounded:
   app-caja: "0px"
   app-pildora: "999px"
@@ -151,6 +200,9 @@ rounded:
   web-plano: "16px"
   web-telefono: "58px"
   web-telefono-pantalla: "47px"
+  web-telefono-movil: "44px"
+  web-telefono-pantalla-movil: "36px"
+  web-nota: "14px"
 spacing:
   app-xs: "4px"
   app-sm: "6px"
