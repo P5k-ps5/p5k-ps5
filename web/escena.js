@@ -36,6 +36,8 @@ const POSES = [
   { rot: [-0.3, -0.5, 0.06], pos: [2.35, 0.1, 0], esc: 0.8, zonas: [], rayos: 1, movil: { esc: 0.8, y: 0.24 } },
 ];
 
+POSES.forEach((p, i) => { p.indice = i; });
+
 function soportaWebGL() {
   try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; }
 }
@@ -149,6 +151,7 @@ async function iniciar() {
     const r = lienzo.getBoundingClientRect();
     ancho = r.width; alto = r.height; movil = ancho < 900;
     render.setSize(ancho, alto, false);
+    huecos.length = 0;
     camara.aspect = ancho / alto;
     camara.updateProjectionMatrix();
     pedir();
@@ -164,9 +167,36 @@ async function iniciar() {
       const cabe = (visibleAncho / 2 - x) * 0.84 / 3.5;
       return { ...p, pos: [x, p.pos[1], p.pos[2]], esc: Math.min(p.esc * Math.min(1, visibleAncho / 10.5), cabe) };
     }
-    const m = p.movil || {};
-    const esc = Math.min(1, (visibleAncho * 0.88) / 6.3) * (m.esc ?? 1);
-    return { ...p, pos: [0, visibleAlto * (m.y ?? 0.27), 0], esc: esc * (p.movil ? 1 : 0.86) };
+    // En el móvil, el mando se centra en el hueco libre de su parada y se ajusta a él
+    const [arriba, abajo] = hueco(p.indice);
+    const porPx = visibleAlto / alto;
+    const centro = (0.5 - (arriba + abajo) / 2 / alto) * visibleAlto;
+    const altoHueco = (abajo - arriba) * porPx;
+    // El mando de frente mide 6,4 × 4,2; girado ocupa algo más de alto
+    const esc = Math.min((visibleAncho * 0.9) / 6.4, (altoHueco * 0.86) / 4.4) * ((p.movil || {}).esc ?? 1);
+    return { ...p, pos: [0, centro, 0], esc };
+  }
+
+  // Hueco libre (en píxeles desde arriba de la pantalla) para el mando en cada parada del móvil:
+  // en la portada, entre el titular y el texto de abajo; en el resto, entre la barra y el título
+  const huecos = [];
+  function hueco(i) {
+    if (huecos[i]) return huecos[i];
+    const par = paradas[i];
+    const nav = document.querySelector(".nav")?.offsetHeight || 60;
+    let arriba = nav + 8, abajo = alto * 0.5;
+    if (par) {
+      if (i === 0) {
+        const h1 = par.querySelector("h1"), pie = par.querySelector(".portada-pie");
+        if (h1) arriba = h1.offsetTop + h1.offsetHeight + 8;
+        if (pie) abajo = pie.offsetTop - 8;
+      } else {
+        const primero = par.firstElementChild;
+        if (primero) abajo = primero.offsetTop - 10;
+      }
+    }
+    if (abajo - arriba < alto * 0.22) abajo = arriba + alto * 0.22;
+    return (huecos[i] = [arriba, abajo]);
   }
 
   // Progreso del scroll dentro del escenario: 0 en la portada, N-1 en la última parada
