@@ -15,11 +15,12 @@
 <link rel="preload" href="fuentes/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fuentes/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="modelo/dualsense.bin" as="fetch" crossorigin>
-<link rel="stylesheet" href="estilo.css?v=25">
+<link rel="stylesheet" href="estilo.css?v=27">
 <script>document.documentElement.classList.replace("sin-js", "con-js")</script>
 <script type="importmap">{"imports": {"three": "./vendor/three.module.min.js"}}</script>
-<script src="app.js?v=25" defer></script>
-<script type="module" src="escena.js?v=25"></script>
+<script src="app.js?v=27" defer></script>
+<script type="module" src="escena.js?v=27"></script>
+<script type="module" src="visor-caja.js?v=27"></script>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
 <body>
@@ -44,6 +45,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <a href="#como">Cómo funciona</a>
     <a href="#hardware">Hardware</a>
     <a href="#fabricar">Fabricar</a>
+    <a href="#descargas">Descargas</a>
     <a href="https://github.com/p5k-ps5/p5k-ps5" class="nav-gh">GitHub</a>
   </nav>
   <a class="boton boton-nav" href="#instalar">Instalar</a>
@@ -232,7 +234,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <ol class="pasos">
       <li>
         <h3 class="t3">Descarga los archivos de fabricación</h3>
-        <p>En <a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/placa">placa/</a> del repositorio: los Gerber (la placa), la lista de componentes (BOM) y sus posiciones (CPL). Están generados desde el diseño, con números de pieza de JLCPCB ya comprobados.</p>
+        <p>Están <a href="#descargas">aquí mismo, en la web</a>, y en <a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/placa">placa/</a> del repositorio: los Gerber (la placa), la lista de componentes (BOM) y sus posiciones (CPL). Están generados desde el diseño, con números de pieza de JLCPCB ya comprobados.</p>
       </li>
       <li>
         <h3 class="t3">Pídela en JLCPCB</h3>
@@ -299,6 +301,71 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       </li>
     </ol>
   </div>
+  </div>
+</section>
+
+<section class="seccion descargas" id="descargas" aria-labelledby="t-descargas">
+  <div class="ancho">
+    <h2 id="t-descargas">Todos los archivos, listos para fabricar.</h2>
+    <p class="intro">La placa se pide a JLCPCB con tres archivos. Las cajas se imprimen en cualquier impresora 3D o en un servicio de impresión. Gira cada caja con el dedo o el ratón.</p>
+    <div class="cajas">
+      <article class="caja-ficha">
+        <div class="visor-caja" data-visor-caja data-base="descargas/placa/caja-base.stl" data-tapa="descargas/placa/caja-tapa.stl" data-alto="9.5" data-placa="2.4">
+          <canvas aria-label="Caja de la placa p5k-ps5 en 3D, con la placa dentro"></canvas>
+          <img class="visor-respaldo" src="img/placa-arriba.png" width="1200" height="660" alt="Render de la placa p5k-ps5." loading="lazy">
+          <button class="visor-abrir" type="button" data-abrir aria-pressed="false">Abrir</button>
+        </div>
+        <div class="caja-cab"><h3>La placa p5k-ps5</h3><span class="estado pendiente"><i aria-hidden="true"></i>Por probar</span></div>
+        <p>Una caja plana para la placa: los dos USB-C a los lados, botones flexibles sobre RST y BOOT, una ventana para el LED y el QR de esta web grabado en la tapa. Sobre la antena solo hay plástico.</p>
+        <dl class="ficha">
+          <div><dt>Caja por fuera</dt><dd>66,2 × 40,7 × 9,5 mm</dd></div>
+          <div><dt>Material</dt><dd>PETG o PLA, unos 13 g</dd></div>
+          <div><dt>Impresión</dt><dd>Capa de 0,2 mm, 3 perímetros, relleno 20 %</dd></div>
+          <div><dt>Sin soportes</dt><dd>Base boca arriba; tapa boca abajo</dd></div>
+          <div><dt>Cierre</dt><dd>A presión, con un labio y 4 pivotes que sujetan la placa</dd></div>
+          <div><dt>QR grabado</dt><dd>Pásale un rotulador negro para que lo lea el móvil</dd></div>
+        </dl>
+        <div class="bajar-grupo">
+          <p class="bajar-t">Para JLCPCB</p>
+          <ul class="bajar-lista">
+            <li><a href="descargas/jlcpcb/puente-gerber.zip" download><span>Gerber y taladros</span><span class="dato">puente-gerber.zip · 100 KB</span></a></li>
+            <li><a href="descargas/jlcpcb/puente-bom.csv" download><span>Lista de componentes (BOM)</span><span class="dato">puente-bom.csv</span></a></li>
+            <li><a href="descargas/jlcpcb/puente-cpl.csv" download><span>Posiciones (CPL)</span><span class="dato">puente-cpl.csv</span></a></li>
+          </ul>
+          <p class="bajar-t">Caja</p>
+          <ul class="bajar-lista">
+            <li><a href="descargas/placa/caja-base.stl" download="p5k-ps5-placa-caja-base.stl"><span>Base</span><span class="dato">STL · 99 KB</span></a></li>
+            <li><a href="descargas/placa/caja-tapa.stl" download="p5k-ps5-placa-caja-tapa.stl"><span>Tapa</span><span class="dato">STL · 374 KB</span></a></li>
+          </ul>
+        </div>
+      </article>
+      <article class="caja-ficha">
+        <div class="visor-caja" data-visor-caja data-base="descargas/modulos/caja-base.stl" data-tapa="descargas/modulos/caja-tapa.stl" data-alto="18">
+          <canvas aria-label="Caja plana del montaje con módulos en 3D"></canvas>
+          <img class="visor-respaldo" src="img/caja.png" width="1200" height="660" alt="Render de la caja plana del montaje con módulos." loading="lazy">
+          <button class="visor-abrir" type="button" data-abrir aria-pressed="false">Abrir</button>
+        </div>
+        <div class="caja-cab"><h3>Con dos módulos</h3><span class="estado ok"><i aria-hidden="true"></i>Probado con PS5</span></div>
+        <p>La caja plana para el YD-ESP32-S3 y el MAX3421E mini, uno encima del otro: los dos USB-C del ESP32 en un extremo y el USB-A del mando en el otro. Las medidas salen de fotos de las placas: imprime antes la pieza de prueba de los puertos.</p>
+        <dl class="ficha">
+          <div><dt>Caja por fuera</dt><dd>68,1 × 32,3 × 18 mm</dd></div>
+          <div><dt>Material</dt><dd>PETG o PLA, unos 15 g</dd></div>
+          <div><dt>Impresión</dt><dd>Capa de 0,2 mm, 3 perímetros, relleno 20 %</dd></div>
+          <div><dt>Sin soportes</dt><dd>Base boca arriba; tapa boca abajo</dd></div>
+          <div><dt>Montaje</dt><dd>Pines cortados a ras y cables soldados</dd></div>
+          <div><dt>Antes de imprimir</dt><dd>Pieza de prueba de los puertos (unos minutos)</dd></div>
+        </dl>
+        <div class="bajar-grupo">
+          <p class="bajar-t">Caja</p>
+          <ul class="bajar-lista">
+            <li><a href="descargas/modulos/caja-base.stl" download="p5k-ps5-modulos-caja-base.stl"><span>Base</span><span class="dato">STL · 109 KB</span></a></li>
+            <li><a href="descargas/modulos/caja-tapa.stl" download="p5k-ps5-modulos-caja-tapa.stl"><span>Tapa</span><span class="dato">STL · 84 KB</span></a></li>
+            <li><a href="descargas/modulos/prueba-puertos.stl" download="p5k-ps5-modulos-prueba-puertos.stl"><span>Pieza de prueba de los puertos</span><span class="dato">STL · 99 KB</span></a></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+    <p class="pequeno descargas-nota">Los archivos se generan con scripts desde el repositorio (<a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/placa">placa/</a> y <a href="https://github.com/p5k-ps5/p5k-ps5/tree/main/caja">caja/</a>): si cambias una medida, se regeneran solos. Licencia GPL-3.0.</p>
   </div>
 </section>
 

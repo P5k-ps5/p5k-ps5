@@ -58,3 +58,23 @@ la tapa solo va por los laterales (el techo queda casi pegado a los componentes)
 2. Conecta los cables al ESP32 (o suéldalos, en la compacta).
 3. El ESP32: mete los dos USB-C en sus agujeros y baja la parte de atrás hasta que apoye.
 4. Cierra la tapa.
+
+## Caja de la placa p5k-ps5 (`placa/`)
+
+Para la placa propia de `../placa/` (62 × 30 mm, montada por JLCPCB). La genera `placa_caja.py`:
+
+```bash
+python3 placa_caja.py --vistas   # placa/caja-base.stl, placa/caja-tapa.stl, placa/datos.json, placa/vistas.png
+```
+
+- Por fuera, 66,2 × 40,7 × 9,5 mm; unos 13 g de PETG o PLA. Capa de 0,2 mm, 3 perímetros, relleno 20 %.
+- Sin soportes: la base boca arriba y la tapa boca abajo (el STL de la tapa ya viene así).
+- Los dos USB-C a los lados (CONSOLA a la izquierda, MANDO a la derecha), con un rebaje por fuera para que el
+  cable entre hasta el fondo. Sobre la antena, que sobresale 6,5 mm por arriba de la placa, solo hay plástico.
+- La tapa entra a presión con un labio, sujeta la placa con cuatro pivotes y lleva dos botones flexibles sobre
+  RST y BOOT, un agujero para el LED y, grabados, el nombre, los puertos y el QR de la web (el de la placa queda
+  tapado). Para que el móvil lea el QR, pásale un rotulador negro.
+- Sin imprimir ni probar todavía, como la placa: si el cable USB-C no entra hasta el fondo, sube el rebaje
+  (`USB_REBAJE`) o baja la pared (`PARED`).
+
+La web (sección «Descargas») enseña las dos cajas en 3D y deja descargar sus STL y los archivos de JLCPCB.

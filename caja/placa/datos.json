@@ -1,0 +1,16 @@
+{
+ "medidas": [
+  66.2,
+  40.7,
+  9.5
+ ],
+ "volumen_cm3": {
+  "base": 6.3,
+  "tapa": 3.9
+ },
+ "pared": 1.8,
+ "suelo": 1.4,
+ "tapa": 1.4,
+ "alto": 9.5,
+ "placa_z": 2.4
+}
