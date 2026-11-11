@@ -13,17 +13,20 @@ const VID_ESPRESSIF: u16 = 0x303A;
 pub const VID_SONY: u16 = 0x054C; // el firmware del puente se presenta como un mando de PS4
 pub const PID_DS4: u16 = 0x09CC;
 
-// Firmware compilado de `main/` (ver actualizar_firmware.sh). Direcciones de build/flasher_args.json.
+// Firmware compilado de `main/` (ver actualizar_firmware.sh). Direcciones de build/flasher_args.json y
+// de partitions.csv: con la tabla OTA, otadata va en 0xf000 (vacía: arranca de ota_0) y la app en 0x20000.
 const BOOTLOADER: &[u8] = include_bytes!("../firmware/bootloader.bin");
 const PARTICIONES: &[u8] = include_bytes!("../firmware/particiones.bin");
+const OTADATA: &[u8] = include_bytes!("../firmware/ota_data_initial.bin");
 const APLICACION: &[u8] = include_bytes!("../firmware/puente_mando.bin");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-fn piezas() -> [(u32, &'static str, &'static [u8]); 3] {
+fn piezas() -> [(u32, &'static str, &'static [u8]); 4] {
     [
         (0x0, "gestor de arranque", BOOTLOADER),
         (0x8000, "tabla de particiones", PARTICIONES),
-        (0x10000, "firmware del puente", APLICACION),
+        (0xf000, "arranque de la app", OTADATA),
+        (0x20000, "firmware del puente", APLICACION),
     ]
 }
 

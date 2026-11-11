@@ -1,9 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "2026.11.11",
   "chip": "esp32s3",
   "piezas": [
     { "archivo": "bootloader.bin", "direccion": "0x0" },
     { "archivo": "particiones.bin", "direccion": "0x8000" },
-    { "archivo": "puente_mando.bin", "direccion": "0x10000" }
+    { "archivo": "ota_data_initial.bin", "direccion": "0xf000" },
+    { "archivo": "puente_mando.bin", "direccion": "0x20000" }
   ]
 }

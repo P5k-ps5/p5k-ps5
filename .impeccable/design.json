@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-11T05:34:41.020061+00:00",
+  "generatedAt": "2026-11-11T16:09:03.369502+00:00",
   "title": "Design System: p5k-ps5",
   "extensions": {
     "colorMeta": {
@@ -86,10 +86,10 @@
       "campo-tactil": "Geist Mono 300, 16 px",
       "web-titular": "Solo web: h1 de la portada, Inter Tight 500, 40 a 72 px",
       "web-seccion": "Solo web: un título por sección, 30 a 52 px",
-      "web-subtitulo": "Solo web: subtítulos a 18 px, también los pasos de la guía; los títulos de caja (caminos, eslabones, aviso) van a 22 px (web-titulo-caja)",
+      "web-subtitulo": "Solo web: subtítulos a 18 px, también los pasos de la guía; los títulos de caja (caminos, eslabones, aviso) van a 22 px (web-titulo-caja); también los nombres de los saltos de la demo y de las piezas del tablero",
       "web-entrada": "Solo web: frase de la portada, 17 a 19 px",
       "web-body": "Solo web: texto corriente, 16 px, máx. 68ch",
-      "web-numero-paso": "Solo web: contador de pasos, mono 300, 34 px (24 en móvil)",
+      "web-numero-paso": "Solo web: contador de pasos, mono 300, 34 px (24 en móvil); los mini pasos del instalador, a 20 px",
       "web-titulo-caja": "Solo web: títulos de caja (caminos de hardware, nodos del recorrido, aviso), Inter Tight 500, 22 px, -0.02em",
       "web-numero-paso-movil": "Solo web: contador de pasos en móvil, mono 300, 24 px"
     },
@@ -107,7 +107,7 @@
       },
       {
         "name": "parpadeo",
-        "value": "1.2s steps(2)",
+        "value": "1.2s steps(1)",
         "purpose": "Punto de lo que pide atención."
       },
       {
@@ -124,6 +124,16 @@
         "name": "asoma",
         "value": ".45s cubic-bezier(.16,1,.3,1), escalonado 50ms",
         "purpose": "Entrada de las funciones de la tecla y de la guía de cada pestaña."
+      },
+      {
+        "name": "salto",
+        "value": "late 1.6s",
+        "purpose": "Web: el cuadrado del salto elegido de la demo late como el marcador del mapa."
+      },
+      {
+        "name": "flecha-demo",
+        "value": "translateY(2px) .3s cubic-bezier(.16,1,.3,1)",
+        "purpose": "Web: la flecha de «Ajústalo en la demo» baja y pasa a lima en hover."
       }
     ],
     "breakpoints": [
@@ -144,27 +154,35 @@
         "value": "720px"
       },
       {
-        "name": "web-llamadas",
+        "name": "web-llamadas-y-telefono",
         "value": "760px"
       },
       {
-        "name": "web-cadena",
+        "name": "web-cadena-demo-instalar-tablero",
         "value": "900px"
       },
       {
-        "name": "web-portada",
+        "name": "web-portada-caminos-repo",
         "value": "980px"
       }
     ]
   },
   "components": [
     {
-      "name": "Píldora (acción principal)",
+      "name": "Píldora (acción llena)",
       "kind": "button",
       "refersTo": "web-pildora",
-      "description": "La única acción de la página; blanca, nunca lima.",
+      "description": "Una por sección como mucho: «Fabrícate uno» en la portada e «Instalar en la placa» en el instalador. Blanca, nunca lima.",
       "html": "<a class=\"ds-pildora\" href=\"#\">Fabrícate uno</a>",
       "css": ".ds-pildora{display:inline-flex;align-items:center;min-height:48px;padding:0 26px;border-radius:999px;background:#fff;color:#000;text-decoration:none;font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;font-size:16px;line-height:1;letter-spacing:-.01em;transition:transform .25s cubic-bezier(.16,1,.3,1),background-color .2s}.ds-pildora:hover{background:rgba(255,255,255,.86)}.ds-pildora:active{transform:scale(.98)}.ds-pildora:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
+    },
+    {
+      "name": "Píldora de línea",
+      "kind": "button",
+      "refersTo": "web-pildora-linea",
+      "description": "Solo «Abrir la demo», sobre la captura del teléfono en móvil.",
+      "html": "<a class=\"ds-pildora-linea\" href=\"#\">Abrir la demo</a>",
+      "css": ".ds-pildora-linea{display:inline-flex;align-items:center;min-height:48px;padding:0 26px;border-radius:999px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.36);text-decoration:none;font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;font-size:16px;line-height:1;white-space:nowrap}.ds-pildora-linea:hover{border-color:#fff}.ds-pildora-linea:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}"
     },
     {
       "name": "Botón de caja",
@@ -229,15 +247,47 @@
       "description": "details en filas de línea fina; el + gira 45° y pasa a lima al abrir.",
       "html": "<div class=\"ds-faq\"><details open><summary>¿Necesita internet?</summary><p>No. La app vive en la placa.</p></details><details><summary>¿Funciona con la PS4?</summary><p>También hace falta un adaptador.</p></details></div>",
       "css": ".ds-faq{border-top:1px solid rgba(255,255,255,.16);font-family:'Inter Tight',system-ui,sans-serif;}.ds-faq details{border-bottom:1px solid rgba(255,255,255,.1)}.ds-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:60px;padding:14px 0;font-size:18px;color:#fff}.ds-faq summary::-webkit-details-marker{display:none}.ds-faq summary::after{content:'+';font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-weight:300;font-size:20px;color:rgba(255,255,255,.46);transition:transform .3s cubic-bezier(.16,1,.3,1),color .2s}.ds-faq summary:hover::after{color:#fff}.ds-faq details[open] summary::after{transform:rotate(45deg);color:#c8f04d}.ds-faq summary:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}.ds-faq p{margin:0;padding:0 0 20px;color:rgba(255,255,255,.68)}"
+    },
+    {
+      "name": "Teléfono de la demo",
+      "kind": "custom",
+      "refersTo": "web-telefono",
+      "description": "La app de verdad en un iframe dentro de un marco redondo de línea fuerte (52/42 px; 40/30 en móvil, donde pasa a captura).",
+      "html": "<figure class=\"ds-tel\"><div class=\"ds-tel-p\"><div class=\"ds-tel-s\"></div></div><figcaption><i></i>Demo · mando simulado</figcaption></figure>",
+      "css": ".ds-tel{margin:0;width:195px}.ds-tel-p{height:390px;padding:10px;border:1px solid rgba(255,255,255,.36);border-radius:52px;box-sizing:border-box}.ds-tel-s{height:100%;border-radius:42px;background:#000;outline:1px solid rgba(255,255,255,.1)}.ds-tel figcaption{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;font:300 12px/1.3 'Geist Mono',monospace;color:rgba(255,255,255,.46)}.ds-tel i{width:6px;height:6px;border-radius:50%;background:#c8f04d}"
+    },
+    {
+      "name": "Saltos de la demo",
+      "kind": "custom",
+      "refersTo": "web-salto",
+      "description": "Botones que llevan la demo a una pantalla; el elegido rellena su cuadrado de lima, late y pone el nombre en lima.",
+      "html": "<ul class=\"ds-saltos\"><li><button aria-pressed=\"true\"><span class=\"n\">Perfiles</span><span class=\"d\">Elige y edita.</span></button></li><li><button aria-pressed=\"false\"><span class=\"n\">Gatillos</span><span class=\"d\">Recorrido y zona muerta.</span></button></li></ul>",
+      "css": ".ds-saltos{list-style:none;margin:0;padding:0;border-top:1px solid rgba(255,255,255,.16);max-width:420px}.ds-saltos button{display:grid;grid-template-columns:9px 1fr;gap:2px 14px;width:100%;padding:14px 0;text-align:left;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.1);color:#fff;cursor:pointer;font-family:'Inter Tight',system-ui,sans-serif}.ds-saltos button::before{content:'';grid-row:1/span 2;width:9px;height:9px;margin-top:7px;border:1px solid rgba(255,255,255,.72);box-sizing:border-box}.ds-saltos button[aria-pressed=true]::before{background:#c8f04d;border-color:#c8f04d;animation:ds-late 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-saltos .n{font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-.015em;transition:color .2s}.ds-saltos .d{font-size:14px;color:rgba(255,255,255,.68)}.ds-saltos button:hover .n,.ds-saltos button[aria-pressed=true] .n{color:#c8f04d}.ds-saltos button:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}@keyframes ds-late{0%{box-shadow:0 0 0 0 rgba(200,240,77,.45)}70%,100%{box-shadow:0 0 0 10px rgba(200,240,77,0)}}"
+    },
+    {
+      "name": "Caja del instalador",
+      "kind": "card",
+      "refersTo": "web-instalador",
+      "description": "La única caja con borde lima y fondo lima al 8 %: etiqueta lima, estado, ficha, píldora blanca, nota y ayuda desplegable.",
+      "html": "<div class=\"ds-inst\"><div class=\"ds-inst-cab\"><span class=\"l\">Firmware</span><span class=\"e\"><i></i>Por probar</span></div><div class=\"ds-inst-acc\"><button class=\"ds-inst-p\">Instalar en la placa</button><p>Graba el arranque, las particiones y la app.</p></div><details><summary>Si no aparece la placa</summary></details></div>",
+      "css": ".ds-inst{border:1px solid #c8f04d;background:rgba(200,240,77,.08);color:#fff;max-width:420px;font-family:'Inter Tight',system-ui,sans-serif}.ds-inst-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.1)}.ds-inst .l{font:400 11px/1.4 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#c8f04d}.ds-inst .e{display:inline-flex;align-items:center;gap:8px;font:300 12px/1.3 'Geist Mono',monospace}.ds-inst .e i{width:6px;height:6px;border-radius:50%;background:#fff;animation:ds-parpadea 1.2s steps(1) infinite}.ds-inst-acc{padding:22px 16px 18px}.ds-inst-acc p{margin:14px 0 0;font-size:14px;color:rgba(255,255,255,.46)}.ds-inst-p{min-height:48px;padding:0 26px;border:0;border-radius:999px;background:#fff;color:#000;font:500 16px/1 'Inter Tight',sans-serif;cursor:pointer}.ds-inst-p:hover{background:rgba(255,255,255,.86)}.ds-inst-p:focus-visible{outline:1px solid #c8f04d;outline-offset:3px}.ds-inst details{border-top:1px solid rgba(255,255,255,.1)}.ds-inst summary{list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 16px;font:400 12px/1 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.68);cursor:pointer}.ds-inst summary::after{content:'+';color:rgba(255,255,255,.46);transition:transform .3s cubic-bezier(.16,1,.3,1)}.ds-inst details[open] summary::after{transform:rotate(45deg);color:#c8f04d}@keyframes ds-parpadea{50%{opacity:.2}}"
+    },
+    {
+      "name": "Tablero de estado",
+      "kind": "card",
+      "refersTo": "web-pieza-estado",
+      "description": "Piezas como teclas: Probado (lima que late), Hecho (punto blanco), Por probar (punto blanco que parpadea), No (línea discontinua). Siempre con la palabra.",
+      "html": "<ul class=\"ds-tab\"><li class=\"on\"><span class=\"e\">Probado</span><h3>Montaje con módulos</h3></li><li class=\"hecho\"><span class=\"e\">Hecho</span><h3>App por WiFi</h3></li><li class=\"espera\"><span class=\"e\">Por probar</span><h3>La placa</h3></li><li class=\"no\"><span class=\"e\">No</span><h3>Audio por el jack</h3></li></ul>",
+      "css": ".ds-tab{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;font-family:'Inter Tight',system-ui,sans-serif;color:#fff}.ds-tab li{display:flex;flex-direction:column;min-height:110px;padding:14px 16px 16px;border:1px solid rgba(255,255,255,.16)}.ds-tab .e{align-self:flex-end;display:inline-flex;align-items:center;gap:7px;font:400 11px/1.4 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.46)}.ds-tab .e::before{content:'';width:6px;height:6px;border-radius:50%;border:1px solid currentColor;box-sizing:border-box}.ds-tab h3{margin:0;padding-top:18px;font-weight:500;font-size:18px;letter-spacing:-.015em}.ds-tab .on{border-color:#c8f04d;background:rgba(200,240,77,.08)}.ds-tab .on .e{color:#c8f04d}.ds-tab .on .e::before{background:#c8f04d;animation:ds-late-p 1.6s cubic-bezier(.16,1,.3,1) infinite}.ds-tab .hecho .e,.ds-tab .espera .e{color:#fff}.ds-tab .hecho .e::before{background:#fff}.ds-tab .espera .e::before{background:#fff;animation:ds-parp 1.2s steps(1) infinite}.ds-tab .no{border-style:dashed}.ds-tab .no h3{color:rgba(255,255,255,.68)}@keyframes ds-late-p{0%{box-shadow:0 0 0 0 rgba(200,240,77,.5)}70%,100%{box-shadow:0 0 0 6px rgba(200,240,77,0)}}@keyframes ds-parp{50%{opacity:.2}}"
     }
   ],
   "narrative": {
     "northStar": "El mismo sistema operativo que NeuroClaude",
-    "overview": "Fondo negro, texto blanco con opacidades y un único acento, el lima. Las superficies son cajas de línea fina sin relleno, sin sombras ni degradados. Inter Tight lleva lo que se lee y Geist Mono lleva etiquetas, datos y estados. La identidad tiene dos superficies: la app del puente y la web pública, que amplía este sistema con una escala de titulares mayor, una página larga de lectura y componentes propios (el mapa del mando, la cadena del recorrido, los caminos de hardware, los pasos).",
+    "overview": "Fondo negro, texto blanco con opacidades y un único acento, el lima. Las superficies son cajas de línea fina sin relleno, sin sombras ni degradados. Inter Tight lleva lo que se lee y Geist Mono lleva etiquetas, datos y estados. La identidad tiene dos superficies: la app del puente y la web pública, que amplía este sistema con una escala de titulares mayor, una página larga de lectura y componentes propios (el mapa del mando, la demo en su teléfono, la cadena del recorrido, los caminos de hardware, los pasos, el instalador y el tablero de estado).",
     "keyCharacteristics": [
       "Negro puro; profundidad con línea, no con tono ni sombra.",
       "Un solo acento: lima para lo vivo y lo encendido; rojo solo para lo que falla o alarma.",
-      "Sin radios, salvo la píldora de la acción principal y los puntos.",
+      "Sin radios, salvo las píldoras, los puntos y los objetos físicos redondos (el dibujo del DualSense y el marco del teléfono de la demo).",
       "Mono para todo lo que sea dato o etiqueta; mayúsculas con CSS o textCase, sin cambiar los textos.",
       "Una sola identidad: no hay tema claro, ni en la app ni en la web.",
       "En la web, el propio DualSense dibujado a línea es la portada y el índice."
@@ -245,7 +295,7 @@
     "rules": [
       {
         "name": "La regla del lima único",
-        "body": "Ningún otro tono actúa ni decora. La acción principal es blanca, como en NeuroClaude: el lima no es «botón», es «esto está vivo». En la web vale igual: la píldora blanca «Fabrícate uno» es la acción, y su hover baja el blanco al 86 %, nunca pasa a lima.",
+        "body": "Ningún otro tono actúa ni decora. La acción principal es blanca, como en NeuroClaude: el lima no es «botón», es «esto está vivo». En la web hay una píldora blanca llena por sección y nunca más («Fabrícate uno» en la portada, «Instalar en la placa» en el instalador); su hover baja el blanco al 86 % y nunca pasa a lima, ni dentro de la caja lima del instalador. «Abrir la demo» es una píldora de línea.",
         "section": "colors"
       },
       {
@@ -257,6 +307,11 @@
         "name": "El latido no es sombra",
         "body": "El anillo que se expande y se desvanece alrededor de un punto vivo es movimiento, no profundidad: se permite y es parte del mundo. Lo que no se permite es una sombra en reposo.",
         "section": "elevation"
+      },
+      {
+        "name": "El teléfono es un objeto",
+        "body": "El marco de la demo lleva radio (52/42 px; 40/30 en móvil) por la misma razón que el dibujo del DualSense: es un objeto físico redondo. Lo de dentro sigue con radio 0 y no es licencia para redondear cajas.",
+        "section": "shapes"
       }
     ],
     "dos": [
@@ -266,12 +321,15 @@
       "Usar Tema en Swift y las variables CSS en la web, nunca colores sueltos.",
       "Respetar prefers-reduced-motion.",
       "En la web, usar la escala web solo en la web, y poner las llamadas del mapa fuera de la silueta del mando.",
-      "En la portada móvil, poner el mando y su tecla antes que el texto."
+      "En la portada móvil, poner titular, entrada y nota antes del mando, y la píldora pegada al mando, antes de la tecla.",
+      "Marcar como «Render 3D» todo lo que no sea una foto."
     ],
     "donts": [
       "No añadir otro acento ni volver al ámbar, al verde o al azul.",
       "No poner sombras en reposo, degradados de superficie ni radios en las cajas (el anillo del latido sí vale).",
       "No usar el lima en un botón de acción ni en su hover: esa es la píldora blanca (86 % en hover).",
+      "No poner más de una píldora blanca llena por sección; lo secundario es píldora de línea, texto o dato.",
+      "No extender el radio del teléfono a las cajas: solo vale para el marco y la pantalla del teléfono.",
       "No llevar a la app la escala de titulares de la web.",
       "No poner en rojo la etiqueta «Solo sin conexión»: el rojo es para lo que falla.",
       "No cargar fuentes de internet: la placa puede no tenerlo.",

@@ -82,6 +82,10 @@ const ZONAS = {
   },
 };
 
+// La pantalla de la demo donde se ajusta cada control
+const PANTALLA = { r2: "Anti-recoil", l2: "Ayuda al apuntado", r1: "Turbo", dcho: "Sticks", izdo: "Sticks",
+                   botones: "Botones", cruceta: "Macros", panel: "Perfiles", ps: "En vivo" };
+
 const h = (etiqueta, attrs = {}, ...hijos) => {
   const e = document.createElement(etiqueta);
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
@@ -136,7 +140,8 @@ function mapa() {
       h("div", { class: "tz-cab" },
         h("span", { class: "tz-control" }, z.nombre),
         h("p", { class: "tz-resumen" }, z.resumen)),
-      h("ul", { class: "tz-funciones" }, z.funciones.map(funcion)));
+      h("ul", { class: "tz-funciones" }, z.funciones.map(funcion)),
+      h("button", { class: "tz-demo", type: "button", "data-ir": PANTALLA[id] }, `Ajústalo en la demo: ${PANTALLA[id]}`));
     if (foco) foco.focus();
   }
 
@@ -159,11 +164,12 @@ function mapa() {
 function lista() {
   const caja = document.querySelector("[data-lista]");
   if (!caja) return;
-  caja.replaceChildren(...Object.values(ZONAS).map((z) =>
+  caja.replaceChildren(...Object.entries(ZONAS).map(([id, z]) =>
     h("div", { class: "grupo" },
       h("h3", { class: "grupo-t" }, z.nombre),
       h("ul", {}, z.funciones.map((f) =>
-        h("li", {}, f.n, f.sc ? h("span", { class: "marca-sc" }, "· solo sin conexión") : ""))))));
+        h("li", {}, f.n, f.sc ? h("span", { class: "marca-sc" }, "· solo sin conexión") : ""))),
+      h("button", { class: "tz-demo grupo-ir", type: "button", "data-ir": PANTALLA[id] }, `En la demo: ${PANTALLA[id]}`))));
 }
 
 function pestanas() {
@@ -188,6 +194,52 @@ function pestanas() {
   });
 }
 
+// Identificadores de las pestañas de la app (TABS en app/Pagina.swift), para abrir la demo en una
+const TAB_DEMO = { "En vivo": "vivo", "Sticks": "sticks", "Gatillos": "gatillos", "Botones": "botones", "Turbo": "turbo",
+                   "Macros": "macros", "Anti-recoil": "antirecoil", "Ayuda al apuntado": "ayuda", "Perfiles": "perfiles" };
+
+// La demo: la lista de la izquierda lleva la app (mismo origen) a cada pantalla, y al revés
+function demo() {
+  const marco = document.querySelector("[data-demo]");
+  const saltos = [...document.querySelectorAll("[data-saltos] button")];
+  if (!marco || !saltos.length) return;
+  let pendiente = null;
+  const marcar = (nombre) => {
+    for (const b of saltos) b.setAttribute("aria-pressed", String(b.dataset.ir === nombre));
+  };
+  const pestana = (nombre) => {
+    const doc = marco.contentDocument;
+    return doc && [...doc.querySelectorAll("#tabs button")].find((b) => b.textContent.trim() === nombre);
+  };
+  // Mientras la demo arranca no hay pestañas todavía: se reintenta unos segundos
+  const ir = (nombre, intentos = 24) => {
+    const t = pestana(nombre);
+    if (t) { t.click(); marcar(nombre); pendiente = null; }
+    else if (intentos > 0) { pendiente = nombre; setTimeout(() => pendiente === nombre && ir(nombre, intentos - 1), 250); }
+  };
+  for (const b of saltos) b.addEventListener("click", () => ir(b.dataset.ir));
+  // Desde el mapa de la portada: baja a la demo y abre la pantalla del control (en el móvil, la demo a pantalla completa)
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest(".tz-demo");
+    if (!b) return;
+    if (getComputedStyle(marco).display === "none") {
+      location.href = "demo/#k=DEMO&tab=" + encodeURIComponent(TAB_DEMO[b.dataset.ir] || "vivo");
+      return;
+    }
+    document.getElementById("demo").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    marco.loading = "eager";
+    ir(b.dataset.ir);
+  });
+  marco.addEventListener("load", () => {
+    const doc = marco.contentDocument;
+    doc?.addEventListener("click", (e) => {
+      const t = e.target.closest?.("#tabs button");
+      if (t) marcar(t.textContent.trim());
+    });
+  });
+}
+
 mapa();
 lista();
 pestanas();
+demo();
