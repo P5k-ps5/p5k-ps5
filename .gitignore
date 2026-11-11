@@ -14,3 +14,4 @@ placa/fp-info-cache
 placa/*.kicad_prl
 placa/puente-backups/
 placa/\#auto_saved_files#
+.impeccable/questions/

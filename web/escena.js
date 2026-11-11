@@ -16,12 +16,12 @@ const COLORES_PERFIL = [0x2f6bff, 0x00c853, 0xff2d55, 0xb04dff, 0xffb300];
 
 // Poses: rot en radianes (x, y, z), pos en unidades de escena, esc = tamaño relativo
 const POSES = [
-  { rot: [-0.5, -0.55, 0.1], pos: [2.6, -0.1, 0], esc: 0.74, zonas: [], desmonte: 0, movil: { y: 0.01, esc: 0.95 } },
-  { rot: [0.8, -0.4, 0.06], pos: [2.45, -0.4, 0], esc: 0.84, zonas: ["r2", "l2", "r1"], desmonte: 0 },
-  { rot: [-0.18, 0.02, 0], pos: [2.35, 0.05, 0], esc: 0.82, zonas: ["izdo", "dcho"], desmonte: 0 },
-  { rot: [-0.32, -0.62, 0.02], pos: [2.35, 0, 0], esc: 0.86, zonas: ["botones", "cruceta"], desmonte: 0 },
-  { rot: [-0.12, 0.0, 0], pos: [2.55, 0.1, 0], esc: 0.9, zonas: ["panel"], desmonte: 0, luces: true },
-  { rot: [-0.3, -0.62, 0.06], pos: [2.35, 0.1, 0], esc: 0.72, zonas: [], desmonte: 1, movil: { esc: 0.74, y: 0.24 } },
+  { rot: [-0.32, -0.34, 0.06], pos: [2.85, -0.05, 0], esc: 0.72, zonas: [], desmonte: 0, movil: { y: 0.01, esc: 0.95 } },
+  { rot: [0.72, -0.28, 0.04], pos: [2.45, -0.4, 0], esc: 0.84, zonas: ["r2", "l2"], desmonte: 0 },
+  { rot: [-0.08, 0.02, 0], pos: [2.4, 0.05, 0], esc: 0.84, zonas: ["izdo", "dcho"], desmonte: 0 },
+  { rot: [-0.2, -0.38, 0.02], pos: [2.4, 0, 0], esc: 0.86, zonas: ["botones", "cruceta"], desmonte: 0 },
+  { rot: [-0.06, 0.0, 0], pos: [2.5, 0.1, 0], esc: 0.88, zonas: ["panel"], desmonte: 0, luces: true },
+  { rot: [-0.3, -0.5, 0.06], pos: [2.35, 0.1, 0], esc: 0.72, zonas: [], desmonte: 1, movil: { esc: 0.74, y: 0.24 } },
 ];
 
 function soportaWebGL() {
@@ -38,12 +38,13 @@ async function iniciar() {
   const render = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true, alpha: true, powerPreference: "high-performance" });
   render.setPixelRatio(Math.min(devicePixelRatio, 2));
   render.toneMapping = THREE.ACESFilmicToneMapping;
-  render.toneMappingExposure = 1.05;
+  render.toneMappingExposure = 0.92;
   render.outputColorSpace = THREE.SRGBColorSpace;
 
   const escena = new THREE.Scene();
   escena.environment = new THREE.PMREMGenerator(render).fromScene(new RoomEnvironment(), 0.04).texture;
-  const clave = new THREE.DirectionalLight(0xffffff, 1.5);
+  escena.environmentIntensity = 0.55;
+  const clave = new THREE.DirectionalLight(0xffffff, 1.9);
   clave.position.set(3, 5, 6);
   escena.add(clave);
   const contra = new THREE.DirectionalLight(0xff8a5c, 0.9);
@@ -182,7 +183,7 @@ async function iniciar() {
     }
     // La barra de luz pasa por los colores de los perfiles en su parada
     const perfil = POSES[activa]?.luces;
-    const c = new THREE.Color(perfil ? COLORES_PERFIL[Math.floor(seg / 1.4) % COLORES_PERFIL.length] : 0x2f6bff);
+    const c = new THREE.Color(perfil ? COLORES_PERFIL[Math.floor(seg / 1.4) % COLORES_PERFIL.length] : 0x1a3cff);
     for (const l of luces) { l.material.emissive.lerp(c, 1 - Math.pow(0.01, dt)); }
 
     render.render(escena, camara);
