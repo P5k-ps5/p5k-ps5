@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>p5k-ps5</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <header class="cabecera">
+    <div class="marca">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path fill-rule="evenodd" d="M7.2 5h9.6c2.8 0 4.8 2 5.2 4.8l.9 5.8c.4 2.6-1.3 4.4-3.3 4.4-1.4 0-2.4-.8-3.2-2-1-1.6-2.4-2.6-4.4-2.6s-3.4 1-4.4 2.6c-.8 1.2-1.8 2-3.2 2-2 0-3.7-1.8-3.3-4.4l.9-5.8C2.4 7 4.4 5 7.2 5ZM6.7 7.8v2H4.7v1.9h2v2h1.9v-2h2V9.8h-2v-2H6.7Zm9.1 2.9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm2.6-3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>
+      </span>
+      <h1>p5k-ps5</h1>
+    </div>
+    <span class="chip-modo" id="chip-modo" role="status" aria-live="polite"><i class="punto"></i><span>Buscando placa…</span></span>
+    <nav class="pasos" id="pasos" aria-label="Pasos de la instalación">
+      <button type="button" data-paso="placa"><span>1</span> Placa</button>
+      <button type="button" data-paso="p5mate"><span>2</span> P5Mate</button>
+      <button type="button" data-paso="listo"><span>3</span> Listo</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 1. PLACA -->
+    <section id="paso-placa" class="pantalla" hidden>
+      <h2>Conecta tu ESP32-S3</h2>
+      <p class="intro">Conecta la placa al ordenador con un cable USB que sirva para datos (no uno solo de carga). Te instalo el firmware en un minuto.</p>
+
+      <div class="tarjeta">
+        <div class="estado" id="estado-placa" role="status" aria-live="polite">
+          <span class="punto espera" id="punto-placa"></span>
+          <div>
+            <strong id="titulo-placa">Esperando la placa…</strong>
+            <p id="texto-placa">Conéctala ahora. La detecto sola.</p>
+          </div>
+        </div>
+        <ul class="puertos" id="lista-puertos" aria-label="Placas detectadas"></ul>
+
+        <div class="progreso" id="bloque-progreso" hidden>
+          <div class="barra" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barra"><i id="barra-relleno"></i></div>
+          <p id="texto-progreso" aria-live="polite"></p>
+        </div>
+        <p class="error" id="error-placa" role="alert" hidden></p>
+
+        <div class="acciones">
+          <button type="button" class="primario" id="btn-instalar" disabled>Instalar firmware</button>
+          <span class="nota" id="nota-version"></span>
+        </div>
+      </div>
+
+      <details class="ayuda">
+        <summary>No detecta mi placa</summary>
+        <ul>
+          <li>Usa un cable USB con datos y prueba el otro puerto de la placa: el que pone <b>COM</b> o <b>UART</b>, o el <b>USB</b> nativo.</li>
+          <li>Si sigue sin aparecer, mantén pulsado <b>BOOT</b>, pulsa <b>RST</b> una vez y suelta <b>BOOT</b>.</li>
+          <li><b>Windows:</b> si la placa usa un chip CP210x o CH340 puede hacer falta su controlador (lo instala Windows Update en la mayoría de casos).</li>
+          <li><b>Mac:</b> si lo pide, permite el accesorio USB en Ajustes del Sistema → Privacidad y seguridad.</li>
+          <li>Tiene que ser un <b>ESP32-S3</b>: es el único que puede hacerse pasar por un mando por USB.</li>
+        </ul>
+      </details>
+
+      <footer class="pie">
+        <span></span>
+        <button type="button" class="secundario" id="btn-saltar-placa">Ya la tengo instalada</button>
+        <button type="button" class="primario" id="btn-sig-placa" hidden>Siguiente</button>
+      </footer>
+    </section>
+
+    <!-- 2. P5MATE -->
+    <section id="paso-p5mate" class="pantalla" hidden>
+      <h2>Consigue tu P5Mate</h2>
+      <p class="intro">Para usar el puente en una consola necesitas un <b>P5Mate</b>: es el adaptador con licencia que se encarga de la autenticación de la consola. La placa se conecta a él por USB.</p>
+
+      <div class="tarjeta comprar">
+        <div>
+          <strong>P5Mate</strong>
+          <p>Se compra aparte, en Amazon. Se abre en tu navegador.</p>
+        </div>
+        <button type="button" class="primario" id="btn-comprar">Comprar el P5Mate</button>
+      </div>
+      <p class="nota">Cuando lo tengas, la placa se pone en modo «consola» (solo mando) y se conecta al P5Mate.</p>
+
+      <footer class="pie">
+        <button type="button" class="secundario" data-ir="placa">Atrás</button>
+        <button type="button" class="secundario" id="btn-luego">Lo compraré luego</button>
+        <button type="button" class="primario" id="btn-ya-tengo">Ya lo tengo</button>
+      </footer>
+    </section>
+
+    <!-- 3. LISTO -->
+    <section id="paso-listo" class="pantalla" hidden>
+      <h2>Todo listo</h2>
+      <div class="tarjeta">
+        <div class="estado">
+          <span class="punto" id="modo-punto"></span>
+          <div>
+            <strong id="modo-titulo">Buscando la placa…</strong>
+            <p id="modo-texto"></p>
+          </div>
+        </div>
+        <div class="acciones" id="modo-com" hidden>
+          <button type="button" class="secundario" id="btn-preguntar">Consultar el modo</button>
+          <span class="nota" id="modo-com-nota"></span>
+        </div>
+        <p class="nota">Para cambiar de modo, mantén pulsado el botón <b>BOOT</b> de la placa 2 segundos: se reinicia en el otro modo.</p>
+      </div>
+      <div class="tarjeta">
+        <ul class="resumen">
+          <li><span class="punto" id="res-placa"></span><div><strong>Firmware en la placa</strong><p id="res-placa-texto"></p></div></li>
+          <li><span class="punto" id="res-p5mate"></span><div><strong>P5Mate</strong><p id="res-p5mate-texto"></p></div></li>
+        </ul>
+      </div>
+      <div class="tarjeta">
+        <strong>En el móvil o el iPad</strong>
+        <p class="nota">Con la misma wifi que este ordenador, abre esta dirección y añádela a la pantalla de inicio: es el mismo panel.</p>
+        <ul class="direcciones" id="direcciones"><li class="nota">Buscando la dirección…</li></ul>
+      </div>
+      <footer class="pie">
+        <button type="button" class="secundario" data-ir="placa">Reinstalar firmware</button>
+        <button type="button" class="secundario" id="btn-comprar-2">Comprar P5Mate</button>
+        <button type="button" class="primario" id="btn-panel">Abrir el panel</button>
+      </footer>
+      <p class="error" id="error-panel" role="alert" hidden></p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

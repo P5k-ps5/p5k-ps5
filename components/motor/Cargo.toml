@@ -1,0 +1,31 @@
+[package]
+name = "motor"
+version = "0.1.0"
+edition = "2021"
+
+# El motor de la placa: el mismo código Rust que la app de escritorio (perfiles, procesador...),
+# compilado como biblioteca estática para el ESP32-S3 y enlazado con el firmware en C.
+[lib]
+crate-type = ["staticlib", "rlib"]
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+# float_roundtrip: los números se leen exactos (los perfiles tienen que dar lo mismo que en el Mac)
+serde_json = { version = "1", features = ["float_roundtrip"] }
+uuid = { version = "1", features = ["v4"] }
+libc = "0.2"
+
+# modelo.rs usa dirs fuera de la placa (para las pruebas en el Mac)
+[target.'cfg(not(target_os = "espidf"))'.dependencies]
+dirs = "6"
+
+[profile.release]
+opt-level = 2
+lto = true
+codegen-units = 1
+panic = "abort"
+debug = false
+
+[profile.dev]
+panic = "abort"

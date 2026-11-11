@@ -1,0 +1,7 @@
+dependencies:
+  espressif/led_strip: "^3.0.0"
+  espressif/esp_tinyusb: "^1.7.0"
+  # Perfiles guardados en la flash (resiste cortes de corriente al desenchufar)
+  joltwallet/littlefs: "^1.14.0"
+  # http://puente.local en la red de casa
+  espressif/mdns: "^1.4.0"

@@ -1,0 +1,148 @@
+/* El instalador: la misma estética que la página de la placa y que NeuroClaude (fuentes generadas por herramientas/fuentes.py) */
+@font-face { font-family: "Inter Tight"; src: url(fuentes/inter-tight.woff2) format("woff2"); font-weight: 300 600; font-display: block; }
+@font-face { font-family: "Geist Mono"; src: url(fuentes/geist-mono-300.woff2) format("woff2"); font-weight: 300; font-display: block; }
+@font-face { font-family: "Geist Mono"; src: url(fuentes/geist-mono-400.woff2) format("woff2"); font-weight: 400; font-display: block; }
+
+:root {
+  color-scheme: dark;
+  --sans: "Inter Tight", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+  --fg: 255, 255, 255;
+  --vivo: #c8f04d;
+  --vivo-t: 200, 240, 77;
+  --fallo: #ff5d5d;
+  --salida: cubic-bezier(.16, 1, .3, 1);
+  --linea: rgba(var(--fg), .16);
+  --linea-fina: rgba(var(--fg), .1);
+  --suave: rgba(var(--fg), .68);
+  --tenue: rgba(var(--fg), .46);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; background: #000; }
+body {
+  color: #fff;
+  font: 14px/1.42 var(--sans);
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+h1, h2, p, ul { margin: 0; }
+h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1; font-weight: 500; letter-spacing: -.03em; margin-bottom: 4px; }
+button { font: inherit; color: inherit; }
+::selection { background: #fff; color: #000; }
+:focus-visible { outline: 1px solid var(--vivo); outline-offset: 2px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--linea); }
+::-webkit-scrollbar-track { background: transparent; }
+
+.cabecera {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 20px; border-bottom: 1px solid var(--linea-fina);
+}
+.marca { display: flex; align-items: center; gap: 8px; }
+.marca h1 { font-size: 14px; font-weight: 500; }
+.logo { width: 22px; height: 22px; color: var(--vivo); display: grid; place-items: center; }
+.cabecera .chip-modo { margin-left: auto; }
+.chip-modo {
+  display: inline-flex; align-items: center; gap: 7px; font: 300 12px var(--mono); color: var(--suave); white-space: nowrap;
+}
+.chip-modo .punto { width: 6px; height: 6px; margin: 0; }
+.chip-modo.pc, .chip-modo.consola { color: #fff; }
+.punto.pc, .punto.consola { background: var(--vivo); animation: latido 1.6s var(--salida) infinite; }
+.pasos { display: flex; gap: 2px; font: 300 12px var(--mono); }
+.pasos button {
+  border: 0; background: none; color: var(--tenue); cursor: pointer;
+  padding: 4px 8px; display: flex; gap: 7px; align-items: center; transition: color .15s;
+}
+.pasos button:hover { color: var(--vivo); }
+.pasos button span {
+  width: 18px; height: 18px; border: 1px solid var(--linea);
+  display: grid; place-items: center; font-size: 11px; transition: background .2s, border-color .2s;
+}
+.pasos button.actual { color: var(--vivo); }
+.pasos button.actual span { background: var(--vivo); border-color: var(--vivo); color: #000; }
+.pasos button.hecho span { border-color: var(--vivo); color: var(--vivo); font-size: 0; }
+.pasos button.hecho span::before { content: "✓"; font-size: 11px; }
+
+main { flex: 1; overflow: auto; padding: 32px 20px 24px; }
+.pantalla { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; animation: asoma .32s var(--salida) both; }
+.pantalla[hidden] { display: none; }
+@keyframes asoma { from { opacity: 0; transform: translateY(4px); } }
+.intro { color: var(--suave); max-width: 60ch; font-size: 15px; }
+.nota { color: var(--tenue); font-size: 13px; }
+.nota b { color: #fff; font-weight: 500; }
+b { font-weight: 500; }
+strong { font-weight: 500; }
+
+.tarjeta { background: #000; border: 1px solid var(--linea); padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.tarjeta.suave { gap: 4px; }
+.tarjeta.suave p { color: var(--suave); }
+.tarjeta.comprar { flex-direction: row; align-items: center; justify-content: space-between; gap: 14px; }
+.tarjeta.comprar p { color: var(--suave); }
+
+.estado { display: flex; gap: 12px; align-items: flex-start; }
+.estado p, .resumen p { color: var(--suave); font-size: 13px; }
+.punto { width: 8px; height: 8px; border-radius: 50%; background: rgba(var(--fg), .3); margin-top: 6px; flex: none; }
+.punto.ok { background: var(--vivo); animation: latido 1.6s var(--salida) infinite; }
+.punto.error { background: var(--fallo); }
+.punto.aviso { background: #fff; }
+.punto.espera { background: #fff; animation: parpadeo 1.2s steps(2) infinite; }
+@keyframes latido { 0% { box-shadow: 0 0 0 0 rgba(var(--vivo-t), .6); } 100% { box-shadow: 0 0 0 8px rgba(var(--vivo-t), 0); } }
+@keyframes parpadeo { 50% { opacity: .2; } }
+
+.puertos { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.puertos li { margin: 0; }
+.puertos button {
+  width: 100%; text-align: left; cursor: pointer;
+  background: none; border: 1px solid var(--linea);
+  padding: 8px 10px; display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  font: 300 13px var(--mono); transition: border-color .2s;
+}
+.puertos button:hover { border-color: rgba(var(--fg), .36); }
+.puertos button[aria-pressed="true"] { border-color: var(--vivo); }
+.puertos small { color: var(--tenue); }
+.puertos .etiqueta { font-size: 12px; color: var(--vivo); white-space: nowrap; }
+.puertos .etiqueta.aviso { color: #fff; }
+
+.barra { height: 2px; background: var(--linea); overflow: hidden; }
+.barra i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left; background: var(--vivo); transition: transform .3s var(--salida); }
+.progreso p { margin-top: 8px; font: 300 12px var(--mono); color: var(--suave); }
+.error { color: var(--fallo); font: 300 12px/1.5 var(--mono); user-select: text; }
+
+.acciones { display: flex; align-items: center; gap: 14px; }
+.pie { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
+.pie span:empty { flex: 1; }
+
+.primario, .secundario { cursor: pointer; transition: background .2s, border-color .2s, transform .2s var(--salida); }
+.primario:active:not(:disabled), .secundario:active { transform: scale(.97); }
+/* La acción principal es la píldora blanca; el lima queda para lo que está vivo */
+.primario { background: #fff; color: #000; border: 0; border-radius: 999px; padding: 9px 16px; font: 500 13px var(--sans); white-space: nowrap; }
+.primario:hover:not(:disabled) { background: rgba(var(--fg), .86); }
+.primario:disabled { opacity: .35; cursor: not-allowed; }
+.secundario { background: rgba(var(--fg), .08); border: 1px solid var(--linea); padding: 7px 11px; font: 400 12px var(--mono); }
+.secundario:hover { background: rgba(var(--fg), .14); }
+
+.ayuda { color: var(--suave); font-size: 13px; }
+.ayuda summary { cursor: pointer; color: var(--vivo); font: 300 12px var(--mono); padding: 4px 0; }
+.ayuda ul { margin-top: 8px; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.ayuda li::marker { color: var(--vivo); }
+.ayuda b { color: #fff; }
+
+.direcciones { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.direcciones li { display: flex; align-items: center; gap: 6px; }
+.direcciones code { flex: 1; min-width: 0; overflow-wrap: anywhere; user-select: text; font: 300 12px/1.5 var(--mono);
+  background: rgba(var(--fg), .035); border: 1px solid var(--linea); padding: 7px 10px; }
+.resumen { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.resumen li { display: flex; gap: 12px; align-items: flex-start; }
+
+@media (max-width: 760px) {
+  .cabecera { flex-direction: column; align-items: flex-start; }
+  .cabecera .chip-modo { margin-left: 0; }
+  .tarjeta.comprar { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

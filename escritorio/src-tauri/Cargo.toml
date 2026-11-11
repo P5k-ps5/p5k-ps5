@@ -1,0 +1,44 @@
+[package]
+name = "puente-de-mando"
+version = "1.0.0"
+description = "Instalador y panel de p5k-ps5"
+edition = "2021"
+rust-version = "1.85"
+
+[lib]
+name = "puente_de_mando_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+# float_roundtrip: los números se leen exactos (los perfiles tienen que dar lo mismo que en el Mac)
+serde_json = { version = "1", features = ["float_roundtrip"] }
+serialport = { version = "4.7", default-features = false }
+espflash = { version = "4.6", default-features = false, features = ["serialport"] }
+uuid = { version = "1", features = ["v4"] }
+# Sincronización de ajustes con la placa (los trozos van en base64 por el puerto serie)
+base64 = "0.22"
+dirs = "6"
+
+# HID para ver la placa en modo consola (sin puerto serie). En Windows, el backend en Rust (sin compilar C).
+[target.'cfg(target_os = "macos")'.dependencies]
+hidapi = { version = "2.6", default-features = false, features = ["macos-shared-device"] }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+hidapi = { version = "2.6", default-features = false, features = ["windows-native"] }
+# Que Windows no se duerma, los sonidos de aviso y la hora local (sistema.rs)
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_Power", "Win32_System_Time", "Win32_Media_Audio", "Win32_System_Threading"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

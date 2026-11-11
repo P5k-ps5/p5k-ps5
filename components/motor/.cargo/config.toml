@@ -1,0 +1,9 @@
+[build]
+target = "xtensa-esp32s3-espidf"
+
+[unstable]
+build-std = ["std", "panic_abort"]
+
+[target.xtensa-esp32s3-espidf]
+# ESP-IDF 5.x usa time_t de 64 bits
+rustflags = ["--cfg", "espidf_time64"]

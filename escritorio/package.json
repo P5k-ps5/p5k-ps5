@@ -1,0 +1,14 @@
+{
+  "name": "puente-de-mando-escritorio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Instalador y panel de p5k-ps5 para Windows y macOS",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

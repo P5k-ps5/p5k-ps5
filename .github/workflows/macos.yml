@@ -1,0 +1,21 @@
+name: macOS
+
+# Compila la app y ejecuta las pruebas del motor en un Mac de GitHub.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  app:
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versión de Swift
+        run: swiftc --version
+      - name: Pruebas
+        run: ./ejecutar_pruebas.sh
+      - name: Compilar la app
+        run: ./construir_app.sh

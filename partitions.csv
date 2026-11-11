@@ -1,0 +1,9 @@
+# Particiones (16 MB de flash). La NVS se queda donde estaba (guarda el modo y la wifi).
+# Dos particiones de app para actualizar el firmware por WiFi (OTA), y «datos» para los perfiles (LittleFS).
+# Name,   Type, SubType, Offset,   Size
+nvs,      data, nvs,     0x9000,   0x6000
+otadata,  data, ota,     0xf000,   0x2000
+phy_init, data, phy,     0x11000,  0x1000
+ota_0,    app,  ota_0,   0x20000,  0x400000
+ota_1,    app,  ota_1,   0x420000, 0x400000
+datos,    data, spiffs,  0x820000, 0x200000

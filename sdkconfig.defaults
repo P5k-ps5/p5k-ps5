@@ -1,0 +1,35 @@
+# Placa GERUI ESP32-S3 WROOM-1 N16R8: 16 MB de flash y 8 MB de PSRAM octal
+CONFIG_IDF_TARGET="esp32s3"
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+# El USB nativo lo usa TinyUSB (mando), así que los mensajes salen solo por el COM
+# (UART_CUSTOM más abajo, para subir la velocidad)
+CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
+# Reloj de FreeRTOS a 1 ms para mandar el mando a 1000 Hz
+CONFIG_FREERTOS_HZ=1000
+# TinyUSB: un mando (HID) y un puerto serie (CDC) para hablar con el Mac
+CONFIG_TINYUSB_HID_COUNT=1
+CONFIG_TINYUSB_CDC_ENABLED=y
+CONFIG_TINYUSB_CDC_COUNT=1
+CONFIG_TINYUSB_DESC_USE_ESPRESSIF_VID=n
+# El COM a 921600 baudios: una trama del mando (12 bytes) tarda ~0,13 ms
+CONFIG_ESP_CONSOLE_UART_CUSTOM=y
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=921600
+# Particiones propias: dos OTA de 4 MB (firmware por WiFi) y 2 MB de datos (perfiles, LittleFS)
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+# CPU a 240 MHz: el motor (Rust) calcula en coma flotante doble, que el S3 hace por software
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+# Servidor web: varias conexiones a la vez (página, directo de «En vivo», varios móviles)
+CONFIG_LWIP_MAX_SOCKETS=16
+CONFIG_HTTPD_MAX_REQ_HDR_LEN=1536
+CONFIG_HTTPD_MAX_URI_LEN=1024
+# Para guardar la hora (ráfagas de «Mi control») con la zona horaria de España
+CONFIG_LWIP_SNTP_MAX_SERVERS=1
+# El motor (Rust + serde_json) necesita más pila que lo que trae ESP-IDF por defecto (3,5 KB)
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
+CONFIG_FREERTOS_CHECK_STACKOVERFLOW_CANARY=y
+# Actualizar por WiFi con vuelta atrás: si el firmware nuevo no se confirma (30 s en marcha), vuelve al anterior
+CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y

@@ -1,0 +1,73 @@
+"""Archivos de fabricación para JLCPCB, en placa/fabricacion/:
+
+- puente-gerber.zip: Gerber y taladros (lo que se sube en «Añadir archivo Gerber»)
+- puente-bom.csv:    lista de piezas en el formato de JLCPCB (Comment, Designator, Footprint, LCSC Part #)
+- puente-cpl.csv:    posición y giro de cada pieza (Designator, Mid X, Mid Y, Layer, Rotation)
+
+Uso (desde la raíz del repo): python3 placa/fabricacion.py
+Las piezas sin montar (conectores de pantalla y puntos de prueba) no van ni en la BOM ni en la CPL.
+"""
+import csv
+import subprocess
+import tempfile
+import zipfile
+from collections import defaultdict
+from pathlib import Path
+
+from diseno import COMPONENTES
+
+KC = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+AQUI = Path(__file__).parent
+PLACA = AQUI / "puente.kicad_pcb"
+SALIDA = AQUI / "fabricacion"
+CAPAS = "F.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts"
+
+
+def cli(*args):
+    subprocess.run([KC, *args], check=True, capture_output=True)
+
+
+def main():
+    SALIDA.mkdir(exist_ok=True)
+    montadas = [c for c in COMPONENTES if not c.get("dnp")]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        cli("pcb", "export", "gerbers", str(PLACA), "-o", str(tmp), "--layers", CAPAS, "--subtract-soldermask")
+        cli("pcb", "export", "drill", str(PLACA), "-o", str(tmp) + "/", "--format", "excellon",
+            "--excellon-units", "mm", "--generate-map", "--map-format", "gerberx2")
+        with zipfile.ZipFile(SALIDA / "puente-gerber.zip", "w", zipfile.ZIP_DEFLATED) as z:
+            for f in sorted(tmp.iterdir()):
+                z.write(f, f.name)
+        nombres = sorted(f.name for f in tmp.iterdir())
+
+        # CPL: KiCad da la posición desde el origen de la hoja; JLCPCB solo necesita las posiciones relativas
+        cli("pcb", "export", "pos", str(PLACA), "-o", str(tmp / "pos.csv"), "--format", "csv", "--units", "mm",
+            "--side", "front", "--exclude-dnp")
+        filas = list(csv.DictReader((tmp / "pos.csv").open()))
+    validas = {c["ref"] for c in montadas}
+    with (SALIDA / "puente-cpl.csv").open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
+        for r in sorted(filas, key=lambda r: r["Ref"]):
+            if r["Ref"] in validas:
+                w.writerow([r["Ref"], f'{float(r["PosX"]):.3f}mm', f'{float(r["PosY"]):.3f}mm', "Top",
+                            f'{float(r["Rot"]):.0f}'])
+
+    # BOM agrupada por pieza
+    grupos = defaultdict(list)
+    for c in montadas:
+        grupos[(c["valor"], c["fp"].split(":")[1], c["lcsc"])].append(c["ref"])
+    clave = lambda ref: (ref.rstrip("0123456789"), int(ref[len(ref.rstrip("0123456789")):] or 0))
+    with (SALIDA / "puente-bom.csv").open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
+        for (valor, fp, lcsc), refs in sorted(grupos.items(), key=lambda g: clave(sorted(g[1], key=clave)[0])):
+            w.writerow([valor, ",".join(sorted(refs, key=clave)), fp, lcsc])
+
+    print(f"{len(nombres)} archivos en el zip de Gerber; {len(montadas)} piezas montadas en {len(grupos)} referencias")
+    print("En", SALIDA)
+
+
+if __name__ == "__main__":
+    main()

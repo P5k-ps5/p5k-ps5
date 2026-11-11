@@ -1,0 +1,60 @@
+name: Escritorio
+
+# Compila los instaladores de Windows (.exe y .msi) y macOS (.dmg) de la app de escritorio.
+# Se lanza a mano (Actions → Escritorio → Run workflow) o al subir una etiqueta «escritorio-vX.Y.Z».
+# Deja los instaladores en un borrador de «Release» para descargarlos.
+on:
+  workflow_dispatch:
+  push:
+    branches: [escritorio-tauri]
+    tags: ["escritorio-v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  instaladores:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            args: --target universal-apple-darwin
+            targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - os: windows-latest
+            args: ""
+            targets: ""
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.targets }}
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: escritorio/src-tauri
+      - name: Dependencias
+        run: npm ci
+        working-directory: escritorio
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: escritorio
+          tagName: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+          releaseName: "p5k-ps5 (escritorio) __VERSION__"
+          releaseBody: "Instaladores para Windows (.exe / .msi) y macOS (.dmg)."
+          releaseDraft: true
+          args: ${{ matrix.args }}
+      - name: Guardar los instaladores (ejecuciones manuales)
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-${{ matrix.os }}
+          path: |
+            escritorio/src-tauri/target/**/release/bundle/dmg/*.dmg
+            escritorio/src-tauri/target/**/release/bundle/nsis/*.exe
+            escritorio/src-tauri/target/**/release/bundle/msi/*.msi

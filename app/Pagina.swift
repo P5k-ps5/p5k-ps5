@@ -1,0 +1,1222 @@
+import Foundation
+
+/// Página que sirve el servidor al móvil. Es la misma app, pero en el navegador: mira el mando
+/// en directo y edita los mismos ajustes (sticks, gatillos, botones, turbo, macros, anti-recoil,
+/// ayuda al apuntado y perfiles). Cada cambio se manda al Mac y la app lo aplica al momento.
+enum Pagina {
+    static let html = #"""
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mando">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="/icono.png">
+<link rel="icon" type="image/png" href="/icono.png">
+<title>p5k-ps5</title>
+<style>
+/* p5k-ps5 · página del móvil, el iPad y el navegador del ordenador.
+   Misma estética que NeuroClaude: negro, texto blanco con opacidades y un solo acento, el lima. Cajas de línea fina,
+   sin sombras ni degradados; Inter Tight para leer y Geist Mono para etiquetas, datos y estados.
+   Lo que se toca jugando sigue siendo grande: 44 px de objetivo en pantallas táctiles. */
+:root{
+  color-scheme:dark;
+  --sans:"Inter Tight",-apple-system,system-ui,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --fg:255,255,255;
+  --vivo-t:200,240,77;
+  --bg:#000;--bg2:#0a0a0a;
+  --ln:rgba(var(--fg),.1);--ln2:rgba(var(--fg),.16);--ln3:rgba(var(--fg),.36);
+  --tx:#fff;--mut:rgba(var(--fg),.68);--mut2:rgba(var(--fg),.46);
+  --ac:#c8f04d;--ac-tx:#000;--ac-suave:rgba(var(--vivo-t),.1);
+  /* Un solo acento: lo bueno y lo encendido van en lima, lo que pide atención en blanco, lo que falla en rojo */
+  --ok:#c8f04d;--bad:#ff5d5d;--av:#fff;--cy:#c8f04d;
+  --salida:cubic-bezier(.16,1,.3,1);
+  --alto:44px;
+}
+@media (pointer:fine){:root{--alto:34px}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#000;-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+body{margin:0;background:#000;color:var(--tx);font:14px/1.42 var(--sans);-webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input,select{font:inherit;color:inherit}
+::selection{background:#fff;color:#000}
+:focus-visible{outline:1px solid var(--ac);outline-offset:2px}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:var(--ln2)}
+::-webkit-scrollbar-track{background:transparent}
+svg.i{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter}
+
+/* ---------- estructura ---------- */
+.wrap{max-width:1240px;margin:0 auto;padding:0 12px 48px}
+header{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;padding:12px 0 8px}
+.marca{display:none;align-items:center;gap:8px;font-size:14px;font-weight:500;white-space:nowrap}
+.marca svg{width:22px;height:22px;fill:var(--ac);flex:none}
+.perfil{position:relative;display:flex;align-items:center;gap:9px;min-width:0;flex:1;max-width:360px;min-height:var(--alto);
+  padding:4px 10px;background:#000;border:1px solid var(--ln2);transition:border-color .2s}
+.perfil:hover{border-color:var(--ln3)}
+.perfil:focus-within{border-color:var(--ac)}
+#punto{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none}
+.perfil .nm{min-width:0;flex:1;display:flex;align-items:baseline;gap:8px}
+.perfil .nm small{margin:0;font:300 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mut2)}
+#perfilNombre{display:block;min-width:0;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.perfil>svg.i{color:var(--mut2);width:14px;height:14px}
+/* El selector nativo cubre la caja entera: tocar en cualquier parte abre la lista del sistema */
+#perfilSel{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;border:0;min-height:0}
+#pausa{min-width:112px}
+.chips{display:flex;flex-wrap:wrap;gap:4px 14px;width:100%;align-items:center;min-height:22px}
+.chip{display:inline-flex;align-items:center;gap:7px;font:300 12px/1.3 var(--mono);color:var(--mut);min-width:0}
+.chip::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:rgba(var(--fg),.3)}
+.chip.ok{color:var(--tx)}.chip.ok::before,.chip.cy::before{background:var(--ac);animation:latido 1.6s var(--salida) infinite}
+.chip.bad{color:var(--bad)}.chip.bad::before{background:var(--bad)}
+.chip.av{color:var(--tx)}.chip.av::before{background:#fff;animation:parpadeo 1.2s steps(2) infinite}
+.chip.cy{color:var(--tx)}
+@keyframes latido{0%{box-shadow:0 0 0 0 rgba(var(--vivo-t),.6)}100%{box-shadow:0 0 0 7px rgba(var(--vivo-t),0)}}
+@keyframes parpadeo{50%{opacity:.2}}
+@keyframes asoma{from{opacity:0;transform:translateY(4px)}}
+
+nav{display:flex;gap:2px;overflow-x:auto;margin:4px -12px 12px;padding:0 12px;position:sticky;top:0;z-index:5;background:#000;
+  border-bottom:1px solid var(--ln2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:none;display:flex;align-items:center;gap:7px;border:0;background:none;color:var(--mut);min-height:44px;
+  padding:0 10px;font-size:13px;cursor:pointer;box-shadow:inset 0 -1px 0 transparent;transition:color .15s,box-shadow .15s}
+nav button svg.i{width:15px;height:15px}
+nav button:hover{color:var(--ac)}
+nav button.on{color:var(--ac);box-shadow:inset 0 -1px 0 var(--ac)}
+main{min-width:0}
+main.entra{animation:asoma .32s var(--salida) both}
+.titular{font-size:clamp(30px,4.4vw,46px);line-height:1;font-weight:500;letter-spacing:-.03em;margin:10px 0 14px}
+body[data-tab=vivo] .titular{display:none}
+
+/* iPad apaisado y ordenador: índice a la izquierda, como el de NeuroClaude */
+@media (min-width:960px){
+  .wrap{display:grid;grid-template-columns:210px minmax(0,1fr);grid-template-areas:"top top" "aviso aviso" "nav main";column-gap:24px;padding:0 20px 56px}
+  header{grid-area:top;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln);margin-bottom:18px}
+  .marca{display:flex}
+  .perfil{flex:0 1 280px;margin-left:10px}
+  .chips{order:3;width:auto;flex:1 1 300px;justify-content:flex-end}
+  #pausa{order:4}
+  #aviso{grid-area:aviso}
+  nav{grid-area:nav;flex-direction:column;gap:1px;margin:0;padding:8px 10px;align-self:start;top:12px;overflow:visible;border:1px solid var(--ln2)}
+  nav button{justify-content:flex-start;min-height:30px;padding:0;gap:9px;font-size:14px;box-shadow:none}
+  nav button svg.i{transition:transform .25s var(--salida)}
+  nav button:hover svg.i{transform:translateX(3px)}
+  nav button.on{box-shadow:none}
+  main{grid-area:main;max-width:920px}
+}
+
+/* ---------- cajas y textos ---------- */
+.card{background:#000;border:1px solid var(--ln2);padding:0 14px 12px;margin-bottom:12px}
+.card>h2,.whead{margin:0 -14px 10px;padding:8px 14px;min-height:38px;border-bottom:1px solid var(--ln)}
+.card>h2,.whead h2{font:400 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.card:not(:has(>h2)):not(:has(>.whead)){padding-top:12px}
+main>p,.intro{color:var(--mut);margin:0 0 14px;max-width:64ch;font-size:15px}
+small{display:block;color:var(--mut2);font-size:12px;line-height:1.4;margin-top:3px}
+.nota{display:flex;gap:10px;padding:10px 12px;margin-bottom:12px;font-size:14px;color:var(--tx);border:1px solid var(--ln2);border-left:2px solid #fff}
+.sep{border-top:1px solid var(--ln);margin:14px 0}
+details{margin-top:8px}summary{cursor:pointer;color:var(--ac);font:300 12px var(--mono);padding:6px 0}
+dl.dg{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font:300 12px/1.4 var(--mono)}
+dl.dg dt{color:var(--mut2)}dl.dg dd{margin:0}
+.pads{display:grid;grid-template-columns:1fr;gap:0 12px}
+@media(min-width:760px){.pads{grid-template-columns:1fr 1fr}.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}}
+
+/* ---------- controles ---------- */
+.ctl{padding:10px 0 8px;border-top:1px solid var(--ln)}
+.card h2+.ctl,.card h2+.tog{border-top:0;padding-top:2px}
+.cab{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px}
+.val{color:var(--ac);white-space:nowrap;font:400 12px var(--mono)}
+/* Deslizador: raya fina y tramo en lima; la zona táctil sigue siendo de 44 px */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;margin:0;background:transparent;cursor:pointer;--p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ac) var(--p),var(--ln2) var(--p))}
+input[type=range].doble::-webkit-slider-runnable-track{background:linear-gradient(to right,var(--ln2) var(--d),var(--ac) var(--d),var(--ac) var(--p),var(--ln2) var(--p))}
+input[type=range].doble::-moz-range-progress{background:transparent}
+input[type=range].doble::-moz-range-track{background:linear-gradient(to right,var(--ln2) var(--d),var(--ac) var(--d),var(--ac) var(--p),var(--ln2) var(--p))}
+input[type=range]::-moz-range-track{height:2px;background:var(--ln2)}
+input[type=range]::-moz-range-progress{height:2px;background:var(--ac)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:20px;margin-top:-9px;border-radius:0;background:#fff;transition:transform .2s var(--salida)}
+input[type=range]::-moz-range-thumb{width:10px;height:20px;border:0;border-radius:0;background:#fff}
+input[type=range]:active::-webkit-slider-thumb{transform:scaleY(1.2)}
+@media (pointer:coarse){input[type=range]{height:44px}input[type=range]::-webkit-slider-thumb{width:14px;height:26px;margin-top:-12px}
+  input[type=range]::-moz-range-thumb{width:14px;height:26px}}
+select,input[type=text],input[type=password],input[type=number]{width:100%;min-height:var(--alto);padding:6px 10px;border-radius:0;border:1px solid var(--ln2);
+  background:rgba(var(--fg),.035);color:var(--tx);font:300 13px var(--mono);margin-top:8px;outline:none;transition:border-color .2s}
+select option{background:#0a0a0a}
+/* 16 px en táctil: por debajo, iOS hace zoom al entrar en el campo */
+@media (pointer:coarse){select,input[type=text],input[type=password],input[type=number]{font-size:16px}}
+select{-webkit-appearance:none;appearance:none;padding-right:32px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='.5' stroke-width='1.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;background-size:15px}
+select:hover,input[type=text]:hover,input[type=password]:hover,input[type=number]:hover{border-color:var(--ln3)}
+select:focus,input[type=text]:focus,input[type=password]:focus,input[type=number]:focus{outline:none;border-color:var(--ac)}
+input::placeholder{color:var(--mut2)}
+input[type=color]{width:100%;height:var(--alto);border:1px solid var(--ln2);border-radius:0;background:none;margin-top:8px;padding:3px;cursor:pointer}
+input[type=file]{font:300 12px var(--mono);color:var(--mut)}
+input[type=file]::file-selector-button{font:400 12px var(--mono);color:var(--tx);background:rgba(var(--fg),.08);border:1px solid var(--ln2);padding:7px 10px;margin-right:10px;cursor:pointer}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 0;border-top:1px solid var(--ln);cursor:pointer;margin:0}
+.tog>span{font-size:14px}
+/* Interruptor de verdad: la casilla del sistema, dibujada como un conmutador de línea fina */
+.tog input{-webkit-appearance:none;appearance:none;flex:none;width:40px;height:22px;margin:0;cursor:pointer;
+  background:none;border:1px solid var(--ln3);position:relative;transition:background .2s,border-color .2s}
+.tog input::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;background:rgba(var(--fg),.6);transition:transform .25s var(--salida),background .2s}
+.tog input:checked{border-color:var(--ac);background:var(--ac-suave)}
+.tog input:checked::after{transform:translateX(18px);background:var(--ac)}
+@media (pointer:coarse){.tog{min-height:48px}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:var(--alto);border:1px solid var(--ln2);background:rgba(var(--fg),.08);color:var(--tx);
+  border-radius:0;padding:6px 12px;font:400 12px var(--mono);cursor:pointer;transition:background .2s,border-color .2s,transform .2s var(--salida)}
+.btn:hover{background:rgba(var(--fg),.14)}.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+/* La acción principal: píldora blanca, como en NeuroClaude; el lima queda para lo que está vivo */
+.btn.fuerte{background:#fff;border-color:#fff;color:#000;border-radius:999px;padding:6px 16px;font:500 13px var(--sans)}.btn.fuerte:hover{background:rgba(var(--fg),.86)}
+.btn.malo{color:var(--bad);border-color:rgba(255,93,93,.4);background:none}.btn.malo:hover{background:rgba(255,93,93,.12)}
+.btn.peligro{background:var(--bad);border-color:var(--bad);color:#000}.btn.peligro:hover{background:rgba(255,93,93,.86)}
+.btn svg.i{width:14px;height:14px}
+.fila-b{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.fila-b>small{margin:auto 4px auto 0}
+.opc{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:4px;margin-top:10px}
+.opc label{display:flex;align-items:center;gap:8px;font:300 12px var(--mono);min-height:var(--alto);padding:4px 10px;border:1px solid var(--ln2);cursor:pointer;transition:border-color .2s}
+.opc label:hover{border-color:var(--ln3)}
+.opc input{accent-color:var(--ac);width:14px;height:14px}
+.vfila{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--ln)}.vfila input[type=text]{flex:1;min-width:120px;margin:0}
+.boton-fila{padding:12px 0;border-top:1px solid var(--ln)}.boton-fila:first-of-type{border-top:0;padding-top:2px}
+.boton-fila>b{display:block;font-size:15px;font-weight:500;margin-bottom:2px}
+.boton-fila .ctl,.boton-fila .tog{border-top:0;padding:6px 0}
+
+/* ---------- En vivo: mandos ---------- */
+.fila{display:flex;justify-content:center;align-items:flex-end;gap:18px;margin:6px 0 14px}
+.item{display:flex;flex-direction:column;align-items:center;gap:6px;font:300 11px var(--mono);color:var(--mut2)}
+.stick svg{width:92px;height:92px;fill:none;stroke-width:1}
+.stick svg circle:first-child{stroke:var(--ln3);fill:none}.stick svg line{stroke:var(--ln)}
+.stick .p{fill:var(--ac);stroke:none}
+.barra i{display:block;width:16px;height:92px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px var(--ln3)}
+.barra b{position:absolute;left:0;right:0;bottom:0;background:var(--ac);height:0}
+.btns{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.btns span{text-align:center;font:400 11px var(--mono);padding:6px 0;border:1px solid var(--ln);color:var(--mut2)}
+.btns span.on{background:var(--ac);border-color:var(--ac);color:#000}
+
+/* ---------- widgets: teclas de línea fina ---------- */
+.whead{display:flex;align-items:center;gap:6px;padding:4px 14px}.whead h2{flex:1;margin:0}
+.whead select{width:auto;margin:0;min-height:30px;padding-top:2px;padding-bottom:2px;font-size:12px}
+.whead .btn{min-height:30px;padding:2px 10px}
+.whead .btn.fuerte{font-size:12px}
+.wgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding-top:2px}
+@media(min-width:600px){.wgrid{grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:8px}}
+.wbtn{--c:var(--ac);--c-t:var(--vivo-t);position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:10px;text-align:left;
+  min-width:0;min-height:128px;padding:12px;border-radius:0;border:1px solid var(--ln2);background:none;color:var(--tx);cursor:pointer;
+  transition:transform .2s var(--salida),background .2s,border-color .2s}
+.wbtn:hover{border-color:var(--ln3)}
+.wbtn:active{transform:scale(.98)}
+.wbtn .ic{position:absolute;top:12px;left:12px;color:var(--mut2);transition:color .2s}
+.wbtn .ic svg.i{width:24px;height:24px;stroke-width:1.5}
+.wbtn .tx{min-width:0;width:100%}
+.wbtn b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.2;font-weight:500}
+.wbtn small{margin:3px 0 0;font:300 11px/1.3 var(--mono);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wbtn .est{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px;font:400 11px/1 var(--mono);color:var(--mut2)}
+.wbtn.on{border-color:var(--c);background:rgba(var(--c-t),.08)}
+.wbtn.on .ic,.wbtn.on .est{color:var(--c)}
+.wbtn.on .est::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c);animation:latido 1.6s var(--salida) infinite}
+.wbtn.on small{color:var(--mut)}
+.wbtn.pend{opacity:.65}
+.wbtn:focus-visible{outline:1px solid #fff;outline-offset:2px}
+.wbtn.edit{border-style:dashed}.wbtn.edit .est{visibility:hidden}
+.wed{position:absolute;top:5px;right:5px;display:flex;gap:1px;background:#000;border:1px solid var(--ln3)}
+.wed button{border:0;background:none;color:var(--tx);font:400 13px var(--mono);width:30px;height:30px;cursor:pointer;transition:background .15s}
+.wed button:hover{background:rgba(var(--fg),.14)}.wed button:disabled{opacity:.3}.wed .q{color:var(--bad)}
+/* En el móvil, teclas casi cuadradas: icono, estado y nombre; el detalle en una línea */
+@media(max-width:599px){.wbtn{min-height:112px;padding:10px;gap:6px}
+  .wbtn .ic{top:10px;left:10px}.wbtn .est{top:10px;right:10px}
+  .wbtn b{font-size:13px}.wbtn small{-webkit-line-clamp:1;margin-top:2px}}
+.wvacio{display:flex;flex-direction:column;gap:12px;align-items:flex-start;color:var(--mut);max-width:52ch;padding:8px 0}
+
+/* ---------- «Móvil» y lienzos ---------- */
+.lienzo{display:block;border:1px solid var(--ln2);background:#000}
+.qr-movil{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.qr{flex:none;width:176px;height:176px;background:#fff;padding:6px}.qr svg{display:block;width:100%;height:100%}
+.dirs{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:6px;flex:1;min-width:220px}
+.dirs li{display:flex;gap:6px;align-items:center}
+.dirs code{flex:1;min-width:0;overflow-wrap:anywhere;font:300 12px/1.5 var(--mono);background:rgba(var(--fg),.035);border:1px solid var(--ln2);padding:7px 10px;user-select:text}
+.clave{font:400 14px var(--mono);letter-spacing:.06em;color:var(--ac);user-select:text}
+.manual p{margin:6px 0;color:var(--mut)}
+
+/* ---------- «Placa»: wifi, red propia, modo y firmware ---------- */
+.senal{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
+.senal i{display:block;width:3px;background:var(--ln2)}
+.senal i:nth-child(1){height:4px}.senal i:nth-child(2){height:7px}.senal i:nth-child(3){height:10px}.senal i:nth-child(4){height:14px}
+.senal i.on{background:var(--tx)}
+.redes{display:flex;flex-direction:column;margin-top:6px}
+.red{border-top:1px solid var(--ln)}.red:first-child{border-top:0}
+.red>button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 2px;border:0;background:none;color:var(--tx);font-size:14px;text-align:left;cursor:pointer;transition:color .15s}
+.red>button:hover{color:var(--ac)}
+.red>button>b{flex:1;min-width:0;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.red>button svg.i{width:14px;height:14px;color:var(--mut2)}
+.red.on>button{color:var(--ac)}
+.red .form{padding:0 2px 12px}
+.red .form .fila-b{margin-top:8px}
+.estado-fila{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--ln)}
+.estado-fila:first-of-type{border-top:0;padding-top:2px}
+.estado-fila>span:first-child{font:300 12px var(--mono);color:var(--mut2);min-width:110px}
+.prog{height:2px;background:var(--ln2);overflow:hidden;margin-top:12px}
+.prog>b{display:block;height:100%;width:0;background:var(--ac);transition:width .3s var(--salida)}
+
+/* ---------- avisos ---------- */
+#aviso .fila-b{margin:10px 0 0}
+#aviso{display:none;margin:0 0 12px;padding:10px 12px;font-size:14px;border:1px solid var(--bad);color:var(--tx);background:rgba(255,93,93,.08)}
+#login{display:none;max-width:420px;margin:14vh auto 0;padding:0 12px}
+#login p{color:var(--mut);margin:0 0 6px}
+#loginerr:not(:empty){margin:10px 0 0;padding:8px 10px;font:300 12px var(--mono);color:var(--bad);border:1px solid rgba(255,93,93,.4)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;display:none;
+  max-width:calc(100% - 24px);padding:9px 14px;font:400 12px var(--mono);background:#000;color:var(--bad);border:1px solid var(--bad);animation:entra .32s var(--salida)}
+#toast.info{color:var(--tx);border-color:var(--ln3)}
+@keyframes entra{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+<!-- FUENTES: lo genera herramientas/fuentes.py; no se edita a mano -->
+<style>
+@font-face{font-family:"Inter Tight";font-weight:300 600;font-display:swap;src:url(data:font/woff2;base64,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) format("woff2")}
+@font-face{font-family:"Geist Mono";font-weight:300;font-display:swap;src:url(data:font/woff2;base64,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) format("woff2")}
+@font-face{font-family:"Geist Mono";font-weight:400;font-display:swap;src:url(data:font/woff2;base64,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) format("woff2")}
+</style>
+<!-- /FUENTES -->
+</head>
+<body>
+<div id="login">
+  <div class="card">
+    <h2 id="loginTit">Clave del Mac</h2>
+    <p id="loginTxt">Escribe la clave que sale en la app del Mac, en la sección «Móvil». Si ha cambiado, escribe la nueva aquí: se guarda en este móvil y ya no hay que volver a escanear el QR.</p>
+    <small id="loginerr" role="alert"></small>
+    <input id="clave" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Clave" enterkeyhint="go">
+    <div class="fila-b"><button class="btn fuerte" id="entrar">Entrar</button><button class="btn" id="volver" style="display:none">Volver</button></div>
+  </div>
+</div>
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <span class="marca"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.2 5h9.6c2.8 0 4.8 2 5.2 4.8l.9 5.8c.4 2.6-1.3 4.4-3.3 4.4-1.4 0-2.4-.8-3.2-2-1-1.6-2.4-2.6-4.4-2.6s-3.4 1-4.4 2.6c-.8 1.2-1.8 2-3.2 2-2 0-3.7-1.8-3.3-4.4l.9-5.8C2.4 7 4.4 5 7.2 5ZM6.7 7.8v2H4.7v1.9h2v2h1.9v-2h2V9.8h-2v-2H6.7Zm9.1 2.9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm2.6-3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>p5k-ps5</span>
+    <label class="perfil">
+      <span id="punto"></span>
+      <span class="nm"><small>Perfil</small><span id="perfilNombre">p5k-ps5</span></span>
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      <select id="perfilSel" aria-label="Cambiar de perfil"></select>
+    </label>
+    <button class="btn" id="pausa">Pausar</button>
+    <div class="chips" id="chips"></div>
+  </header>
+  <div id="aviso"><span id="avisoTexto">Sin conexión con el Mac. Reintentando…</span>
+    <span class="fila-b"><button class="btn" id="reintentar">Reintentar</button><button class="btn" id="otraClave">Poner el código</button></span></div>
+  <nav id="tabs"></nav>
+  <main id="main"></main>
+</div>
+<div id="toast"></div>
+<script>
+"use strict";
+const BOT=[["cuadrado","□ Cuadrado"],["x","✕ X"],["circulo","○ Círculo"],["triangulo","△ Triángulo"],["l1","L1"],["r1","R1"],["l2","L2"],["r2","R2"],["share","Create / Share"],["options","Options"],["l3","L3 (stick izq.)"],["r3","R3 (stick der.)"],["ps","PS"],["tactil","Panel táctil"],["arriba","↑ Arriba"],["derecha","→ Derecha"],["abajo","↓ Abajo"],["izquierda","← Izquierda"],["silenciar","Silenciar micro (Mic)"]];
+// Lo que puede recibir la consola (el botón de silenciar solo sirve como entrada)
+const SAL=BOT.filter(([b])=>b!=="silenciar");
+const NOM=["□","✕","○","△","L1","R1","L2","R2","Create","Opt","L3","R3","PS","Táctil","↑","→","↓","←","Mic"];
+// El tercer valor es la capacidad que tiene que ofrecer el servidor para enseñar la pestaña (la app de escritorio
+// manda «capacidades» en /perfil; la app de Mac no, y esas pestañas no salen)
+const TABS=[["vivo","En vivo"],["sticks","Sticks"],["gatillos","Gatillos"],["botones","Botones"],["turbo","Turbo"],["macros","Macros"],["antirecoil","Anti-recoil"],["ayuda","Ayuda al apuntado"],["control","Mi control"],["perfiles","Perfiles"],["movil","Móvil","movil"],["placa","Placa","placa"],["manual","Ayuda","manual"]];
+let CAPS=[];
+const tabsVisibles=()=>TABS.filter(t=>!t[2]||CAPS.includes(t[2]));
+
+let K=localStorage.getItem("k")||"", P=null, G=null, LISTA=[], ACTIVO="", PAUSA=false, REV=null, CAT=[];
+let WIDGETS=null, WEDIT=false, WFIRMA="", AVISO_ID=null;
+let TAB=localStorage.getItem("tab")||"vivo", editando=0, pendiente=null, pads=null, es=null, vivo=null;
+const $=id=>document.getElementById(id);
+// Sin zoom en el móvil y el iPad (Safari ignora user-scalable=no): se bloquea el pellizco; el doble toque lo quita touch-action
+for(const ev of ["gesturestart","gesturechange","gestureend"])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+document.addEventListener("touchmove",e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+// Iconos de trazo, todos con la misma rejilla de 24 px
+const ICO={
+  vivo:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  sticks:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/>',
+  gatillos:'<path d="M7 21V10a5 5 0 0 1 10 0v11"/><path d="M7 15h10"/>',
+  botones:'<circle cx="12" cy="5.5" r="2.3"/><circle cx="18.5" cy="12" r="2.3"/><circle cx="12" cy="18.5" r="2.3"/><circle cx="5.5" cy="12" r="2.3"/>',
+  turbo:'<path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/>',
+  macros:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="2.6"/>',
+  antirecoil:'<circle cx="12" cy="12" r="7.5"/><path d="M12 2v4.5M12 17.5V22M2 12h4.5M17.5 12H22"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+  ayuda:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>',
+  control:'<path d="M3.5 20.5h17"/><path d="m6 15.5 4-5 3.5 3 5-6.5"/>',
+  perfiles:'<circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/>',
+  pausa:'<path d="M9 5.5v13M15 5.5v13"/>',
+  movil:'<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+  manual:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.6.3-1 .9-1 1.6v.5"/><path d="M12 17h.01" stroke-width="2.6"/>',
+  placa:'<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9.5 2.5V6M14.5 2.5V6M9.5 18v3.5M14.5 18v3.5M2.5 9.5H6M2.5 14.5H6M18 9.5h3.5M18 14.5h3.5"/>',
+  candado:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  play:'<path d="M8 5.5v13l10.5-6.5z"/>',
+  deshacer:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  rehacer:'<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
+};
+function ico(n){const t=document.createElement("template");t.innerHTML=`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICO[n]||""}</svg>`;return t.content.firstChild}
+const hash=location.hash.match(/k=([^&]+)/);
+// La de la dirección (la del acceso directo) se prueba primero, pero solo se guarda si funciona:
+// si la clave cambió en el Mac, el acceso directo viejo sigue funcionando con la nueva guardada aquí
+if(hash)K=decodeURIComponent(hash[1]);
+
+// ---------- utilidades ----------
+function h(tag,props,...kids){
+  const e=document.createElement(tag);
+  for(const k in (props||{})){const v=props[k];
+    if(k==="class")e.className=v;
+    else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);
+    else if(k==="checked"||k==="selected"||k==="value"||k==="disabled")e[k]=v;
+    else if(v!==null&&v!==undefined)e.setAttribute(k,v)}
+  for(const c of kids.flat(2)){if(c===null||c===undefined||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)))}
+  return e;
+}
+// Copiar al portapapeles. navigator.clipboard solo existe en páginas seguras (https o localhost), y la placa y el
+// móvil van por http: entonces se copia con un textarea escondido (execCommand), que sí funciona en http.
+async function copiarTexto(t){
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);return true}}catch(e){}
+  const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");
+  a.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px";document.body.appendChild(a);
+  a.focus();a.select();a.setSelectionRange(0,t.length);
+  let ok=false;try{ok=document.execCommand("copy")}catch(e){}
+  a.remove();return ok;
+}
+function uuid(){return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==="x"?r:(r&3|8)).toString(16).toUpperCase()})}
+function aviso(t,info){const x=$("toast");x.textContent=t;x.className=info?"info":"";x.style.display="block";clearTimeout(aviso.t);aviso.t=setTimeout(()=>x.style.display="none",info?2800:3500)}
+function raiz(ruta){return ruta.startsWith("generales.")?[G,ruta.slice(10)]:[P,ruta]}
+function getR(ruta){const [o,r]=raiz(ruta);return r.split(".").reduce((x,k)=>x&&x[k],o)}
+function setR(ruta,v){
+  const [o,r]=raiz(ruta);const p=r.split(".");let x=o;for(let i=0;i<p.length-1;i++)x=x[p[i]];x[p[p.length-1]]=v;
+}
+function fmt(v,dec,u){return (dec?(+v).toFixed(dec):Math.round(v))+(u?(u==="%"?" %":" "+u):"")}
+
+// ---------- red ----------
+async function api(cuerpo){
+  const r=await fetch("/api?k="+encodeURIComponent(K),{method:"POST",headers:{"Content-Type":"application/json","X-Puente":"1"},body:JSON.stringify(cuerpo)});
+  if(r.status===401||r.status===429){pedirClave();throw new Error("clave")}
+  const d=await r.json();if(d.rev)REV=d.rev;if(!d.ok)aviso(d.error||"No se pudo aplicar");else if(d.info)aviso(d.info,true);return d;
+}
+async function cargar(silencioso){
+  const r=await fetch("/perfil?k="+encodeURIComponent(K));
+  if(r.status===429){pedirClave("Demasiados intentos. Espera un minuto.");return "espera"}
+  if(r.status===401){if(!silencioso)pedirClave("La clave no vale: puede que haya cambiado en "+nombreServidor()+". Escribe la nueva.");return false}
+  const d=await r.json();P=d.perfil;G=d.generales;LISTA=d.perfiles;ACTIVO=d.activo;PAUSA=d.pausado;REV=d.rev;CAT=d.catalogo||[];CAPS=d.capacidades||[];return true;
+}
+let cola={},temporizador=null,recargarCuandoLibre=false;
+function poner(ruta,v,re){
+  editando=Date.now();setR(ruta,v);cola[ruta]=v;
+  if(!temporizador)temporizador=setTimeout(async()=>{
+    const c=cola;cola={};temporizador=null;
+    for(const r in c){try{await api({accion:"poner",ruta:r,valor:c[r]})}catch(e){}}
+    pintarEstadoVariante();
+    // Los límites recortan valores en el Mac: cuando dejes de tocar, se vuelve a cargar lo que quedó
+    if(Object.keys(c).some(r=>r.startsWith("ayuda.limites")||r.startsWith("generales.monitor")))recargarCuandoLibre=true;
+  },70);
+  if(re)pintarMain();
+}
+async function accion(cuerpo,recargar){
+  editando=Date.now();
+  try{await api(cuerpo)}catch(e){return}
+  if(recargar!==false){if(await cargar()){pintarCabecera();pintarMain()}}
+}
+
+// ---------- controles ----------
+// Parte rellena del deslizador (lo que lleva hecho), en la variable --p
+// En los de dos sentidos (mínimo negativo) se rellena desde el cero, para no aparentar un valor que no hay
+function relleno(inp){const a=+inp.min,b=+inp.max,v=+inp.value,pc=x=>((x-a)/(b-a||1)*100)+"%";
+  if(a<0&&b>0){const c=pc(0),p=pc(v);inp.style.setProperty("--d",v<0?p:c);inp.style.setProperty("--p",v<0?c:p);inp.classList.add("doble")}
+  else inp.style.setProperty("--p",pc(v))}
+function sl(ruta,tit,min,max,paso,unidad,ayuda,dec,re){
+  const v=+getR(ruta);const val=h("span",{class:"val"},fmt(v,dec,unidad));
+  const inp=h("input",{type:"range",min,max,step:paso,value:v,oninput:e=>{const n=+e.target.value;relleno(e.target);val.textContent=fmt(n,dec,unidad);poner(ruta,n,re)}});
+  relleno(inp);
+  return h("div",{class:"ctl"},h("div",{class:"cab"},h("span",{},tit),val),inp,ayuda?h("small",{},ayuda):null);
+}
+function slF(tit,min,max,paso,unidad,v,fn,ayuda){
+  const val=h("span",{class:"val"},fmt(v,0,unidad));
+  const inp=h("input",{type:"range",min,max,step:paso,value:v,oninput:e=>{const n=+e.target.value;relleno(e.target);val.textContent=fmt(n,0,unidad);fn(n)}});
+  relleno(inp);
+  return h("div",{class:"ctl"},h("div",{class:"cab"},h("span",{},tit),val),inp,ayuda?h("small",{},ayuda):null);
+}
+function tg(ruta,tit,ayuda,re){
+  return h("label",{class:"tog"},h("span",{},tit,ayuda?h("small",{},ayuda):null),
+    h("input",{type:"checkbox",checked:!!getR(ruta),onchange:e=>poner(ruta,e.target.checked,re)}));
+}
+function tgF(tit,v,fn){return h("label",{class:"tog"},h("span",{},tit),h("input",{type:"checkbox",checked:!!v,onchange:e=>fn(e.target.checked)}))}
+function opts(lista,cur){return lista.map(([v,t])=>h("option",{value:String(v),selected:String(v)===String(cur)},t))}
+function selF(tit,lista,cur,fn,ayuda){
+  return h("div",{class:"ctl"},h("div",{class:"cab"},h("span",{},tit)),h("select",{onchange:e=>fn(e.target.value)},opts(lista,cur)),ayuda?h("small",{},ayuda):null);
+}
+function sel(ruta,tit,lista,ayuda,bool){
+  return selF(tit,lista,getR(ruta),v=>poner(ruta,bool?v==="true":v),ayuda);
+}
+function selB(ruta,tit,ayuda){return sel(ruta,tit,BOT,ayuda)}
+function btn(t,fn,cls){return h("button",{class:"btn "+(cls||""),onclick:fn},t)}
+function card(t,...kids){return h("div",{class:"card"},t?h("h2",{},t):null,kids)}
+function ponerVarios(pares,re){for(const [r,v] of pares)poner(r,v,false);if(re)pintarMain()}
+
+// ---------- pestañas ----------
+function tabVivo(){
+  WFIRMA="";
+  const cont=h("div",{},h("div",{class:"card",id:"widgets"}),h("div",{class:"pads"},card("Tu DualSense",h("div",{id:"entrada"})),card("Lo que recibe la consola",h("div",{id:"salida"}))),
+    h("div",{class:"card"},h("h2",{},"Activo en este perfil"),h("div",{class:"chips",id:"vivoPie"},"…")));
+  setTimeout(()=>{pads={entrada:crearPad("entrada"),salida:crearPad("salida")};if(vivo){pintarPads(vivo);pintarWidgets()}},0);
+  return cont;
+}
+// ---------- widgets: botones para encender y apagar cosas sin el mando ----------
+const WICONO={antiRecoil:"antirecoil",ayuda:"ayuda",pausa:"pausa",turbos:"turbo",turbo:"turbo",macros:"macros",macro:"macros"};
+// Encendido = lima; solo la pausa, que es un estado de alarma, va en rojo. El tipo lo dice el icono.
+const WCOLOR={pausa:"var(--bad);--c-t:255,93,93"};
+function pintarWidgets(){
+  const caja=$("widgets");if(!caja||!WIDGETS)return;
+  // Solo se rehace si cambia algo: así no se pierde el toque a media pulsación
+  const firma=JSON.stringify([WIDGETS,WEDIT,CAT]);if(firma===WFIRMA)return;WFIRMA=firma;
+  const anadir=CAT.length?h("select",{style:"width:auto;margin:0",onchange:e=>{const c=CAT[+e.target.value];if(c)accion({accion:"widgetAnadir",tipo:c.tipo,objetivo:c.objetivo})}},
+    h("option",{value:"",selected:true},"+ Añadir"),CAT.map((c,i)=>h("option",{value:String(i)},c.nombre))):null;
+  const cab=h("div",{class:"whead"},h("h2",{},"Widgets"),anadir,WIDGETS.length?btn(WEDIT?"Listo":"Editar",()=>{WEDIT=!WEDIT;pintarWidgets()},WEDIT?"fuerte":""):null);
+  if(!WIDGETS.length){
+    caja.replaceChildren(cab,h("div",{class:"wvacio"},"Añade botones para encender anti-recoil, ayuda, turbo o macros sin tocar el mando.",
+      btn("Añadir los básicos",()=>accion({accion:"widgetAnadir",tipo:"basicos"}),"fuerte")));
+    return;
+  }
+  caja.replaceChildren(cab,h("div",{class:"wgrid"},WIDGETS.map((w,i)=>{
+    const b=h("button",{class:"wbtn"+(w.on?" on":"")+(WEDIT?" edit":""),style:"--c:"+(WCOLOR[w.tipo]||"var(--ac)"),"aria-pressed":String(!!w.on),
+      onclick:()=>{if(WEDIT)return;b.classList.add("pend");api({accion:"widget",id:w.id}).catch(()=>{}).finally(()=>setTimeout(()=>b.classList.remove("pend"),250))}},
+      h("span",{class:"ic"},ico(WICONO[w.tipo])),
+      h("span",{class:"est"},w.on?"ON":"OFF"),
+      h("span",{class:"tx"},h("b",{},w.nombre),h("small",{},w.detalle||(w.on?"Encendido":"Apagado"))),
+      WEDIT?h("span",{class:"wed",onclick:e=>e.stopPropagation()},
+        h("button",{disabled:i===0,"aria-label":"Antes",onclick:()=>accion({accion:"widgetMover",id:w.id,paso:-1})},"‹"),
+        h("button",{disabled:i===WIDGETS.length-1,"aria-label":"Después",onclick:()=>accion({accion:"widgetMover",id:w.id,paso:1})},"›"),
+        h("button",{class:"q","aria-label":"Quitar",onclick:()=>accion({accion:"widgetQuitar",id:w.id})},"✕")):null);
+    return b;
+  })));
+}
+function crearPad(id){
+  const el=$(id);
+  el.innerHTML=`<div class="fila">
+    <div class="item barra"><i><b data-k="l2"></b></i>L2</div>
+    <div class="item stick"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/><line x1="50" y1="2" x2="50" y2="98"/><line x1="2" y1="50" x2="98" y2="50"/><circle class="p" data-k="izq" cx="50" cy="50" r="7"/></svg>Izquierdo</div>
+    <div class="item stick"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/><line x1="50" y1="2" x2="50" y2="98"/><line x1="2" y1="50" x2="98" y2="50"/><circle class="p" data-k="der" cx="50" cy="50" r="7"/></svg>Derecho</div>
+    <div class="item barra"><i><b data-k="r2"></b></i>R2</div></div>
+    <div class="btns">${(id==="salida"?NOM.filter((n,i)=>BOT[i][0]!=="silenciar"):NOM).map(n=>`<span>${n}</span>`).join("")}</div>`;
+  return {l2:el.querySelector("[data-k=l2]"),r2:el.querySelector("[data-k=r2]"),izq:el.querySelector("[data-k=izq]"),der:el.querySelector("[data-k=der]"),btn:[...el.querySelectorAll(".btns span")]};
+}
+function pintarPad(p,e){
+  p.l2.style.height=(e.l2/255*100)+"%";p.r2.style.height=(e.r2/255*100)+"%";
+  p.izq.setAttribute("cx",2+e.lx/255*96);p.izq.setAttribute("cy",2+e.ly/255*96);
+  p.der.setAttribute("cx",2+e.rx/255*96);p.der.setAttribute("cy",2+e.ry/255*96);
+  p.btn.forEach((b,i)=>b.classList.toggle("on",(e.b>>i)&1));
+}
+function pintarPads(d){if(pads&&TAB==="vivo"&&$("entrada")&&$("entrada").children.length){pintarPad(pads.entrada,d.entrada);pintarPad(pads.salida,d.salida)}}
+
+const F_STICK={zonaMuerta:5,formaCruz:false,zonaExterna:100,antiZonaMuerta:0,curva:1,sensX:100,sensY:100,limite:100,suavizado:0,aceleracion:0,tiempoAceleracion:300,invertirX:false,invertirY:false};
+function tabSticks(){
+  const c=[tg("intercambiarSticks","Intercambiar sticks","El izquierdo hace de derecho y al revés")];
+  for(const [k,t] of [["izq","Stick izquierdo (moverse)"],["der","Stick derecho (apuntar)"]]){
+    const r=k+".";
+    const cur=(co,an)=>ponerVarios([[r+"curva",co],[r+"antiZonaMuerta",an]],true);
+    c.push(card(t,
+      h("div",{class:"fila-b"},h("small",{},"Curvas listas:"),btn("Lineal",()=>cur(1,0)),btn("Precisión",()=>cur(1.8,0)),btn("Rápida",()=>cur(0.7,0)),btn("Inmediata",()=>cur(1.2,12))),
+      sl(r+"zonaMuerta","Zona muerta",0,40,1,"%","Lo poco que se mueve sin hacer nada. Súbela si el personaje se mueve solo."),
+      sel(r+"formaCruz","Forma de la zona muerta",[[false,"Redonda (natural)"],[true,"En cruz (ejes rectos)"]],null,true),
+      sl(r+"zonaExterna","Zona externa",50,100,1,"%","A partir de aquí ya cuenta como stick a tope."),
+      sl(r+"antiZonaMuerta","Anti zona muerta",0,40,1,"%","Salta la zona muerta del propio juego para que responda al primer roce."),
+      sl(r+"curva","Curva",0.3,3,0.05,"","1 = lineal. Más de 1: más fino en el centro. Menos de 1: más brusco.",2,true),
+      sl(r+"sensX","Sensibilidad horizontal",0,200,1,"%"),
+      sl(r+"sensY","Sensibilidad vertical",0,200,1,"%"),
+      sl(r+"limite","Límite",20,100,1,"%","Lo más lejos que llega el stick a la consola."),
+      sl(r+"suavizado","Suavizado",0,100,1,"%","Quita tirones y temblores. Mucho se nota como retraso."),
+      sl(r+"aceleracion","Aceleración",0,100,1,"%","Con el stick casi a tope, la sensibilidad sube poco a poco."),
+      sl(r+"tiempoAceleracion","Tiempo de aceleración",50,1500,50,"ms"),
+      tg(r+"invertirX","Invertir horizontal"),tg(r+"invertirY","Invertir vertical"),
+      btn("Valores de fábrica",()=>{for(const f in F_STICK)poner(r+f,F_STICK[f],false);pintarMain()})));
+  }
+  return c;
+}
+const F_GAT={zonaMuerta:0,zonaExterna:100,curva:1,disparoRapido:false};
+function tabGatillos(){
+  return [["l2","L2 (apuntar)"],["r2","R2 (disparar)"]].map(([k,t])=>{const r=k+".";
+    return card(t,
+      sl(r+"zonaMuerta","Zona muerta",0,60,1,"%","Recorrido inicial que no cuenta."),
+      sl(r+"zonaExterna","Zona externa",40,100,1,"%","A partir de aquí cuenta como pulsado a fondo."),
+      sl(r+"curva","Curva",0.3,3,0.05,"","1 = lineal. Menos de 1: llega antes a fondo.",2),
+      tg(r+"disparoRapido","Disparo rápido","Al rozarlo cuenta como pulsado a fondo"),
+      btn("Valores de fábrica",()=>{for(const f in F_GAT)poner(r+f,F_GAT[f],false);pintarMain()}))});
+}
+function tabBotones(){
+  const lista=h("div",{});
+  for(const [b,nombre] of BOT){
+    const dest=(P.reasignar&&P.reasignar[b])||(b==="silenciar"?"nada":b), larga=(P.pulsacionLarga&&P.pulsacionLarga[b])||"";
+    lista.append(h("div",{class:"boton-fila"},h("b",{},nombre),
+      selF("Recibe la consola",[...SAL,["nada","Nada (anulado)"]],dest,v=>{const r={...P.reasignar};if(v===b||(b==="silenciar"&&v==="nada"))delete r[b];else r[b]=v;poner("reasignar",r)}),
+      tgF("Alternar (una pulsación = mantenido)",(P.alternar||[]).includes(b),on=>{const a=(P.alternar||[]).filter(x=>x!==b);if(on)a.push(b);poner("alternar",a)}),
+      selF("Si lo mantengo",[["","Sin pulsación larga"],...SAL.map(([v,t])=>[v,"Larga: "+t]),["nada","Larga: nada"]],larga,v=>{const r={...P.pulsacionLarga};if(v==="")delete r[b];else r[b]=v;poner("pulsacionLarga",r)})));
+  }
+  return [h("p",{style:"color:var(--mut)"},"Elige qué recibe la consola al pulsar cada botón de tu mando."),
+    card("Pulsación larga",sl("msLarga","Cuánto hay que mantener",150,1000,25,"ms","Con pulsación larga, la corta se envía al soltar el botón (un pelín más tarde).")),
+    card("Botones",lista,h("div",{class:"fila-b"},btn("Dejar todos como vienen",()=>{poner("reasignar",{},false);poner("alternar",[],false);poner("pulsacionLarga",{},false);pintarMain()})))];
+}
+function tabTurbo(){
+  const c=[h("p",{style:"color:var(--mut)"},"Mientras mantienes el botón, la consola lo recibe pulsándose y soltándose solo.")];
+  (P.turbos||[]).forEach((t,i)=>{
+    const f=()=>poner("turbos",P.turbos);
+    c.push(card("Turbo",
+      tgF("Encendido",t.activo!==false,v=>{t.activo=v;f()}),
+      selF("Botón",SAL,t.boton,v=>{t.boton=v;f()}),
+      slF("Velocidad",2,30,1,"pulsaciones/s",t.hz,n=>{t.hz=n;f()}),
+      slF("Tiempo apretado en cada pulsación",10,90,1,"%",t.ciclo,n=>{t.ciclo=n;f()},"Si el juego no pilla alguna pulsación, súbelo o baja la velocidad."),
+      btn("Quitar",()=>{P.turbos.splice(i,1);poner("turbos",P.turbos,true)},"malo")));
+  });
+  c.push(btn("+ Añadir turbo",()=>{P.turbos.push({id:uuid(),boton:"x",hz:10,ciclo:50,activo:true});poner("turbos",P.turbos,true)}));
+  return c;
+}
+function disparoFisico(){
+  const d=P.antiRecoil.disparar;
+  const f=BOT.find(([b])=>((P.reasignar&&P.reasignar[b])||b)===d);return f?f[0]:d;
+}
+function tabMacros(){
+  const c=[h("p",{style:"color:var(--mut)"},"Una macro pulsa una secuencia de botones al pulsar su disparador. Cada paso dice qué botones se pulsan y durante cuánto tiempo.")];
+  const f=()=>poner("macros",P.macros);
+  (P.macros||[]).forEach((m,i)=>{
+    const pasos=h("div",{});
+    m.pasos.forEach((p,j)=>{
+      const resumen=p.botones.length?p.botones.map(b=>NOM[BOT.findIndex(x=>x[0]===b)]).join(" + "):"Ningún botón (espera)";
+      pasos.append(h("div",{class:"boton-fila"},h("b",{},"Paso "+(j+1)),
+        h("details",{},h("summary",{},resumen),h("div",{class:"opc"},SAL.map(([b,t])=>h("label",{},
+          h("input",{type:"checkbox",checked:p.botones.includes(b),onchange:e=>{p.botones=p.botones.filter(x=>x!==b);if(e.target.checked)p.botones.push(b);f();e.target.closest("details").querySelector("summary").textContent=p.botones.length?p.botones.map(x=>NOM[BOT.findIndex(y=>y[0]===x)]).join(" + "):"Ningún botón (espera)"}}),t)))),
+        slF("Duración",10,3000,10,"ms",p.ms,n=>{p.ms=Math.round(n);f()}),
+        btn("Quitar paso",()=>{m.pasos.splice(j,1);f();pintarMain()},"malo")));
+    });
+    c.push(card(m.nombre,
+      h("div",{class:"ctl"},h("div",{class:"cab"},"Nombre"),h("input",{type:"text",value:m.nombre,onchange:e=>{m.nombre=e.target.value||"Macro";f();pintarMain()}})),
+      tgF("Activa",m.activa,v=>{m.activa=v;f()}),
+      selF("Se dispara con",BOT,m.disparador,v=>{m.disparador=v;f()}),
+      tgF("Repetir mientras lo mantengo",m.repetir,v=>{m.repetir=v;f()}),
+      tgF("El disparador no llega a la consola",m.bloquearDisparador,v=>{m.bloquearDisparador=v;f()}),
+      tgF("Activarla y desactivarla con el mando",m.atajo,v=>{m.atajo=v;f();pintarMain()}),
+      m.atajo?h("div",{class:"cols"},selF("Mantén",BOT,m.atajoMantener,v=>{m.atajoMantener=v;f()}),
+        selF("y pulsa",BOT,m.atajoPulsar,v=>{m.atajoPulsar=v;f()},"Esos botones también llegan a la consola: elige una combinación que no uses en el juego.")):null,
+      pasos,
+      h("div",{class:"fila-b"},btn("+ Añadir paso",()=>{m.pasos.push({id:uuid(),botones:[],ms:100});f();pintarMain()}),btn("Borrar macro",()=>{P.macros.splice(i,1);f();pintarMain()},"malo"))));
+  });
+  const nueva=(nombre,disp,bloq,pasos)=>{P.macros.push({id:uuid(),nombre,activa:true,disparador:disp,repetir:false,bloquearDisparador:bloq,atajo:false,atajoMantener:"l1",atajoPulsar:"derecha",pasos:pasos.map(([b,ms])=>({id:uuid(),botones:b,ms}))});f();pintarMain()};
+  c.push(h("div",{class:"fila-b"},
+    btn("+ Añadir macro",()=>nueva("Macro nueva","r3",true,[[["x"],100],[[],100]])),
+    btn("+ Dropshot",()=>nueva("Dropshot",disparoFisico(),false,[[["circulo"],600]])),
+    btn("+ Jumpshot",()=>nueva("Jumpshot",disparoFisico(),false,[[["x"],100]]))));
+  c.push(h("small",{},"Dropshot y jumpshot se disparan con tu botón de disparar (el de Anti-recoil) y no lo bloquean. En BO2, mantener ○ te tumba y ✕ salta; si lo tienes cambiado en el juego, cambia el botón del paso. Solo para modos sin conexión."));
+  return c;
+}
+function tabAntiRecoil(){
+  const r="antiRecoil.";
+  return [h("div",{class:"nota"},"Solo para modos sin conexión (campaña, zombis, partidas contra bots). En partidas online es hacer trampas y el anti-trampas lo detecta."),
+    card("Compensar el retroceso",
+      tg(r+"activo","Activado en este perfil"),
+      sl(r+"vertical","Fuerza hacia abajo",0,100,1,"%","Cuánto baja el stick derecho mientras disparas. Empieza bajo y súbelo poco a poco."),
+      tg(r+"progresivo","La fuerza cambia mientras disparas",null,true),
+      P.antiRecoil.progresivo?sl(r+"verticalFinal","Fuerza al final",0,100,1,"%","Pasa de la fuerza inicial a esta."):null,
+      P.antiRecoil.progresivo?sl(r+"transicionMs","Tiempo del cambio",100,3000,50,"ms"):null,
+      sl(r+"horizontal","Corrección lateral",-50,50,1,"%","Negativo = izquierda, positivo = derecha."),
+      sl(r+"retardoMs","Retardo",0,500,10,"ms","Espera desde que empiezas a disparar hasta que empieza a compensar."),
+      h("small",{},"Botones tal como los recibe la consola (después de reasignar). Si en el juego apuntas con L1 y disparas con R1, elige L1 y R1."),
+      selB(r+"disparar","Disparar con"),selB(r+"apuntar","Apuntar con"),
+      sel(r+"soloApuntando","Compensa cuando",[[true,"apunto y disparo a la vez"],[false,"disparo, aunque no apunte"]],"Solo apuntar no hace nada: siempre hace falta disparar.",true),
+      tg(r+"atajo","Encender y apagar con una combinación",(esPlaca()?"La luz del DualSense destella verde al encender y roja al apagar, y sale un aviso en esta página":"Suena un aviso en el Mac y la luz destella verde al encender y roja al apagar")),
+      selB(r+"atajoMantener","Mantén"),selB(r+"atajoPulsar","y pulsa","Botones de tu mando. Si eliges el mismo en los dos, basta con pulsarlo."))];
+}
+const PATRONES=[["Círculos discretos","circulo",4,8,300,85],["Círculos medios","circulo",8,12,150,70],["Círculos fuertes","circulo",14,16,80,50],
+  ["Temblor discreto","temblor",4,8,300,85],["Temblor medio","temblor",8,12,150,70],["Temblor fuerte","temblor",14,16,80,50]];
+function recortar(v,a,b){return Math.min(Math.max(v,Math.min(a,b)),Math.max(a,b))}
+// Tamaño, velocidad y entrada tal como los usa el motor: recortados a los límites solo si están activos
+function efec(t,h,e){const L=P.ayuda.limites;return L.activos?[recortar(t,L.tamanoMin,L.tamanoMax),recortar(h,L.hzMin,L.hzMax),recortar(e,L.entradaMin,L.entradaMax)]:[t,h,e]}
+function patronActual(){const a=P.ayuda;return PATRONES.findIndex(p=>{const x=efec(p[2],p[3],p[4]);return p[1]===a.forma&&x[0]===a.tamano&&x[1]===a.hz&&x[2]===a.entradaMs&&p[5]===a.ceder})}
+function varianteModificada(){
+  const a=P.ayuda,v=(a.variantes||[]).find(x=>x.id===a.varianteActiva);if(!v)return false;
+  const x=efec(v.tamano,v.hz,v.entradaMs);return !(v.forma===a.forma&&x[0]===a.tamano&&x[1]===a.hz&&x[2]===a.entradaMs&&v.ceder===a.ceder)}
+// Si los límites están activos, los deslizadores solo llegan hasta ellos
+function rg(mn,mx,lmn,lmx){const L=P.ayuda.limites;if(!L.activos)return [mn,mx];const a=Math.min(L[lmn],L[lmx]),b=Math.max(L[lmn],L[lmx]);return [a,Math.max(b,a+0.001)]}
+const F_LIM={tamanoMin:1,tamanoMax:30,hzMin:2,hzMax:40,entradaMin:0,entradaMax:600};
+// Aviso de la variante elegida: se redibuja solo (sin tocar los deslizadores) cuando dejas de cambiar valores
+function estadoVariante(){
+  const A=P.ayuda,sel=(A.variantes||[]).find(v=>v.id===A.varianteActiva);if(!sel)return [];
+  const mod=varianteModificada();
+  return [h("p",{style:"margin:10px 0 0"},mod?"✎ Has cambiado los valores desde que elegiste «"+sel.nombre+"»":"✓ Usando «"+sel.nombre+"»"),
+    mod?h("div",{class:"fila-b"},btn("Actualizar la variante con los valores actuales",()=>accion({accion:"variante",modo:"actualizar"}))):null];
+}
+function pintarEstadoVariante(){const el=$("varEstado");if(el)el.replaceChildren(...estadoVariante().filter(Boolean))}
+function tabLimitesVariantesDiag(r){
+  const A=P.ayuda,L=A.limites,vs=A.variantes||[],sel=vs.find(v=>v.id===A.varianteActiva);
+  const resumen=v=>`${v.forma==="circulo"?"Círculos":"Temblor"} · ${Math.round(v.tamano)} % · ${Math.round(v.hz)} por s · entrada ${Math.round(v.entradaMs)} ms · ceder ${Math.round(v.ceder)} %`;
+  const nuevo=h("input",{type:"text",placeholder:"Nombre de la variante nueva"});
+  const lim=[tg(r+"limites.activos","Usar límites mínimo y máximo","Son rangos fijos que pones tú: recortan el tamaño, la velocidad y la entrada suave, también al elegir un patrón o una variante. No cambian nada por sí solos. Apagados, no se recorta nada.",true)];
+  if(L.activos){
+    lim.push(sl(r+"limites.tamanoMin","Tamaño · mínimo",0,100,1,"%"),sl(r+"limites.tamanoMax","Tamaño · máximo",0,100,1,"%"),
+      sl(r+"limites.hzMin","Velocidad · mínimo",0,60,1,"por s"),sl(r+"limites.hzMax","Velocidad · máximo",0,60,1,"por s"),
+      sl(r+"limites.entradaMin","Entrada suave · mínimo",0,1500,10,"ms"),sl(r+"limites.entradaMax","Entrada suave · máximo",0,1500,10,"ms"),
+      btn("Valores de fábrica de los límites",()=>{for(const k in F_LIM)poner(r+"limites."+k,F_LIM[k],false);pintarMain()}));
+  }
+  return [card("Límites de los valores",lim),
+    card("Variantes de los patrones",
+      h("small",{},"Guarda tus propios ajustes de un patrón con un nombre y elige a mano cuál usar. La elegida se conserva en este perfil. Nada cambia solo."),
+      vs.length?null:h("p",{style:"color:var(--mut)"},"Todavía no tienes variantes."),
+      vs.map(v=>h("div",{class:"vfila"},
+        h("span",{},v.id===A.varianteActiva?"●":"○"),
+        h("input",{type:"text",value:v.nombre,onchange:e=>{v.nombre=e.target.value||"Variante";poner("ayuda.variantes",vs,true)}}),
+        h("small",{style:"width:100%;margin:0"},resumen(v)),
+        btn("Usar",()=>accion({accion:"variante",modo:"usar",id:v.id}),v.id===A.varianteActiva?"fuerte":""),
+        btn("Borrar",()=>{if(confirm("¿Borrar la variante «"+v.nombre+"»?"))accion({accion:"variante",modo:"borrar",id:v.id})},"malo"))),
+      h("div",{id:"varEstado"},estadoVariante()),
+      h("div",{class:"ctl"},nuevo),
+      h("div",{class:"fila-b"},btn("Guardar los valores actuales como variante",()=>accion({accion:"variante",modo:"guardar",nombre:nuevo.value})))),
+    card("Diagnóstico",
+      h("div",{id:"dgEstado",class:"chips"}),h("dl",{id:"dgVals",class:"dg"}),
+      h("canvas",{id:"dgCanvas",width:640,height:260,style:"width:100%;height:130px;border:1px solid var(--ln2);background:var(--bg)"}),
+      h("small",{},"Lima: horizontal · blanco: vertical · gris: amplitud. Últimos 1,5 s de lo que la ayuda suma al stick derecho, con los valores que usa de verdad el motor (ya recortados por los límites). Solo se mira: enciende la ayuda y mantén el botón de apuntar para verla moverse.")),
+    tarjetaMonitor()];
+}
+const F_MON={maxAbs:1,maxSalto:0.3,maxVelocidad:25,maxAceleracion:4000,maxCambiosSigno:0.6};
+function tarjetaMonitor(){
+  const r="generales.monitor.",M=G.monitor;
+  return card("Monitor de la señal (solo lectura)",
+    tg(r+"activo","Analizar la señal de la ayuda al apuntado","Mira los últimos 2 s de lo que la ayuda suma al stick derecho y avisa de valores fuera de rango, saltos, velocidades, aceleraciones y oscilaciones. No cambia ni corrige nada. El análisis lo hace "+(esPlaca()?"la placa.":"la app del Mac."),true),
+    M.activo?[
+      sl(r+"maxAbs","Valor máximo",0.05,1,0.01,"","",2),
+      sl(r+"maxSalto","Salto máximo entre muestras",0.01,1,0.01,"","",2),
+      sl(r+"maxVelocidad","Velocidad máxima",1,100,1,"/s"),
+      sl(r+"maxAceleracion","Aceleración máxima",100,20000,100,"/s²"),
+      sl(r+"maxCambiosSigno","Oscilación máxima (cambios de sentido)",0.05,1,0.05,"","",2),
+      btn("Valores de fábrica",()=>{for(const k in F_MON)poner(r+k,F_MON[k],false);pintarMain()})]:null,
+    h("div",{id:"monInforme"},M.activo?(esPlaca()?"Esperando datos de la placa…":"Esperando datos del Mac…"):"Desactivado."));
+}
+function pintarMonitor(m){
+  const el=$("monInforme");if(!el||!m)return;
+  // Lo que manda el Mac manda: si allí está apagado, aquí no se enseñan datos viejos
+  if(!m.activo||!m.metricas){el.innerHTML=m.activo?(esPlaca()?"Esperando datos de la placa…":"Esperando datos del Mac…"):"Desactivado.";return}
+  const x=m.metricas,col=m.gravedad===2?"bad":(m.gravedad===1?"av":"ok");
+  const f=(v,d)=>v===null?"no numérico":(+v).toFixed(d);
+  el.innerHTML=`<div class="chips">${chip(m.estado,col)}</div>
+    <dl class="dg"><dt>Muestras</dt><dd>${x.muestras}</dd><dt>Valor máximo</dt><dd>${f(x.maxAbs,3)}</dd>
+    <dt>Salto máximo</dt><dd>${f(x.maxSalto,3)}</dd><dt>Velocidad máx.</dt><dd>${f(x.maxVelocidad,1)} /s</dd>
+    <dt>Aceleración máx.</dt><dd>${f(x.maxAceleracion,0)} /s²</dd><dt>Oscilación</dt><dd>${f(x.cambiosSigno,2)}</dd>
+    ${x.noNumericos?`<dt>No numéricos</dt><dd>${x.noNumericos}</dd>`:""}</dl>`+
+    (m.eventos||[]).map(e=>`<small style="color:var(--${e.a?"bad":"av"})">${e.g} · muestra ${e.i} · eje ${e.eje} · ${e.motivo}: ${f(e.v,3)} (límite ${f(e.lim,3)})</small>`).join("")+
+    (m.mas?`<small>… y ${m.mas} más</small>`:"");
+}
+function pintarDiag(g){
+  const c=$("dgCanvas");if(!c||!g)return;
+  pintarSi($("dgEstado"),[chip(g.on?"Encendida":"Apagada",g.on?"cy":""),chip(g.ap?"Moviendo el stick":"En reposo",g.ap?"ok":""),g.tr?chip("Enlazando un cambio","av"):"",g.lim?chip("Recortada por los límites","av"):""].join(""));
+  $("dgVals").innerHTML=[["Movimiento",g.forma==="circulo"?"Círculos":"Temblor lateral"],["Tamaño",g.t.toFixed(1)+" %"],["Velocidad",g.hz.toFixed(1)+" por s"],
+    ["Entrada suave",Math.round(g.e)+" ms · avance "+Math.round(g.ramp*100)+" %"],["Cesión",Math.round(g.ces*100)+" % ("+Math.round(g.c)+" % configurado)"],
+    ["Amplitud ahora",(g.amp*100).toFixed(2)+" % · fase "+g.fase.toFixed(2)]].map(a=>`<dt>${a[0]}</dt><dd>${a[1]}</dd>`).join("");
+  const ctx=c.getContext("2d"),W=c.width,H=c.height,n=g.hx.length;ctx.clearRect(0,0,W,H);
+  const max=Math.max(50,...g.hx.map(Math.abs),...g.hy.map(Math.abs),...g.ha.map(Math.abs))*1.2;
+  const linea=(v,color,ancho)=>{ctx.beginPath();v.forEach((y,i)=>{const px=W*i/Math.max(n-1,1),py=H/2-y/max*H/2;i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.strokeStyle=color;ctx.lineWidth=ancho;ctx.stroke()};
+  linea(g.hx.map(()=>0),"rgba(128,128,128,.45)",1);
+  linea(g.ha,"rgba(128,128,128,.8)",1);linea(g.ha.map(x=>-x),"rgba(128,128,128,.8)",1);
+  linea(g.hx,"#c8f04d",2);linea(g.hy,"#fff",2);
+}
+function tabAyuda(){
+  const r="ayuda.";
+  return [h("div",{class:"nota"},"Solo para modos sin conexión. Mueve el stick derecho en círculos o temblores diminutos mientras apuntas para que la ayuda del propio juego no se suelte."),
+    card("Ayuda al apuntado",
+      tg(r+"activo","Activada en este perfil"),
+      h("small",{},"Patrones listos:"),
+      h("div",{class:"fila-b"},PATRONES.map((p,i)=>btn(p[0],()=>accion({accion:"patron",indice:i}),patronActual()===i?"fuerte":""))),
+      sel(r+"forma","Movimiento",[["circulo","Círculos"],["temblor","Temblor lateral"]]),
+      sl(r+"tamano","Tamaño",...rg(1,30,"tamanoMin","tamanoMax"),1,"%","Empieza pequeño: si se nota bailar la mira, bájalo."),
+      sl(r+"hz","Velocidad",...rg(2,40,"hzMin","hzMax"),1,"por s"),
+      sl(r+"entradaMs","Entrada suave",...rg(0,600,"entradaMin","entradaMax"),10,"ms","Al empezar a apuntar, tarda esto en llegar a toda la fuerza."),
+      sl(r+"ceder","Ceder cuando apunto yo",0,100,1,"%","Cuánto se reduce mientras mueves tú el stick derecho."),
+      selB(r+"boton","Se activa al apuntar con","Botón tal como lo recibe la consola."),
+      tg(r+"tambienDisparando","Y solo mientras disparo","Usa el botón de disparar de Anti-recoil"),
+      tg(r+"atajo","Encender y apagar con una combinación","Suena un aviso y la luz destella cian al encender y naranja al apagar"),
+      selB(r+"atajoMantener","Mantén"),selB(r+"atajoPulsar","y pulsa")),
+    card("Cambiar de patrón desde el mando",
+      tg(r+"cambioActivo","Activado",(esPlaca()?"Sale un aviso con el nombre del patrón en esta página":"El Mac dice el nombre del patrón en voz alta")+". Pasa de uno en uno, solo cuando pulsas la combinación."),
+      selB(r+"cambioMantener","Mantén"),selB(r+"cambioSiguiente","y pulsa (siguiente)"),selB(r+"cambioAnterior","y pulsa (anterior)")),
+    ...tabLimitesVariantesDiag(r)];
+}
+function tabPerfiles(){
+  return [card("Tus perfiles",
+      selF("Perfil activo",LISTA.map(p=>[p.id,p.nombre]),ACTIVO,id=>accion({accion:"perfil",id})),
+      h("div",{class:"ctl"},h("div",{class:"cab"},"Nombre"),h("input",{type:"text",value:P.nombre,onchange:e=>{poner("nombre",e.target.value||"Perfil");const x=LISTA.find(p=>p.id===ACTIVO);if(x)x.nombre=e.target.value;pintarCabecera()}})),
+      h("div",{class:"ctl"},h("div",{class:"cab"},"Color de la luz del DualSense"),h("input",{type:"color",value:P.color.toLowerCase(),onchange:e=>{poner("color",e.target.value.toUpperCase());pintarCabecera()}}),h("small",{},esPlaca()?"En modo consola, la placa pone este color en la luz del DualSense (en modo dualsense la luz la pone la PS5).":"Solo se ve si la app del Mac fue la última que tocaste en el Mac.")),
+      h("div",{class:"fila-b"},btn("+ Nuevo",()=>accion({accion:"nuevo"})),btn("Duplicar",()=>accion({accion:"duplicar"})),
+        btn("Borrar",()=>{if(LISTA.length>1&&confirm("¿Borrar el perfil «"+P.nombre+"»?"))accion({accion:"borrar"})},"malo")),
+      tg("enCiclo","Incluir en el cambio de perfil con el mando","Si lo desmarcas, este perfil no sale al cambiar con el mando")),
+    card("Perfiles por situación",
+      h("small",{},"Crea «Corto alcance» (pasillos: giro rápido, retroceso corto, ayuda fuerte) y «Largo alcance» (distancia: más fino, ráfagas largas, ayuda discreta) a partir del perfil activo, con sus botones y combinaciones. Son un punto de partida: afínalos como quieras."),
+      h("div",{class:"fila-b"},btn("Crear perfiles por situación",()=>accion({accion:"situaciones"})))),
+    card("Cambiar de perfil desde el mando",
+      tg("generales.cambioPerfil","Activado"),
+      selB("generales.cambioMantener","Mantén"),selB("generales.cambioSiguiente","y pulsa (siguiente)"),selB("generales.cambioAnterior","y pulsa (anterior)"),
+      tg("generales.decirNombre","Avisar del nombre del perfil al cambiar")),
+    card("Avisos",
+      (esPlaca()?null:tg("generales.avisosVoz","Avisos de voz","Si los apagas, los mismos avisos salen aquí abajo y en la ventana del Mac"))),
+    card("Ajustar desde el mando",
+      tg("generales.ajusteMando","Activado","Mantén el botón: ← → eligen qué ajustar y ↑ ↓ lo suben o bajan"),
+      selB("generales.ajusteMantener","Mantén")),
+    card("Anti-recoil desde el mando",
+      tg("generales.fuerzaMando","Activado","Mantén el botón: ↑ ↓ suben y bajan la fuerza, y → ← mueven la corrección lateral (la cruceta no llega a la consola)"),
+      selB("generales.fuerzaMantener","Mantén")),
+    card("Conexión con "+nombreServidor(),
+      h("small",{},"Si la clave cambia en "+nombreServidor()+", ponla aquí: se guarda en este dispositivo y el acceso directo de la pantalla de inicio sigue valiendo."),
+      h("div",{class:"fila-b"},btn("Cambiar el código",()=>pedirClave("",true))))];
+}
+// ---------- Móvil: direcciones con la clave y su código QR (como MovilVista del Mac) ----------
+function tabMovil(){
+  const caja=h("div",{id:"movilDatos"},card(null,h("p",{style:"color:var(--mut);margin:0"},"Buscando la dirección…")));
+  fetch("/movil?k="+encodeURIComponent(K)).then(r=>r.json()).then(pintarMovil).catch(()=>{});
+  return [h("p",{class:"intro"},"Abre esta dirección en el móvil o el iPad (con la misma wifi que este ordenador) para ver lo mismo que en «En vivo» y cambiar los mismos ajustes, aunque la pantalla esté en la PS5. No sale a internet."),caja];
+}
+function pintarMovil(d){
+  const caja=$("movilDatos");if(!caja)return;
+  const qr=h("div",{class:"qr","aria-label":"Código QR de la dirección"});if(d.qr)qr.innerHTML=d.qr;
+  const copiar=t=>{const b=btn("Copiar",async()=>{b.textContent=(await copiarTexto(t))?"Copiada":"No se pudo: mantén el dedo encima y cópiala"});return b};
+  const n=d.clientes||0;
+  // Encender o apagar el acceso desde la red (solo desde el propio ordenador; la ventana entra siempre)
+  const interruptor=d.local?h("label",{class:"tog"},h("span",{},"Activado",h("small",{},d.activo?"El móvil y el iPad pueden entrar con la clave.":"Solo esta ventana: desde la red no entra nadie.")),
+    h("input",{type:"checkbox",checked:d.activo!==false,onchange:async e=>{try{await api({accion:"servidorMovil",valor:e.target.checked})}catch(x){}
+      fetch("/movil?k="+encodeURIComponent(K)).then(r=>r.json()).then(pintarMovil).catch(()=>{})}})):null;
+  if(d.activo===false){caja.replaceChildren(card("Servidor para el móvil",interruptor));return}
+  caja.replaceChildren(card("Servidor para el móvil",interruptor,
+    d.direcciones.length?h("div",{class:"qr-movil"},qr,h("div",{style:"flex:1;min-width:220px"},
+      h("p",{style:"margin:0"},"Escanea el código con la cámara del móvil, o abre:"),
+      h("ul",{class:"dirs"},d.direcciones.map(t=>h("li",{},h("code",{},t),copiar(t)))),
+      h("div",{class:"chips",style:"margin-top:12px"},h("span",{class:"chip"+(n>0?" ok":"")},n+(n===1?" móvil conectado ahora":" móviles conectados ahora")))))
+      :h("p",{style:"color:var(--mut)"},"No encuentro la dirección de este ordenador en la red. ¿Está conectado a la wifi o por cable?"),
+    h("div",{class:"sep"}),
+    h("div",{class:"cab",style:"align-items:center"},h("span",{},"Clave: ",h("span",{class:"clave"},K)),btn("Cambiar clave",cambiarClave)),
+    h("small",{},"La clave ya va dentro de la dirección y del código QR: el móvil la guarda la primera vez y no hay que escribirla. Sin ella no se puede ni mirar ni cambiar nada. Si cambias la clave, los móviles se desconectan: vuelve a abrir la dirección nueva."),
+    h("small",{},"La primera vez, el sistema puede preguntar si la app acepta conexiones entrantes: di que sí (en Windows, en las redes privadas). El móvil y el ordenador tienen que estar en la misma wifi.")));
+}
+async function cambiarClave(){
+  if(!confirm("¿Cambiar la clave? Los móviles conectados se desconectan y tendrán que abrir la dirección nueva."))return;
+  let d;try{d=await api({accion:"cambiarClave"})}catch(e){return}
+  if(!d.clave)return;
+  K=d.clave;localStorage.setItem("k",K);history.replaceState(null,"","/#k="+encodeURIComponent(K));
+  conectarDirecto();if(await cargar()){pintarCabecera();pintarMain()}
+}
+// ---------- Placa: wifi de casa, red propia, modo y firmware (solo la placa ofrece «placa») ----------
+// Quién sirve la página: la placa (sin ordenador) o el Mac/escritorio. Antes de cargar /perfil no hay CAPS:
+// se mira también la dirección (puente.local por mDNS, o 192.168.4.1 en la red propia de la placa)
+function esPlaca(){return CAPS.includes("placa")||["puente.local","192.168.4.1"].includes(location.hostname)}
+function nombreServidor(){return esPlaca()?"la placa":"el Mac"}
+let PL=null,plTimer=null,plFirma="",plSel=null,plMovil=null,plMovilIp=null;
+const MODOS=[["consola","Consola (con P5Mate)"],["dualsense","DualSense directo a la PS5"],["mac","Mac u ordenador"]];
+const MODOS_TXT={
+  consola:"La placa hace de mando de PS4 para el P5Mate: DualSense → placa → P5Mate → PS5. Es el modo seguro.",
+  dualsense:"La placa se presenta a la PS5 como un DualSense y el mando real firma la autenticación a través de ella: DualSense → placa → PS5, sin P5Mate.",
+  mac:"Para usar la placa por cable con la app de Mac o de escritorio, que hace de cerebro (la wifi de la placa sigue funcionando para configurarla)."};
+async function postPlaca(ruta,cuerpo){
+  const r=await fetch(ruta+"?k="+encodeURIComponent(K),{method:"POST",headers:{"Content-Type":"application/json","X-Puente":"1"},body:JSON.stringify(cuerpo)});
+  if(r.status===401||r.status===429){pedirClave();throw new Error("clave")}
+  let d;try{d=await r.json()}catch(e){d={ok:false,error:"La placa contestó algo que no entiendo ("+r.status+")"}}
+  if(!r.ok&&d.ok!==false)d={ok:false,error:"La placa contestó "+r.status};
+  if(!d.ok)aviso(d.error||"No se pudo aplicar");else if(d.info)aviso(d.info,true);
+  return d;
+}
+async function cargarPlaca(){
+  try{
+    const r=await fetch("/wifi?k="+encodeURIComponent(K));
+    // Con la clave vieja (401) o bloqueado por intentos (429) se deja de preguntar: si no, una pestaña olvidada
+    // seguiría fallando cada 3 s
+    if(r.status===401||r.status===429){clearInterval(plTimer);if(r.status===401)pedirClave();return}
+    if(!r.ok)return;
+    PL=await r.json();
+    // Las direcciones con la clave y el QR (de /movil), solo cuando cambia la IP de casa
+    const ip=PL.sta&&PL.sta.conectada?PL.sta.ip:null;
+    if(ip!==plMovilIp){plMovilIp=ip;plMovil=null;
+      if(ip)fetch("/movil?k="+encodeURIComponent(K)).then(r=>r.ok?r.json():null).then(d=>{plMovil=d;pintarPlaca()}).catch(()=>{})}
+    pintarPlaca();
+  }catch(e){}
+}
+// Señal de 0 a 4 barras a partir de los dBm
+function barras(rssi){
+  const n=rssi==null?0:rssi>=-55?4:rssi>=-65?3:rssi>=-75?2:rssi>=-85?1:0;
+  return h("span",{class:"senal",title:rssi!=null?rssi+" dBm":"",role:"img","aria-label":n+" de 4 barras"},[1,2,3,4].map(i=>h("i",{class:i<=n?"on":""})));
+}
+const bytesUtf8=t=>new TextEncoder().encode(t).length;
+// Contraseña wifi: vacía (red abierta) o de 8 a 63 caracteres
+function claveWifiValida(c){return c===""||(c.length>=8&&c.length<=63)}
+function tabPlaca(){
+  plFirma="";plSel=null;
+  clearInterval(plTimer);plTimer=setInterval(()=>{if(TAB==="placa")cargarPlaca();else clearInterval(plTimer)},3000);
+  setTimeout(cargarPlaca,0);
+  return [h("p",{class:"intro"},"La placa funciona sola, sin ordenador: se conecta a la wifi de tu casa y, si no puede, abre su propia red para que la configures desde el móvil."),
+    h("div",{id:"plEstado"},card(null,h("p",{style:"color:var(--mut);margin:0"},"Preguntando a la placa…"))),
+    h("div",{id:"plEntrar"}),
+    card("Wifi de casa",h("small",{},"La red a la que se conecta la placa. Si cambias la contraseña del router, entra por la red propia de la placa y vuelve a elegir tu red aquí."),
+      h("div",{id:"plRedes"})),
+    h("div",{id:"plAp"}),
+    h("div",{id:"plModo"}),
+    tarjetaFirmware(),
+    card("Reiniciar",h("small",{},"Apaga y enciende la placa. Tarda unos segundos; la página vuelve a conectarse sola."),
+      h("div",{class:"fila-b"},btn("Reiniciar la placa",async()=>{
+        if(!confirm("¿Reiniciar la placa? El mando deja de responder unos segundos."))return;
+        let d;try{d=await postPlaca("/wifi",{accion:"reiniciar"})}catch(e){return}
+        if(d.ok)esperarPlaca("La placa se está reiniciando…")})))];
+}
+function pintarPlaca(){
+  if(TAB!=="placa"||!PL)return;
+  const s=PL.sta||{},a=PL.ap||{};
+  // Estado
+  const est=$("plEstado");
+  if(est){
+    const casa=!s.configurada?h("span",{class:"chip av"},"Sin configurar")
+      :s.conectada?[h("span",{class:"chip ok"},"Conectada a «"+s.ssid+"»"),barras(s.rssi),s.ip?h("code",{class:"clave"},s.ip):null]
+      :s.conectando?h("span",{class:"chip av"},"Conectando a «"+s.ssid+"»…")
+      :h("span",{class:"chip bad"},"Sin conexión con «"+s.ssid+"»");
+    const propia=a.activa?[h("span",{class:"chip ok"},"Encendida: «"+a.ssid+"»"),h("span",{class:"chip"},a.abierta?"Abierta":"Con contraseña"),
+        h("span",{class:"chip"+(a.clientes>0?" cy":"")},(a.clientes||0)+(a.clientes===1?" conectado":" conectados"))]
+      :[h("span",{class:"chip"},"Apagada"),h("small",{style:"margin:0"},"Se enciende sola si la placa no puede conectarse a la wifi de casa.")];
+    est.replaceChildren(card("Estado",
+      PL.porRedPropia?h("div",{class:"nota"},h("span",{},"Estás conectado a la red propia de la placa. Cuando la placa esté en la wifi de casa, vuelve a la wifi de casa en el móvil y entra con la dirección o el código QR que salen aquí.")):null,
+      h("div",{class:"estado-fila"},h("span",{},"Wifi de casa"),casa),
+      s.configurada&&!s.conectada&&s.error?h("div",{class:"nota"},h("span",{},s.error)):null,
+      s.configurada&&!s.conectada&&!s.conectando?h("small",{},"Reintentando cada minuto. Si has cambiado la contraseña del router, vuelve a elegir la red abajo."):null,
+      h("div",{class:"estado-fila"},h("span",{},"Red propia"),propia),
+      h("div",{class:"estado-fila"},h("span",{},"Modo"),h("span",{class:"chip"},(MODOS.find(m=>m[0]===PL.modo)||[0,PL.modo||"?"])[1])),
+      h("div",{class:"estado-fila"},h("span",{},"DualSense"),PL.mandoReal?h("span",{class:"chip ok"},"Conectado a la placa"):h("span",{class:"chip av"},"No conectado a la placa")),
+      PL.firmware?h("div",{class:"estado-fila"},h("span",{},"Firmware"),h("code",{class:"clave"},PL.firmware)):null));
+  }
+  // Cómo entrar desde casa: direcciones con la clave y su QR
+  const en=$("plEntrar");
+  if(en){
+    const dirs=(plMovil&&plMovil.direcciones&&plMovil.direcciones.length)?plMovil.direcciones:null;
+    const firma=JSON.stringify([dirs,!!(plMovil&&plMovil.qr),s.conectada]);
+    if(en.dataset.f!==firma){en.dataset.f=firma;
+      if(!s.conectada)en.replaceChildren();
+      else{
+        const qr=h("div",{class:"qr","aria-label":"Código QR de la dirección"});if(plMovil&&plMovil.qr)qr.innerHTML=plMovil.qr;
+        const copiar=t=>{const b=btn("Copiar",async()=>{b.textContent=(await copiarTexto(t))?"Copiada":"No se pudo: mantén el dedo encima y cópiala"});return b};
+        const lista=dirs||(PL.direcciones||[]).map(d=>d+"/#k="+encodeURIComponent(K));
+        en.replaceChildren(card("Entrar desde la wifi de casa",
+          h("div",{class:"qr-movil"},plMovil&&plMovil.qr?qr:null,h("div",{style:"flex:1;min-width:220px"},
+            h("p",{style:"margin:0"},"Con el móvil en la wifi de casa, escanea el código o abre:"),
+            h("ul",{class:"dirs"},lista.map(t=>h("li",{},h("code",{},t),copiar(t)))))),
+          h("small",{},"La dirección lleva la clave: la primera vez se guarda en el móvil. «Añadir a pantalla de inicio» la deja como una app.")));
+      }
+    }
+  }
+  pintarRedes();
+  // Red propia y modo: se rellenan una vez (para no pisar lo que estés escribiendo)
+  const ap=$("plAp");if(ap&&!ap.dataset.listo){ap.dataset.listo="1";ap.replaceChildren(tarjetaRedPropia())}
+  const mo=$("plModo");if(mo&&!mo.dataset.listo){mo.dataset.listo="1";mo.replaceChildren(tarjetaModo())}
+}
+function pintarRedes(){
+  const caja=$("plRedes");if(!caja||!PL)return;
+  // No se rehace mientras escribes una contraseña ahí dentro
+  if(caja.contains(document.activeElement)&&document.activeElement.matches("input"))return;
+  const s=PL.sta||{},redes=PL.redes||[];
+  const firma=JSON.stringify([redes,PL.buscando,plSel,s.ssid,s.configurada,s.conectada]);if(firma===plFirma)return;plFirma=firma;
+  const conectar=async(ssid,clave,segura)=>{
+    if(!ssid||bytesUtf8(ssid)>32){aviso("El nombre de la red tiene que tener entre 1 y 32 caracteres");return}
+    if(segura&&!claveWifiValida(clave)){aviso(clave===""?"Esta red pide contraseña":"La contraseña de una wifi tiene entre 8 y 63 caracteres");return}
+    let d;try{d=await postPlaca("/wifi",{accion:"conectar",ssid,clave})}catch(e){return}
+    if(d.ok){plSel=null;plFirma="";document.activeElement?.blur?.();
+      aviso(PL.porRedPropia?"Conectando a «"+ssid+"». Si lo consigue, la placa puede cerrar su red: vuelve a la wifi de casa y entra en http://puente.local":"Conectando a «"+ssid+"»…",true);
+      cargarPlaca()}
+  };
+  const formClave=(ssid,segura)=>{
+    const c=h("input",{type:"password",placeholder:segura?"Contraseña de «"+ssid+"»":"Red abierta: sin contraseña",autocomplete:"off",autocapitalize:"off",spellcheck:"false",enterkeyhint:"go",disabled:!segura});
+    const ir=()=>conectar(ssid,c.value,segura);
+    c.addEventListener("keydown",e=>{if(e.key==="Enter")ir()});
+    if(segura)setTimeout(()=>c.focus(),30);
+    return h("div",{class:"form"},c,h("div",{class:"fila-b"},btn("Conectar",ir,"fuerte"),btn("Cancelar",()=>{plSel=null;plFirma="";pintarRedes()})));
+  };
+  const lista=redes.length?h("div",{class:"redes"},redes.map(r=>{
+      const sel=plSel===r.ssid;
+      return h("div",{class:"red"+(sel||(s.conectada&&s.ssid===r.ssid)?" on":"")},
+        h("button",{onclick:()=>{plSel=sel?null:r.ssid;plFirma="";pintarRedes()},"aria-expanded":String(sel)},
+          h("b",{},r.ssid),s.conectada&&s.ssid===r.ssid?h("small",{style:"margin:0"},"conectada"):null,r.segura?ico("candado"):null,barras(r.rssi)),
+        sel?formClave(r.ssid,r.segura):null)}))
+    :h("small",{},PL.buscando?"Buscando…":"Pulsa «Buscar redes» para ver las wifis que tiene cerca la placa.");
+  // Red oculta o que no sale en la lista
+  const oculto=h("input",{type:"text",placeholder:"Nombre de la red",autocomplete:"off",autocapitalize:"off",spellcheck:"false"});
+  const ocultoClave=h("input",{type:"password",placeholder:"Contraseña (vacía si es abierta)",autocomplete:"off",autocapitalize:"off",spellcheck:"false"});
+  caja.replaceChildren(
+    h("div",{class:"fila-b"},h("button",{class:"btn fuerte",disabled:!!PL.buscando,onclick:buscarRedes},PL.buscando?"Buscando…":"Buscar redes"),
+      s.configurada?btn("Olvidar «"+s.ssid+"»",async()=>{
+        if(!confirm("¿Olvidar la wifi «"+s.ssid+"»? La placa abrirá su red propia para que la vuelvas a configurar."))return;
+        try{await postPlaca("/wifi",{accion:"olvidar"})}catch(e){return}plFirma="";cargarPlaca()},"malo"):null),
+    lista,
+    h("details",{},h("summary",{},"Otra red (oculta o que no sale)"),oculto,ocultoClave,
+      h("div",{class:"fila-b"},btn("Conectar",()=>conectar(oculto.value.trim(),ocultoClave.value,ocultoClave.value!==""),"fuerte"))));
+}
+async function buscarRedes(){
+  try{await postPlaca("/wifi",{accion:"buscar"})}catch(e){return}
+  plSel=null;document.activeElement?.blur?.();
+  if(PL){PL.buscando=true;plFirma="";pintarRedes()}
+  // Se sondea cada segundo hasta que acaba (como mucho 15 s)
+  const fin=Date.now()+15000;
+  while(Date.now()<fin&&TAB==="placa"){
+    await new Promise(r=>setTimeout(r,1000));
+    await cargarPlaca();
+    if(PL&&!PL.buscando)break;
+  }
+}
+function tarjetaRedPropia(){
+  const a=PL.ap||{};
+  const nombre=h("input",{type:"text",value:a.ssid||"",maxlength:"32",autocomplete:"off",spellcheck:"false"});
+  const clave=h("input",{type:"password",value:"",placeholder:a.abierta?"Vacía: red abierta":"Vacía: red abierta (ahora tiene contraseña)",autocomplete:"new-password",autocapitalize:"off",spellcheck:"false"});
+  const ver=h("input",{type:"checkbox",onchange:e=>{clave.type=e.target.checked?"text":"password"}});
+  let siempre=!!a.siempre;
+  return card("Red propia de la placa",
+    h("small",{},"La red que abre la placa cuando no puede conectarse a la wifi de casa (o siempre, si lo marcas). Conectándote a ella configuras la placa desde el móvil."),
+    h("div",{class:"ctl"},h("div",{class:"cab"},h("span",{},"Nombre")),nombre),
+    h("div",{class:"ctl"},h("div",{class:"cab"},h("span",{},"Contraseña")),clave,
+      h("label",{style:"display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--mut);cursor:pointer"},ver,"Ver la contraseña"),
+      h("small",{},"Vacía, la red queda abierta: cualquiera cerca puede entrar y cambiar los ajustes. Con contraseña, de 8 a 63 caracteres.")),
+    tgF("Siempre encendida",siempre,v=>{siempre=v}),
+    h("div",{class:"nota"},h("span",{},"Si ahora estás conectado a esta red, al guardar te desconectará: vuelve a conectarte a ella (con la contraseña nueva, si la pones).")),
+    h("div",{class:"fila-b"},btn("Guardar red propia",async()=>{
+      const n=nombre.value.trim(),c=clave.value;
+      if(!n||bytesUtf8(n)>32){aviso("El nombre tiene que tener entre 1 y 32 caracteres");return}
+      if(!claveWifiValida(c)){aviso("La contraseña tiene que tener entre 8 y 63 caracteres (o dejarla vacía para una red abierta)");return}
+      if(c===""&&!confirm("¿Dejar la red propia abierta, sin contraseña? Cualquiera cerca podrá entrar y cambiar los ajustes."))return;
+      if(PL.porRedPropia&&!confirm("Te vas a desconectar de la red de la placa. Vuelve a conectarte a «"+n+"»"+(c?" con la contraseña nueva":"")+". ¿Seguir?"))return;
+      try{await postPlaca("/wifi",{accion:"ap",ssid:n,clave:c,siempre})}catch(e){}
+    },"fuerte")));
+}
+function tarjetaModo(){
+  let modo=PL.modo||"consola";
+  const txt=h("small",{},MODOS_TXT[modo]||"");
+  return card("Modo de la placa",
+    selF("Cómo se conecta a la consola",MODOS,modo,v=>{modo=v;txt.textContent=MODOS_TXT[v]||""}),txt,
+    h("div",{class:"fila-b"},btn("Cambiar el modo",async()=>{
+      if(modo===PL.modo){aviso("La placa ya está en ese modo",true);return}
+      if(!confirm("La placa se reinicia en el modo «"+(MODOS.find(m=>m[0]===modo)||[0,modo])[1]+"». ¿Seguir?"))return;
+      let d;try{d=await postPlaca("/wifi",{accion:"modo",modo})}catch(e){return}
+      if(d.ok)esperarPlaca("La placa se reinicia en el modo nuevo…")})));
+}
+function tarjetaFirmware(){
+  const archivo=h("input",{type:"file",accept:".bin,application/octet-stream",style:"margin-top:8px;max-width:100%"});
+  const barra=h("b",{}),prog=h("div",{class:"prog",style:"display:none"},barra),msg=h("small",{});
+  const subir=h("button",{class:"btn fuerte",onclick:async()=>{
+    const f=archivo.files&&archivo.files[0];
+    if(!f){aviso("Elige el archivo .bin del firmware");return}
+    if(!/\.bin$/i.test(f.name)||f.size<1024){aviso("Ese archivo no parece un firmware (.bin)");return}
+    // Las imágenes de app del ESP32 empiezan por el byte 0xE9
+    const primero=new Uint8Array(await f.slice(0,1).arrayBuffer())[0];
+    if(primero!==0xE9){aviso("Ese archivo no es un firmware de la placa (no empieza como una imagen del ESP32)");return}
+    if(!confirm("¿Grabar «"+f.name+"» en la placa? Al terminar se reinicia con él."))return;
+    subir.disabled=true;prog.style.display="";barra.style.width="0";msg.textContent="Subiendo…";
+    const x=new XMLHttpRequest();
+    x.open("POST","/firmware?k="+encodeURIComponent(K));
+    x.setRequestHeader("Content-Type","application/octet-stream");x.setRequestHeader("X-Puente","1");
+    x.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round(e.loaded/e.total*100);barra.style.width=p+"%";msg.textContent="Subiendo… "+p+" %"}};
+    x.onload=()=>{
+      subir.disabled=false;
+      let d={};try{d=JSON.parse(x.responseText)}catch(e){}
+      if(x.status===401){pedirClave();return}
+      if(x.status>=200&&x.status<300&&d.ok){barra.style.width="100%";msg.textContent="Firmware grabado. La placa se reinicia con él…";esperarPlaca("La placa se reinicia con el firmware nuevo…")}
+      else{msg.textContent="";aviso(d.error||("No se pudo grabar (la placa contestó "+x.status+")"))}
+    };
+    x.onerror=()=>{subir.disabled=false;msg.textContent="";aviso("Se cortó la conexión con la placa mientras subía el firmware")};
+    x.send(f);
+  }},"Subir y grabar");
+  return card("Actualizar el firmware",
+    h("small",{},"Elige el archivo de la app de la placa (puente_mando.bin). Se graba en la otra mitad de la memoria y la placa arranca con él. Si el archivo no vale, o el firmware nuevo se cuelga antes de 30 s, la placa vuelve sola al de ahora. Desde la red propia de la placa solo se puede si tiene contraseña."),
+    archivo,prog,msg,h("div",{class:"fila-b"},subir));
+}
+// Tras reiniciar (modo, firmware o a mano): se espera a que la placa vuelva y se recarga todo
+async function esperarPlaca(texto){
+  aviso(texto,true);
+  await new Promise(r=>setTimeout(r,8000));
+  const fin=Date.now()+60000;
+  while(Date.now()<fin){
+    try{const ctl=new AbortController();setTimeout(()=>ctl.abort(),2500);
+      const r=await fetch("/wifi?k="+encodeURIComponent(K),{signal:ctl.signal});
+      if(r.ok){aviso("La placa ha vuelto",true);arrancar();return}}catch(e){}
+    await new Promise(r=>setTimeout(r,2000));
+  }
+  aviso("La placa no contesta. Si has cambiado de wifi, vuelve a abrir su dirección.");
+}
+// ---------- Ayuda (como la sección «Ayuda» del Mac) ----------
+function tabManual(){
+  const pasos=(t,...l)=>card(t,h("div",{class:"manual"},l.map(x=>h("p",{},x))));
+  return [pasos("Probar en el ordenador",
+      "1. Placa en modo PC (LED verde al conectarla). Si está en modo consola, mantén BOOT 2 s.",
+      "2. Conecta el USB-C «USB» de la placa al ordenador y enciende el DualSense.",
+      "3. En «En vivo» verás tu mando y lo que recibiría la consola."),
+    pasos("Jugar en la PS5",
+      "1. Placa en modo consola: mantén BOOT 2 s (el LED pasa a cian al conectarla).",
+      "2. USB-C «USB» de la placa → puerto USB del P5Mate; P5Mate → PS5.",
+      "3. USB-C «COM» de la placa → ordenador. El DualSense, por Bluetooth o por cable al ordenador.",
+      "4. Deja esta app abierta mientras juegas. Si la cierras, el mando se queda quieto.",
+      "5. Para que la barra de luz tenga el color del perfil, deja la app abierta: la vuelve a poner cada segundo."),
+    pasos("Botón BOOT de la placa","Pulsación corta: botón X. Mantener 2 s: cambiar entre modo PC y modo consola.")];
+}
+// ---------- Mi control: el historial lo calcula el Mac (/medidor); aquí solo se enseña ----------
+let MED=null,medTimer=null;
+async function cargarMedidor(){
+  try{const r=await fetch("/medidor?k="+encodeURIComponent(K));if(r.ok){MED=await r.json();pintarMedidor()}}catch(e){}
+}
+function tabControl(){
+  const r="generales.medidor.";
+  clearInterval(medTimer);medTimer=setInterval(()=>{if(TAB==="control")cargarMedidor();else clearInterval(medTimer)},2000);
+  setTimeout(cargarMedidor,0);
+  return [h("p",{style:"color:var(--mut)"},"Graba lo que hace tu mano con el stick derecho mientras disparas (la entrada de tu DualSense, antes de que la app aplique nada) y te enseña cómo lo haces, para practicar. Solo mide: no cambia nada ni crea configuraciones."),
+    card("Medir",tg(r+"activo","Medir mis ráfagas"),selB(r+"disparar","Disparo con"),selB(r+"apuntar","Apunto con"),
+      tg(r+"soloApuntando","Contar solo las ráfagas en las que también apunto"),
+      h("small",{},"Botones de tu mando. Una ráfaga va de pulsar a soltar el de disparar; las de menos de 150 ms no cuentan.")),
+    h("div",{id:"medDatos"},"Cargando…")];
+}
+function pintarMedidor(){
+  const el=$("medDatos");if(!el||!MED)return;
+  if(!MED.total){el.innerHTML=`<div class="card"><p style="color:var(--mut)">${G.medidor.activo?"Todavía no hay ráfagas. Dispara un rato y aparecerán aquí.":"Activa «Medir mis ráfagas» para empezar."}</p></div>`;return}
+  const f=v=>v===null||v===undefined?"—":(+v).toFixed(1),ms=v=>v===null?"no bajaste":Math.round(v)+" ms";
+  const u=MED.rafagas[0],m=MED.media;
+  el.innerHTML=`<div class="card"><h2>Última ráfaga</h2><dl class="dg">
+    <dt>Duración</dt><dd>${u.duracion} ms</dd><dt>Reacción</dt><dd>${ms(u.reaccion)}</dd>
+    <dt>Bajada media</dt><dd>${f(u.bajada)} %</dd><dt>Constancia</dt><dd>±${f(u.constancia)} %</dd>
+    <dt>Desvío lateral</dt><dd>${f(u.lateral)} % (máx. ${f(u.lateralMax)} %)</dd><dt>Temblor / tirones</dt><dd>${f(u.temblor)} · ${u.tirones}</dd>
+    <dt>Perfil</dt><dd>${u.perfil||"—"}</dd><dt>Cuándo</dt><dd>${new Date(u.fecha).toLocaleTimeString()}</dd></dl>
+    ${MED.ultima&&MED.ultima.x.length?`<canvas id="medCanvas" class="lienzo" width="640" height="260" style="width:100%;height:130px;margin-top:10px"></canvas>
+    <small>Lima: lateral · blanco: vertical (hacia abajo es negativo). Tu stick durante la ráfaga.</small>`:""}</div>
+  <div class="card"><h2>Últimas ${m.rafagas} ráfagas</h2><dl class="dg">
+    <dt>Reacción media</dt><dd>${m.reaccion===null?"—":Math.round(m.reaccion)+" ms"}</dd><dt>Sin bajar el stick</dt><dd>${Math.round(m.sinCorregir)} %</dd>
+    <dt>Bajada media</dt><dd>${f(m.bajada)} %</dd><dt>Constancia media</dt><dd>±${f(m.constancia)} %</dd>
+    <dt>Desvío lateral medio</dt><dd>${f(m.lateral)} %</dd><dt>Temblor / tirones</dt><dd>${f(m.temblor)} · ${f(m.tirones)}</dd></dl>
+    ${MED.observaciones.map(o=>`<p style="margin:6px 0">${o}</p>`).join("")}<small>Umbrales orientativos, no una norma.</small></div>
+  <div class="card"><h2>Por días</h2><dl class="dg">${MED.dias.map(d=>`<dt>${new Date(d.dia).toLocaleDateString()}</dt><dd>${d.media.rafagas} ráfagas · reacción ${d.media.reaccion===null?"—":Math.round(d.media.reaccion)+" ms"} · bajada ${f(d.media.bajada)} % · ±${f(d.media.constancia)} % · lateral ${f(d.media.lateral)} %</dd>`).join("")}</dl>
+    <div class="fila-b"><button class="btn malo" id="medBorrar">Borrar el historial (${MED.total})</button></div></div>`;
+  const mc=$("medCanvas");
+  if(mc){const x=MED.ultima.x,y=MED.ultima.abajo.map(v=>-v),ctx=mc.getContext("2d"),W=mc.width,H=mc.height,n=x.length;
+    const max=Math.max(50,...x.map(Math.abs),...y.map(Math.abs))*1.2;
+    const linea=(v,c,a)=>{ctx.beginPath();v.forEach((q,i)=>{const px=W*i/Math.max(n-1,1),py=H/2-q/max*H/2;i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.strokeStyle=c;ctx.lineWidth=a;ctx.stroke()};
+    linea(x.map(()=>0),"rgba(128,128,128,.45)",1);linea(x,"#c8f04d",2);linea(y,"#fff",2)}
+  $("medBorrar").onclick=()=>{if(confirm("¿Borrar las "+MED.total+" ráfagas guardadas?"))accion({accion:"medidorBorrar"},false).then(cargarMedidor)};
+}
+const VISTAS={vivo:tabVivo,sticks:tabSticks,gatillos:tabGatillos,botones:tabBotones,turbo:tabTurbo,macros:tabMacros,antirecoil:tabAntiRecoil,ayuda:tabAyuda,perfiles:tabPerfiles,control:tabControl,movil:tabMovil,placa:tabPlaca,manual:tabManual};
+
+// ---------- pintar ----------
+function pintarTabs(){
+  if(!tabsVisibles().some(t=>t[0]===TAB))TAB="vivo";
+  document.body.dataset.tab=TAB;
+  $("tabs").replaceChildren(...tabsVisibles().map(([id,t])=>h("button",{class:id===TAB?"on":"","aria-current":id===TAB?"page":null,
+    onclick:()=>{TAB=id;localStorage.setItem("tab",id);pintarTabs();pintarMain();entrada();scrollTo(0,0)}},ico(id),t)));
+  $("tabs").querySelector(".on")?.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+function entrada(){const m=$("main");m.classList.remove("entra");void m.offsetWidth;m.classList.add("entra")}
+function pintarMain(){
+  if(!P)return;
+  const y=scrollY;
+  if(!tabsVisibles().some(t=>t[0]===TAB))TAB="vivo";
+  const nodo=VISTAS[TAB]();
+  $("main").replaceChildren(h("h1",{class:"titular"},(tabsVisibles().find(t=>t[0]===TAB)||[])[1]),...[].concat(nodo));
+  if(TAB!=="vivo")scrollTo(0,y);
+}
+function pintarCabecera(){
+  $("punto").style.background=P.color;$("perfilNombre").textContent=P.nombre;
+  $("perfilSel").replaceChildren(...opts(LISTA.map(p=>[p.id,p.nombre]),ACTIVO));
+  $("pausa").replaceChildren(ico(PAUSA?"play":"pausa"),PAUSA?"En pausa · Reanudar":"Pausar");
+  $("pausa").className="btn "+(PAUSA?"peligro":"");$("pausa").setAttribute("aria-pressed",String(PAUSA));
+}
+// El texto se escapa: lleva nombres que pone el usuario (macros)
+function pintarSi(el,html){if(el.dataset.html!==html){el.dataset.html=html;el.innerHTML=html}}
+function chip(t,c,ayuda){const esc=v=>String(v).replace(/[&<>"]/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[x]);
+  return `<span class="chip ${c||""}"${ayuda?` title="${esc(ayuda)}"`:""}>${esc(t)}</span>`}
+// Ritmo real del DualSense (por debajo de 100 informes/s se nota) y su batería
+function chipsMando(d){
+  if(!d.mando)return[];
+  const r=d.mandoRitmo||{},b=d.bateria||{},c=[];
+  // Corto para que quepa en dos filas; el peor hueco entre informes va en la ayuda emergente
+  if(r.hz>0)c.push(chip(r.hz+" Hz"+(r.conexion?" · "+r.conexion:""),r.hz<100?"av":"",`Peor hueco entre informes: ${r.huecoMs} ms`));
+  else c.push(chip("Sin informes del mando","av"));
+  if(b.porcentaje!=null)c.push(chip(b.estado==="llena"?"Batería llena":"Batería "+b.porcentaje+" %"+(b.estado==="cargando"?", cargando":""),
+    b.porcentaje<=20&&b.estado!=="cargando"?"bad":(b.porcentaje<=35?"av":"ok")));
+  return c;
+}
+function pintarVivo(d){
+  vivo=d;$("aviso").style.display="none";
+  WIDGETS=d.widgets||[];if(TAB==="vivo")pintarWidgets();
+  // Avisos que el Mac no dice en voz alta (avisos de voz apagados): el primero que llega solo marca el punto de partida
+  const av=d.aviso;if(av&&AVISO_ID!==null&&av.id!==AVISO_ID)aviso(av.texto,true);AVISO_ID=av?av.id:0;
+  pintarPads(d);if(d.diag)pintarDiag(d.diag);if(d.monitor)pintarMonitor(d.monitor);
+  // Arriba, solo si todo está conectado; lo que hace el perfil va al final de «En vivo»
+  pintarSi($("chips"),[d.mando?chip("DualSense","ok"):chip("DualSense apagado","bad"),d.esp?chip("Placa","ok"):chip("Placa sin conectar","bad"),
+    d.pausado?chip("En pausa","bad"):"",...chipsMando(d)].join(""));
+  const pie=$("vivoPie");
+  if(pie)pintarSi(pie,[...(d.funciones||[]).map(f=>chip(f.nombre+(f.on?"":" (apagado)")+(f.detalle?": "+f.detalle:""),f.on?"ok":"")),
+    chip(d.envios+" envíos por segundo a la placa")].join("")||chip("Nada activado: el mando pasa tal cual"));
+  if(d.rev!==REV)pendiente=d.rev;
+}
+// Si algo cambió fuera (app, mando u otro móvil) y no estás tocando nada, se vuelve a cargar
+setInterval(async()=>{
+  if(((pendiente&&pendiente!==REV)||recargarCuandoLibre)&&Date.now()-editando>1200&&!document.activeElement?.matches?.("input[type=text],input[type=number]")){
+    pendiente=null;recargarCuandoLibre=false;if(await cargar()){pintarCabecera();pintarMain()}
+  }
+},500);
+
+function conectarDirecto(){
+  if(es)es.close();
+  es=new EventSource("/eventos?k="+encodeURIComponent(K));
+  es.onmessage=m=>{try{pintarVivo(JSON.parse(m.data))}catch(e){}};
+  es.onerror=()=>{$("avisoTexto").textContent="Sin conexión con "+nombreServidor()+". Reintentando…";$("aviso").style.display="block";comprobarConexion()};
+}
+// Si se corta el directo, se mira por qué: si la clave ya no vale, se pide la nueva en vez de reintentar para siempre
+let comprobando=0;
+async function comprobarConexion(){
+  if(Date.now()-comprobando<4000)return;comprobando=Date.now();
+  try{
+    const r=await fetch("/perfil?k="+encodeURIComponent(K));
+    if(r.status===401){pedirClave("La clave ha cambiado en "+nombreServidor()+". Escribe la nueva.");return}
+    $("avisoTexto").textContent="Sin conexión con "+nombreServidor()+". Reintentando…";
+  }catch(e){
+    if(esPlaca()){$("avisoTexto").textContent="No encuentro la placa en esta red. ¿Está encendida y estás en la misma wifi (o en la red propia de la placa)?";return}
+    $("avisoTexto").textContent="No encuentro el Mac en esta red. ¿Está la app abierta y estás en la misma wifi?";
+    buscarOtroPuerto();
+  }
+}
+// Si el Mac tuvo que abrir el servidor en otro puerto (8787 ocupado), esta página se va sola al nuevo con la misma clave
+async function buscarOtroPuerto(){
+  const actual=+(location.port||80);
+  for(let p=8787;p<=8797;p++){
+    if(p===actual)continue;
+    const base=location.protocol+"//"+location.hostname+":"+p;
+    try{
+      const ctl=new AbortController();setTimeout(()=>ctl.abort(),1500);
+      await fetch(base+"/icono.png",{mode:"no-cors",signal:ctl.signal});
+      location.href=base+"/#k="+encodeURIComponent(K);return;
+    }catch(e){}
+  }
+}
+function pedirClave(msg,puedeVolver){
+  if(es)es.close();
+  if(esPlaca()){$("loginTit").textContent="Clave de la placa";
+    $("loginTxt").textContent="Escribe la clave que sale en la pestaña «Placa» de esta app (o entra por la red wifi propia de la placa, que no la pide). Se guarda en este móvil y ya no hay que volver a escanear el QR."}
+  $("app").style.display="none";$("login").style.display="block";$("loginerr").textContent=msg||"";
+  $("volver").style.display=puedeVolver?"":"none";
+  $("clave").value="";setTimeout(()=>$("clave").focus(),50);
+}
+async function arrancar(){
+  // Se prueban la clave de la dirección y la guardada en este móvil, por si una de las dos es vieja
+  const candidatas=[...new Set([K,localStorage.getItem("k")||""].filter(Boolean))];
+  if(!candidatas.length){pedirClave();return}
+  for(const c of candidatas){
+    K=c;let ok;
+    try{ok=await cargar(true)}catch(e){pedirClave(esPlaca()?"No encuentro la placa en esta red. Comprueba que está encendida y que estás en la misma wifi (o en la red propia de la placa).":"No encuentro el Mac en esta red. Comprueba que la app está abierta y que estás en la misma wifi.");return}
+    if(ok==="espera")return;
+    if(ok===true){
+      localStorage.setItem("k",K);
+      // La clave se queda en la dirección: así «Añadir a pantalla de inicio» la guarda en el acceso directo
+      history.replaceState(null,"","/#k="+encodeURIComponent(K));
+      $("login").style.display="none";$("aviso").style.display="none";$("app").style.display="";
+      pintarTabs();pintarCabecera();pintarMain();conectarDirecto();
+      return;
+    }
+  }
+  pedirClave("La clave no vale: puede que haya cambiado en "+nombreServidor()+". Escribe la nueva.");
+}
+function entrar(){const k=$("clave").value.trim().toUpperCase();if(!k){$("loginerr").textContent="Escribe la clave.";return}K=k;arrancar()}
+$("entrar").onclick=entrar;
+$("clave").addEventListener("keydown",e=>{if(e.key==="Enter")entrar()});
+$("volver").onclick=()=>{$("login").style.display="none";$("app").style.display="";conectarDirecto()};
+$("reintentar").onclick=()=>{$("avisoTexto").textContent="Reintentando…";arrancar()};
+$("otraClave").onclick=()=>pedirClave("",true);
+$("pausa").onclick=()=>{PAUSA=!PAUSA;pintarCabecera();accion({accion:"pausa",valor:PAUSA},false)};
+$("perfilSel").onchange=e=>accion({accion:"perfil",id:e.target.value});
+arrancar();
+</script>
+</body>
+</html>
+"""#
+}

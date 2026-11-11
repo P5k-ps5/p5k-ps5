@@ -1,0 +1,16 @@
+build/
+managed_components/
+sdkconfig
+sdkconfig.old
+dependencies.lock
+*.app/
+.DS_Store
+.playwright-mcp/
+__pycache__/
+# KiCad: intermedios del trazado y cachés
+placa/puente.dsn
+placa/puente.ses
+placa/fp-info-cache
+placa/*.kicad_prl
+placa/puente-backups/
+placa/\#auto_saved_files#
