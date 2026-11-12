@@ -13,7 +13,7 @@ módulos (ESP32-S3 YD + MAX3421E, ver `../caja/`) sí está probado con la PS5.
 | | |
 |---|---|
 | Cerebro | ESP32-S3-WROOM-1-N16R8 (el mismo chip que la YD-ESP32-S3), antena fuera del borde |
-| Lector del mando | MAX3421EEHJ+T con cristal de 12 MHz |
+| Lector del mando | MAX3421EETJ+T (TQFN 5 × 5 mm) con cristal de 12 MHz |
 | USB-C CONSOLA | USB nativo del ESP32 (IO19/IO20), protección USBLC6-2SC6, 5,1 kΩ en los CC (recibe corriente) |
 | USB-C MANDO | D+/D− del MAX3421E con 33 Ω, 56 kΩ en los CC (da corriente: así el DualSense se carga y se detecta con un cable C a C) |
 | Corriente del mando | interruptor (AO3401A + 2N7002) con arranque suave; el GPIO5 a nivel bajo lo apaga, por defecto encendido |
@@ -44,8 +44,8 @@ alguna no cuadra, se gira ahí mismo.
 - **El módulo ESP32 sobresale 6,5 mm por el borde de arriba** (la antena, a propósito). Si JLCPCB añade bordes de
   transporte para montarla, que no sea en ese lado: pídelos en los lados cortos o abajo (en sus notas o cuando lo
   pregunten en la revisión DFM).
-- **Existencias:** el MAX3421EEHJ+T (C2651881) y el ESP32-S3-WROOM-1-N16R8 (C2913202) son piezas «extended» y el MAX
-  suele andar escaso: mira que haya antes de pedir.
+- **Existencias:** el MAX3421EETJ+T (C1870151, en TQFN: el TQFP se agotó) y el ESP32-S3-WROOM-1-N16R8 (C2913202) son
+  piezas «extended» y el MAX anda escaso: mira que haya antes de pedir. El LED es el WS2812B-2020-V6 (C52917434).
 
 ## Uso
 

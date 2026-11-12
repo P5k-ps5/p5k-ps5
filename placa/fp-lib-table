@@ -7,7 +7,7 @@
   (lib (name "Crystal")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Crystal.pretty")(options "")(descr ""))
   (lib (name "Diode_SMD")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Diode_SMD.pretty")(options "")(descr ""))
   (lib (name "LED_SMD")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/LED_SMD.pretty")(options "")(descr ""))
-  (lib (name "Package_QFP")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Package_QFP.pretty")(options "")(descr ""))
+  (lib (name "Package_DFN_QFN")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Package_DFN_QFN.pretty")(options "")(descr ""))
   (lib (name "Package_TO_SOT_SMD")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Package_TO_SOT_SMD.pretty")(options "")(descr ""))
   (lib (name "RF_Module")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/RF_Module.pretty")(options "")(descr ""))
   (lib (name "Resistor_SMD")(type "KiCad")(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Resistor_SMD.pretty")(options "")(descr ""))

@@ -47,16 +47,16 @@ def _simbolo_de_biblioteca(lib, nombre):
 
 
 def _simbolo_max3421e():
-    """El MAX3421E no está en las bibliotecas de KiCad: rectángulo con las 32 patillas (16 por lado)"""
-    izq = [2, 23, 22, 24, 25, 12, 14, 13, 16, 15, 18, 17, 3, 19, 21, 20]   # alimentación, cristal, SPI, USB, GND
+    """El MAX3421E no está en las bibliotecas de KiCad: rectángulo con las 33 patillas (32 y la almohadilla EP)"""
+    izq = [2, 23, 22, 24, 25, 12, 14, 13, 16, 15, 18, 17, 3, 19, 33, 21, 20]   # alimentación, cristal, SPI, GND, USB
     der = [4, 5, 6, 7, 8, 9, 10, 11, 26, 27, 28, 29, 30, 31, 32, 1]        # GPIO (no se usan)
-    alto = 2.54 * 17
+    alto = 2.54 * 18
     pines = []
     for lado, lista in ((0, izq), (180, der)):
         for i, n in enumerate(lista):
             x = -17.78 if lado == 0 else 17.78
             y = alto / 2 - 2.54 * (i + 1)
-            tipo = {"VCC": "power_in", "VL": "power_in", "GND": "power_in", "INT": "output", "MISO": "output",
+            tipo = {"VCC": "power_in", "VL": "power_in", "GND": "power_in", "EP": "passive", "INT": "output", "MISO": "output",
                     "GPX": "output"}.get(MAX3421E_PINES[n], "bidirectional" if MAX3421E_PINES[n] in ("D+", "D-") else
                                          "output" if MAX3421E_PINES[n].startswith("GPOUT") else "input")
             pines.append(["pin", tipo, "line", ["at", f"{x:.2f}", f"{y:.2f}", str(lado)], ["length", "2.54"],
@@ -66,7 +66,7 @@ def _simbolo_max3421e():
     return ["symbol", Q("puente:MAX3421E"), ["pin_names", ["offset", "1.016"]], ["exclude_from_sim", "no"],
             ["in_bom", "yes"], ["on_board", "yes"],
             prop("Reference", "U", alto / 2 + 1.27), prop("Value", "MAX3421E", -alto / 2 - 1.27),
-            prop("Footprint", "Package_QFP:TQFP-32_5x5mm_P0.5mm", 0, True),
+            prop("Footprint", "Package_DFN_QFN:TQFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm", 0, True),
             prop("Datasheet", "https://www.analog.com/media/en/technical-documentation/data-sheets/MAX3421E.pdf", 0, True),
             prop("Description", "USB peripheral/host controller with SPI interface", 0, True),
             ["symbol", Q("MAX3421E_0_1"),

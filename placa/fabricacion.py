@@ -57,13 +57,16 @@ def main():
     # BOM agrupada por pieza
     grupos = defaultdict(list)
     for c in montadas:
-        grupos[(c["valor"], c["fp"].split(":")[1], c["lcsc"])].append(c["ref"])
+        # Una línea por pieza (número LCSC): JLCPCB rechaza dos líneas con la misma pieza aunque se llamen
+        # distinto (J1 «CONSOLA» y J2 «MANDO»)
+        grupos[(c["fp"].split(":")[1], c["lcsc"])].append(c)
     clave = lambda ref: (ref.rstrip("0123456789"), int(ref[len(ref.rstrip("0123456789")):] or 0))
     with (SALIDA / "puente-bom.csv").open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
-        for (valor, fp, lcsc), refs in sorted(grupos.items(), key=lambda g: clave(sorted(g[1], key=clave)[0])):
-            w.writerow([valor, ",".join(sorted(refs, key=clave)), fp, lcsc])
+        for (fp, lcsc), comps in sorted(grupos.items(), key=lambda g: clave(sorted((c["ref"] for c in g[1]), key=clave)[0])):
+            valor = "/".join(dict.fromkeys(c["valor"] for c in sorted(comps, key=lambda c: clave(c["ref"]))))
+            w.writerow([valor, ",".join(sorted((c["ref"] for c in comps), key=clave)), fp, lcsc])
 
     print(f"{len(nombres)} archivos en el zip de Gerber; {len(montadas)} piezas montadas en {len(grupos)} referencias")
     print("En", SALIDA)

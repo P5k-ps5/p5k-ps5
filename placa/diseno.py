@@ -57,16 +57,19 @@ ESP32 = {
     "40": "GND", "41": "GND",
 }
 
-# MAX3421E (TQFP-32 de 5x5 mm). Patillaje de la hoja de datos de Maxim (Pin Configurations, 19-3953)
+# MAX3421E en TQFN-32 de 5x5 mm (MAX3421EETJ+T): el TQFP (EEHJ+T) está agotado en JLCPCB. Mismo patillaje en los
+# dos encapsulados (hoja de datos de Maxim, Pin Configurations, 19-3953); el TQFN añade la almohadilla de debajo
+# (EP, patilla 33 en la huella de KiCad), que va a masa.
 MAX3421E_PINES = {
     1: "GPIN7", 2: "VL", 3: "GND", 4: "GPOUT0", 5: "GPOUT1", 6: "GPOUT2", 7: "GPOUT3", 8: "GPOUT4",
     9: "GPOUT5", 10: "GPOUT6", 11: "GPOUT7", 12: "~{RES}", 13: "SCLK", 14: "~{SS}", 15: "MISO", 16: "MOSI",
     17: "GPX", 18: "INT", 19: "GND", 20: "D-", 21: "D+", 22: "VBCOMP", 23: "VCC", 24: "XI",
     25: "XO", 26: "GPIN0", 27: "GPIN1", 28: "GPIN2", 29: "GPIN3", 30: "GPIN4", 31: "GPIN5", 32: "GPIN6",
+    33: "EP",
 }
 MAX3421E = {"2": "+3V3", "3": "GND", "12": "MAX_RES", "13": "MAX_SCK", "14": "MAX_SS", "15": "MAX_MISO",
             "16": "MAX_MOSI", "18": "MAX_INT", "19": "GND", "20": "MAX_DM", "21": "MAX_DP",
-            "22": "VBUS_MANDO", "23": "+3V3", "24": "XI", "25": "XO"}
+            "22": "VBUS_MANDO", "23": "+3V3", "24": "XI", "25": "XO", "33": "GND"}
 
 COMPONENTES = [
     # --- ESP32-S3 ---
@@ -98,13 +101,13 @@ COMPONENTES = [
     # --- LED RGB (a 5 V menos un diodo: así entiende los 3,3 V del ESP32) ---
     dict(ref="D2", sym="Diode:1N4148W", valor="1N4148W", fp="Diode_SMD:D_SOD-123", lcsc="C81598",
          pines={"1": "LED_VDD", "2": "VBUS"}),
-    dict(ref="D1", sym="LED:WS2812B-2020", valor="WS2812B-2020", fp="LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm",
-         lcsc="C965555", pines={"2": "GND", "3": "LED_DIN", "4": "LED_VDD"}),
+    dict(ref="D1", sym="LED:WS2812B-2020", valor="WS2812B-2020-V6", fp="LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm",
+         lcsc="C52917434", pines={"2": "GND", "3": "LED_DIN", "4": "LED_VDD"}),
     C("C5", "100n", "LED_VDD", "GND", LCSC["C100n"]),
 
     # --- MAX3421E ---
-    dict(ref="U2", sym="puente:MAX3421E", valor="MAX3421EEHJ+T", fp="Package_QFP:TQFP-32_5x5mm_P0.5mm",
-         lcsc="C2651881", pines=MAX3421E),
+    dict(ref="U2", sym="puente:MAX3421E", valor="MAX3421EETJ+T", fp="Package_DFN_QFN:TQFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm",
+         lcsc="C1870151", pines=MAX3421E),
     C("C6", "1u", "+3V3", "GND", LCSC["C1u"]),
     C("C7", "100n", "+3V3", "GND", LCSC["C100n"]),
     C("C8", "100n", "+3V3", "GND", LCSC["C100n"]),
