@@ -46,13 +46,19 @@ def main():
             "--side", "front", "--exclude-dnp")
         filas = list(csv.DictReader((tmp / "pos.csv").open()))
     validas = {c["ref"] for c in montadas}
+    # Correcciones para los modelos de JLCPCB, comprobadas en su visor de montaje (12 nov. 2026): su ESP32-S3-WROOM-1
+    # tiene el origen más abajo que la huella de KiCad, y su MAX3421E en TQFN y su 1N4148W vienen girados.
+    # (desplazamiento x e y en mm sobre la placa, con y hacia abajo como en KiCad; giro en grados, antihorario)
+    CORRECCIONES = {"U1": (0.0, 3.4, 0), "U2": (0.0, 0.0, -90), "D2": (0.0, 0.0, 180)}
     with (SALIDA / "puente-cpl.csv").open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
         for r in sorted(filas, key=lambda r: r["Ref"]):
             if r["Ref"] in validas:
-                w.writerow([r["Ref"], f'{float(r["PosX"]):.3f}mm', f'{float(r["PosY"]):.3f}mm', "Top",
-                            f'{float(r["Rot"]):.0f}'])
+                dx, dy, giro = CORRECCIONES.get(r["Ref"], (0.0, 0.0, 0))
+                # KiCad exporta la y hacia arriba (negativa): bajar en la placa es restar
+                w.writerow([r["Ref"], f'{float(r["PosX"]) + dx:.3f}mm', f'{float(r["PosY"]) - dy:.3f}mm', "Top",
+                            f'{(float(r["Rot"]) + giro) % 360:.0f}'])
 
     # BOM agrupada por pieza
     grupos = defaultdict(list)

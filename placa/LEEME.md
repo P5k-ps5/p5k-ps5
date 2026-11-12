@@ -34,10 +34,11 @@ Conector SPI de pantalla (J4, pin 1 = cuadrado): 1 3V3 · 2 GND · 3 SCK (IO15) 
 En `fabricacion/`:
 
 - `puente-gerber.zip`: súbelo en «Añadir archivo Gerber» (PCB/PCBA estándar, 2 capas, 1,6 mm).
-- `puente-bom.csv` y `puente-cpl.csv`: al activar «Ensamblaje de PCB» (mínimo 2 placas montadas).
+- `puente-bom.csv` y `puente-cpl.csv`: al activar «Ensamblaje de PCB» (mínimo 2 placas montadas; el LED D1 se puede dejar sin montar: JLCPCB lo da como «difícil» y lo revisa aparte).
 
 Cambia solo esto de los valores de serie: **Vía Cobertura → Con carpa** y **Via Plating Method → Not Specified**
-(el relleno con epoxi viene marcado y no hace falta). En la vista previa del montaje, mira que cada pieza salga con
+(el relleno con epoxi viene marcado y no hace falta). El CPL ya lleva corregidos el ESP32 (3,4 mm más abajo), el MAX3421E (−90°) y el diodo D2 (180°), que en el
+visor de JLCPCB salían desplazados o girados. Aun así, en la vista previa del montaje mira que cada pieza salga con
 el giro correcto, sobre todo el MAX3421E, el LED (su marca de la patilla 1 es diminuta), los USB-C y el regulador: si
 alguna no cuadra, se gira ahí mismo.
 
