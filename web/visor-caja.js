@@ -14,15 +14,12 @@ function soportaWebGL() {
 }
 
 function voltear(g, alto) {
-  g.scale(1, 1, -1);
-  g.translate(0, 0, alto);
-  // Al reflejar, las caras quedan del revés: se cambia el orden de cada triángulo
-  const p = g.attributes.position;
-  for (let i = 0; i < p.count; i += 3) {
-    const x = p.getX(i + 1), y = p.getY(i + 1), z = p.getZ(i + 1);
-    p.setXYZ(i + 1, p.getX(i + 2), p.getY(i + 2), p.getZ(i + 2));
-    p.setXYZ(i + 2, x, y, z);
-  }
+  // Las tapas se descargan boca abajo, giradas 180° sobre el eje largo: se deshace el mismo giro
+  // (los extremos se copian antes: scale() vuelve a calcular la caja sobre los mismos vectores)
+  g.computeBoundingBox();
+  const centroY = g.boundingBox.min.y + g.boundingBox.max.y;
+  g.scale(1, -1, -1);
+  g.translate(0, centroY, alto);
   g.computeVertexNormals();
 }
 

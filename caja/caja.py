@@ -268,8 +268,9 @@ def tapa():
     t += cilindro_z(bx, by, z_boton, ALTO_BASE + 0.01, 3.0)
     # marca en la tapa encima de BOOT
     t -= cilindro_z(bx, by, ALTO_BASE + TAPA - 0.4, ALTO_BASE + TAPA + 0.1, 5.0) - cilindro_z(bx, by, ALTO_BASE + TAPA - 0.5, ALTO_BASE + TAPA + 0.2, 4.0)
-    # para imprimir: boca abajo (la cara de fuera sobre la cama)
-    return t.mirror((0, 0, 1)).translate((0, 0, ALTO_BASE + TAPA))
+    # para imprimir: boca abajo (la cara de fuera sobre la cama). Se le da la vuelta girándola 180° sobre el eje
+    # largo, no reflejándola: un espejo pondría el LED, RST y los topes en el lado contrario al montarla
+    return t.rotate((180, 0, 0)).translate((0, ANCHO, ALTO_BASE + TAPA))
 
 
 def prueba_puertos():
@@ -336,7 +337,7 @@ def vistas(salida: Path):
         filas, dup = [], []                           # sin plásticos: los pines cortados a ras
 
     b, tp = base(), tapa()
-    tapa_puesta = tp.mirror((0, 0, 1)).translate((0, 0, ALTO_BASE + TAPA))
+    tapa_puesta = tp.rotate((180, 0, 0)).translate((0, ANCHO, ALTO_BASE + TAPA))
     lim = ((-5, LARGO + 5), (-5, ANCHO + 5), (-2, ALTO_BASE + TAPA + 2))
     fig = plt.figure(figsize=(16, 10))
 
@@ -434,7 +435,7 @@ def visor(salida: Path):
 
     datos = {
         "variante": VARIANTE, "medidas": [round(LARGO, 1), round(ANCHO, 1), round(ALTO_BASE + TAPA, 1)],
-        "base": malla(base()), "tapa": malla(tapa().mirror((0, 0, 1)).translate((0, 0, ALTO_BASE + TAPA))),
+        "base": malla(base()), "tapa": malla(tapa().rotate((180, 0, 0)).translate((0, ANCHO, ALTO_BASE + TAPA))),
         "piezas": piezas, "cables": cables, "centro": [LARGO / 2, ANCHO / 2, (ALTO_BASE + TAPA) / 2],
     }
     salida.write_text(PLANTILLA_VISOR.replace("__DATOS__", json.dumps(datos, separators=(",", ":"))), encoding="utf-8")

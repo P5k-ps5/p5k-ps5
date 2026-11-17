@@ -186,7 +186,8 @@ if __name__ == "__main__":
     b, t = base(), tapa()
     a_stl(b, d / "caja-base.stl")
     # La tapa se guarda como se imprime: boca abajo y apoyada en la cama (como la de caja.py)
-    a_stl(t.mirror((0, 0, 1)).translate((0, 0, ALTO)), d / "caja-tapa.stl")
+    # (girada 180° sobre el eje largo, no reflejada: un espejo cambiaría de lado el LED, los botones y los textos)
+    a_stl(t.rotate((180, 0, 0)).translate((0, EY0 + EY1, ALTO)), d / "caja-tapa.stl")
     datos = {
         "medidas": [round(EX1 - EX0, 1), round(EY1 - EY0, 1), round(ALTO, 1)],
         "volumen_cm3": {"base": round(b.volume() / 1000, 1), "tapa": round(t.volume() / 1000, 1)},
