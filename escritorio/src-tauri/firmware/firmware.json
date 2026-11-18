@@ -1,5 +1,5 @@
 {
-  "version": "2026.11.11",
+  "version": "2026.11.18",
   "chip": "esp32s3",
   "piezas": [
     { "archivo": "bootloader.bin", "direccion": "0x0" },

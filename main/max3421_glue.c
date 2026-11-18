@@ -70,8 +70,33 @@ void max3421_glue_init(void)
 
     // RES: en la placa del MAX va suelto (en el shield original lo sube el Arduino), y si queda bajo el
     // chip contesta por SPI pero no arranca. Lo manejamos desde aquí: un pulso de reset y luego arriba.
-    gpio_config_t res = { .pin_bit_mask = 1ULL << PIN_RES, .mode = GPIO_MODE_OUTPUT };
+    // Diagnóstico de la línea RES antes de usarla: con la resistencia interna hacia arriba y hacia abajo
+    // (¿qué hay al otro lado del cable?) y conduciéndola a 1 y a 0 (¿la lleva algo a la fuerza a masa o a 3,3 V?)
+    gpio_config_t res = { .pin_bit_mask = 1ULL << PIN_RES, .mode = GPIO_MODE_INPUT, .pull_up_en = GPIO_PULLUP_ENABLE };
     gpio_config(&res);
+    vTaskDelay(pdMS_TO_TICKS(2));
+    int con_pullup = gpio_get_level(PIN_RES);
+    res.pull_up_en = GPIO_PULLUP_DISABLE;
+    res.pull_down_en = GPIO_PULLDOWN_ENABLE;
+    gpio_config(&res);
+    vTaskDelay(pdMS_TO_TICKS(2));
+    int con_pulldown = gpio_get_level(PIN_RES);
+    res.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    res.mode = GPIO_MODE_INPUT_OUTPUT;   // salida, pero leyendo el nivel real de la patilla
+    gpio_config(&res);
+    gpio_set_level(PIN_RES, 1);
+    vTaskDelay(pdMS_TO_TICKS(2));
+    int salida_1 = gpio_get_level(PIN_RES);
+    gpio_set_level(PIN_RES, 0);
+    vTaskDelay(pdMS_TO_TICKS(2));
+    int salida_0 = gpio_get_level(PIN_RES);
+    ESP_LOGI(TAG, "línea RES (GPIO%d): pull-up=%d pull-down=%d, conducida a 1 -> %d, a 0 -> %d%s", PIN_RES,
+             con_pullup, con_pulldown, salida_1, salida_0,
+             salida_1 == 0 ? " -> ALGO LA UNE A MASA (puente de estaño o cable a GND)"
+             : salida_0 == 1 ? " -> ALGO LA UNE A 3,3 V"
+             : con_pullup == 0 ? " -> hay una resistencia a masa en la placa del MAX (conducida va bien)"
+             : " -> la línea va bien desde el ESP32");
+
     gpio_set_level(PIN_RES, 0);
     vTaskDelay(pdMS_TO_TICKS(5));
     gpio_set_level(PIN_RES, 1);
